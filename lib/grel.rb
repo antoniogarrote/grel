@@ -1,6 +1,7 @@
 require 'stardog'
 require 'time'
 require 'uri'
+require 'securerandom'
 require 'debugger'
 
 class Array
@@ -74,7 +75,7 @@ module GRel
         "\"#{obj.iso8601}\"^^<http://www.w3.org/2001/XMLSchema#dateTime>"
       elsif(obj.is_a?(Date))
         "\"#{Time.new(obj.to_s).iso8601}\"^^<http://www.w3.org/2001/XMLSchema#dateTime>"
-      elsif(obj.is_a?(Array))
+      elsif(obj.is_a?(Array)) # top level array, not array property in a hash
         if(obj.detect{|e| e.is_a?(Hash) || e.respond_to?(:to_triples) })
           obj.map{|e| QL.to_triples(e) }.inject([]){|a,i| a += i}
         else
@@ -83,8 +84,14 @@ module GRel
           end
         end
       elsif(obj.is_a?(Hash))
+        # no blank nodes
+        obj[:@id] = "@id(#{SecureRandom.hex})" if obj[:@id].nil?
+        # normalising id values
+        obj[:@id] = "@id(#{obj[:@id]})" if obj[:@id].index("@id(") != 0
+
         acum = []
         triples_acum = []
+        triples_nested = []
         id = nil
         obj.each_pair do |k,v|
           p = QL.to_triples(k)
@@ -92,19 +99,29 @@ module GRel
             next_triples = QL.to_triples(v)
             triples_acum += next_triples
             v = next_triples.triples_id
+            acum << [p,v] if v && k != :@id
+          elsif(v.is_a?(Array)) # array as a property in a hash
+            v.map{|o| QL.to_triples(o) }.each do |o|
+              if(o.is_a?(Array) && o.length > 0)
+                acum << [p, o[0][0]]
+                triples_nested += o
+              else
+                acum << [p, o]
+              end
+            end
           else
             if(k == :@id) 
               id = QL.to_triples(v)
             else
               v = QL.to_triples(v)
             end
+            acum << [p,v] if v && k != :@id
           end
-          acum << [p,v] if v && k != :@id
         end
 
         id = id || BlankId.new
 
-        triples_acum + acum.map{|(p,o)| [id, p, o] }
+        triples_acum + acum.map{|(p,o)| [id, p, o] } + triples_nested
       else
         if(obj.respond_to?(:to_triples))
           obj.to_triples
@@ -120,7 +137,7 @@ module GRel
       NODE = "NODE"
 
       attr_reader :last_registered_subject, :nodes
-      attr_accessor :triples, :optional_triples, :optional
+      attr_accessor :triples, :optional_triples, :optional, :union_triples, :union
 
       def initialize(graph=nil)
         @id_counter = -1
@@ -128,10 +145,13 @@ module GRel
         @triples = []
         @optional_triples = []
         @optional_bgps = []
+        @union_triples = []
+        @union_bgps = []
         @projection = {}
         @nodes = {}
         @graph = graph
         @optional = false
+        @union = false
         @last_registered_subject = []
       end
 
@@ -145,9 +165,21 @@ module GRel
         end
       end
 
+      def union=(value)
+        if(value == true)
+          @union = true
+        else
+          @union = false
+          @union_bgps << @union_triples
+          @union_triples = []
+        end
+      end
+
       def append(triples)
         if(@optional)
           @optional_triples += triples
+        elsif(@union)
+          @union_triples += triples
         else
           @triples += triples
         end
@@ -216,11 +248,28 @@ module GRel
 
         query = "PREFIX : <http://grel.org/vocabulary#> PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> PREFIX rdfs: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>"
         query = query + " PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> PREFIX fn: <http://www.w3.org/2005/xpath-functions#> " 
-        query += "DESCRIBE #{@projection.keys.join(' ')} WHERE { #{bgps}"
+        query += "DESCRIBE #{@projection.keys.join(' ')} WHERE { "
+
+        main_bgp = "#{bgps}"
         unless(@optional_bgps.empty?)
-          query += " #{optional_bgps}"
+          main_bgp += " #{optional_bgps}"
         end
-        query + " }"
+
+        if(@union_bgps.empty?)
+          query + "#{main_bgp} }"
+        else
+          union_bgps = @union_bgps.map{|optional_triples| 
+            "{ "+ optional_triples.map { |t|
+              if(t.is_a?(Filter))
+                t.acum
+              else
+                t.join(' ') 
+              end
+            }.join(" . ") + " }"
+          }.join(" UNION ")
+
+          query + "{ #{main_bgp} } UNION #{union_bgps} }"
+        end
       end
 
       def run
@@ -394,6 +443,8 @@ module GRel
           # $optional can point to an array of conditions that must be handled separetedly
           if(k.to_s == "$optional" && v.is_a?(Array))
             v.each{ |c| ac << [k,c] }
+          elsif(k.to_s == "$union" && v.is_a?(Array))
+            v.each{ |c| ac << [k,c] }
           else
             ac << [k,v]
           end
@@ -402,6 +453,7 @@ module GRel
           # process each property in the query hash
           inverse = false
           optional = false
+          union = false
           unless(k == :@id)
             prop = if(k.to_s.index("$inv_"))
                      inverse = true
@@ -409,6 +461,9 @@ module GRel
                    elsif(k.to_s == "$optional")
                      context.optional = true
                      optional = true
+                   elsif(k.to_s == "$union")
+                     context.union = true
+                     union = true
                    else
                      parse_property(k)
                    end
@@ -429,11 +484,20 @@ module GRel
                   [s, p, o]
                 end
                 context.optional = false
+              elsif(union)
+                subject_to_replace = value.last_registered_subject
+                context.node_to_optional(subject_to_replace)#, subject_var_id)
+                context.union_triples = context.union_triples.map do |(s,p,o)|
+                  s = (s == subject_to_replace ? subject_var_id : s)
+                  o = (o == subject_to_replace ? subject_var_id : o)
+                  [s, p, o]
+                end
+                context.union = false
               else
                 value = context.last_registered_subject
               end
             end
-            acum << [prop,value] unless optional
+            acum << [prop,value] unless (optional || union)
           end
         end
 
@@ -521,16 +585,32 @@ module GRel
     end
 
     def self.from_binding_value(obj)
-      if(obj.is_a?(Hash) && obj["@type"])
+      if(obj.is_a?(Hash) && obj["@id"])
+        from_binding_hash(obj)
+      elsif(obj.is_a?(Hash) && obj["@type"])
         if(obj["@type"] == "http://www.w3.org/2001/XMLSchema#dateTime")
           Time.parse(obj["@value"])
         else
           obj["@value"]
         end
+      elsif(obj.is_a?(Array))
+        obj.map{|o| from_binding_value(o)}
       else
         from_binding_to_id(obj)
       end
     end # end of from_binding_value
+
+    def self.from_binding_hash(node)
+      node = node.raw_json if node.respond_to?(:raw_json)
+      node.delete("@context")
+      node = node.to_a.inject({}) do |ac, (p,v)|
+        p = p[1..-1].to_sym if(p.index(":") == 0)
+        p = p.to_sym if(p == "@id")
+        v = from_binding_value(v)
+        ac[p] = v; ac
+      end
+      node
+    end
 
     def self.from_bindings_to_nodes(bindings,context)
       nodes = {}
@@ -538,24 +618,28 @@ module GRel
       json = bindings
       json = [json] unless json.is_a?(Array)
       json.each do|node|
-        node = node.raw_json if node.respond_to?(:raw_json)
-        node.delete("@context")
-        node = node.to_a.inject({}) do |ac, (p,v)|
-          p = p[1..-1].to_sym if(p.index(":") == 0)
-          p = p.to_sym if(p == "@id")
-          v = from_binding_value(v)
-          ac[p] = v; ac
-        end
+        node = from_binding_hash(node)
         nodes[node[:@id]] = node
         node.delete(:@id) unless node[:@id].index("@id(")
       end
 
       nodes.each do |(node_id,node)|
         node.each_pair do |k,v|
-          if(v.is_a?(Hash) && v["@id"] && nodes[v["@id"]])
-            node[k] = nodes[v["@id"]] 
-          elsif(v.is_a?(Hash) && v["@id"])
-            node[k] = from_binding_to_id(v["@id"])
+          if(v.is_a?(Hash) && v[:@id] && nodes[v[:@id]])
+            node[k] = nodes[v[:@id]]
+          elsif(v.is_a?(Hash) && v[:@id])
+            node[k] = from_binding_to_id(v[:@id])
+          elsif(v.is_a?(Array))
+            node[k] = v.map do |o|
+              # recursive execution for each element in the array
+              if(o.is_a?(Hash) && o[:@id] && nodes[o[:@id]])
+                nodes[o[:@id]]
+              elsif(o.is_a?(Hash) && o[:@id])
+                from_binding_to_id(o[:@id])
+              else
+                o
+              end
+            end
           end
         end
       end

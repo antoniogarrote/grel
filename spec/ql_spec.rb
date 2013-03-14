@@ -25,25 +25,37 @@ describe "QL to_triples" do
                               [":a", ":d", "\"2\"^^<http://www.w3.org/2001/XMLSchema#integer>"]])
   end
  
-  it "should transform basic arrays" do
+  it "should transform basic hashes" do
     data = {:@id => "@id(a)", :b => 1, :c => 4.0}
     result = QL.to_triples(data)
  
     expect(result).to be_eql([["<http://grel.org/ids/id/a>", ":b", "\"1\"^^<http://www.w3.org/2001/XMLSchema#integer>"], 
                               ["<http://grel.org/ids/id/a>", ":c", "\"4.0\"^^<http://www.w3.org/2001/XMLSchema#float>"]])
   end
- 
-  it "should generate blank ids for hashes without @ids" do
-    data = {:b => 1, :c => 4.0}
- 
+
+  it "should handle arrays in object position" do
+    data = {:a => 1, :b => [1,2,3]}
     result = QL.to_triples(data)
-    a = result.first.first.blank_id
- 
+    expect(result.length).to be_eql(4)
+
+
+    data = {:a => 1, :b => [{:c => "a"}, {:c => "b"}]}
     result = QL.to_triples(data)
-    b = result.first.first.blank_id
-    
-    expect(a).not_to be_eql(b)
+    expect(result.length).to be_eql(5)
   end
+
+#  no more blank nodes, yeah!
+#  it "should generate blank ids for hashes without @ids" do
+#    data = {:b => 1, :c => 4.0}
+# 
+#    result = QL.to_triples(data)
+#    a = result.first.first.blank_id
+# 
+#    result = QL.to_triples(data)
+#    b = result.first.first.blank_id
+#    
+#    expect(a).not_to be_eql(b)
+#  end
  
   it "should generate triples for nested hashes" do
     data = {
@@ -145,6 +157,16 @@ describe "QL to query" do
     expect(context.to_sparql.index("DESCRIBE ?S_mg_0 WHERE { ?S_mg_0 :a \"1\"^^<http://www.w3.org/2001/XMLSchema#integer> OPTIONAL { ?S_mg_0 :f \"3\"^^<http://www.w3.org/2001/XMLSchema#integer> } OPTIONAL { ?S_mg_0 :g \"4\"^^<http://www.w3.org/2001/XMLSchema#integer> } }")).not_to be_nil
   end
 
+  it "should support union of BPGs in the query" do
+    context = QL.to_query(:a => 1, :$union => {:c => 1})
+    expect(context.to_sparql.index("DESCRIBE ?S_mg_0 WHERE { { ?S_mg_0 :a \"1\"^^<http://www.w3.org/2001/XMLSchema#integer> } UNION { ?S_mg_0 :c \"1\"^^<http://www.w3.org/2001/XMLSchema#integer> } }")).not_to be_nil
+
+    context = QL.to_query(:a => 1, :$union => [{:c => 1, :e => 2},{:d => 2, :f => 3}])
+    expect(context.to_sparql.index("DESCRIBE ?S_mg_0 WHERE { { ?S_mg_0 :a \"1\"^^<http://www.w3.org/2001/XMLSchema#integer> } UNION { ?S_mg_0 :c \"1\"^^<http://www.w3.org/2001/XMLSchema#integer> . ?S_mg_0 :e \"2\"^^<http://www.w3.org/2001/XMLSchema#integer> } UNION { ?S_mg_0 :d \"2\"^^<http://www.w3.org/2001/XMLSchema#integer> . ?S_mg_0 :f \"3\"^^<http://www.w3.org/2001/XMLSchema#integer> } }")).not_to be_nil
+
+    context = QL.to_query(:a => 1, :b => {:c => 2}, :$union => {:d => {:f => 3}})
+    expect(context.to_sparql.index("DESCRIBE ?S_mg_0 ?S_mg_1 ?S_mg_3 WHERE { { ?S_mg_1 :c \"2\"^^<http://www.w3.org/2001/XMLSchema#integer> . ?S_mg_0 :a \"1\"^^<http://www.w3.org/2001/XMLSchema#integer> . ?S_mg_0 :b ?S_mg_1 } UNION { ?S_mg_3 :f \"3\"^^<http://www.w3.org/2001/XMLSchema#integer> . ?S_mg_0 :d ?S_mg_3 } }")).not_to be_nil
+  end
 end
 
 
@@ -184,7 +206,7 @@ end
   
     results = mg.where({:a => 2}).run
     nodes = QL.from_bindings_to_nodes(results, mg.last_query_context)
-    expect(nodes[0][:@id]).to be_nil
+    expect(nodes[0][:@id]).not_to be_nil
     expect(nodes[0][:a]).to be_eql(2)
 
     ########
@@ -291,6 +313,22 @@ end
     nodes = QL.from_bindings_to_nodes(results, mg.last_query_context)
     expect(nodes.length).to be_eql(1)
   end
+
+  it "should handle arrays of properties" do
+    incoming = [{:a =>1, :b => [{:c => 1},{:c => 2}]}]
+    mg = graph.
+      with_db(DB).
+      store(incoming)
+ 
+    results = mg.where(:$optional => [{:a => 1},{:b => 2}]).run    
+    nodes = QL.from_bindings_to_nodes(results, mg.last_query_context)
+    expect(nodes.detect{|n| n[:b] }[:b].length).to be_eql(2)
+    nodes.detect{|n| n[:b] }[:b].each do |n|
+      expect(n[:c]).not_to be_nil
+    end
+    #expect(nodes.length).to be_eql(5)
+  end
+
 end
 
 #  /posts
