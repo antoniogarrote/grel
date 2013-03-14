@@ -270,6 +270,27 @@ end
     expect(nodes.length).to be_eql(2)
     expect(nodes.map{|n| n[:a] }.inject(0){|ac,i| ac + i}).to be_eql(39)
   end
+  
+  it "should handle optional properties" do
+    incoming = [{:a => 1, :b => 2, :c => 1}, 
+                {:a => 1,          :c => 2}, 
+                {:a => 2, :b => 2, :c => 3},
+                {:a => 2,          :c => 4},
+                {:a => 3, :b => 3, :c => 5}]
+
+
+    mg = graph.
+      with_db(DB).
+      store(incoming)
+
+    results = mg.where(:$optional => [{:a => 1},{:b => 2}]).run    
+    nodes = QL.from_bindings_to_nodes(results, mg.last_query_context)
+    expect(nodes.length).to be_eql(5)
+
+    results = mg.where(:a =>1, :b => 2).run    
+    nodes = QL.from_bindings_to_nodes(results, mg.last_query_context)
+    expect(nodes.length).to be_eql(1)
+  end
 end
 
 #  /posts
