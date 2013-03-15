@@ -1,4 +1,4 @@
-require File.join(File.dirname(__FILE__), "helper")
+ require File.join(File.dirname(__FILE__), "helper")
 
 include GRel
 include Stardog
@@ -445,6 +445,44 @@ end
     # puts "-- B"
     # puts nodes
   end
+
+   it "should support @type/rdf:type properties" do
+     g = graph.with_db(DB).
+       store(:name => "John", :@type => "Person")
+
+     nodes = g.where({}).all
+     expect(nodes.first[:@type]).to be_eql("Person")
+   end
+
+   it "should allow to store schema definitions" do
+    results = graph.with_db(DB).define(:a, :@subclass, :b)
+
+    results = graph.stardog.query(DB,"SELECT ?G ?S ?P ?O WHERE { graph ?G { ?S ?P ?O} }")
+    expect(results.body["results"]["bindings"].first["P"]["value"]).to be_eql("http://www.w3.org/2000/01/rdf-schema#subClassOf")
+    expect(results.body["results"]["bindings"].first["G"]["value"]).to be_eql("testgraph:schema")
+   end
+
+   it "should support reasoning" do
+     mg = graph.
+       with_db(DB).
+       store(:name    => 'Abhinay',
+             :surname => 'Mehta',
+             :@type   => :Hacker,
+             :@id     => 'abs').
+
+       store(:name    => 'Tom',
+             :surname => 'Hall',
+             :@type   => :Hacker,
+             :@id     => 'thattommyhall')
+
+     nodes = mg.where(:@type => :Person).all
+
+     mg.define(:Hacker, :@subclass, :Person)
+
+     nodes = mg.with_reasoning.where(:@type => :Person).all
+
+     expect(nodes.length).to be_eql(2)
+   end
 end
 
 #  /posts

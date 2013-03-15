@@ -45,8 +45,10 @@ module GRel
       end
     end
 
-    def self.to_turtle(obj)
+    def self.to_turtle(obj, schema=false)
       data = "@prefix : <http://grel.org/vocabulary#> . @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> . "
+      data = data + "@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> . " if schema
+
       data + QL.to_triples(obj).map{|t| t.map(&:to_s).join(" ") }.join(" .\n ") + " ."
     end
 
@@ -54,6 +56,8 @@ module GRel
       if(obj.is_a?(Symbol))
         if(obj == :@type)
           "rdf:type"
+        elsif(obj == :@subclass)
+          "rdfs:subClassOf"
         else
           ":#{obj}"
         end
@@ -610,7 +614,7 @@ module GRel
       node.delete("@context")
       node = node.to_a.inject({}) do |ac, (p,v)|
         p = p[1..-1].to_sym if(p.index(":") == 0)
-        p = p.to_sym if(p == "@id")
+        p = p.to_sym if(p == "@id" || p == "@type")
         v = from_binding_value(v)
         ac[p] = v; ac
       end
@@ -666,10 +670,18 @@ module GRel
     include Stardog
 
     attr_accessor :stardog, :last_query_context
+    attr_reader :db_name, :schema_graph
 
     def initialize(endpoint, options) 
+      @options = options
+      @endpoint = endpoint
       @stardog = Stardog::stardog(endpoint,options)
       @dbs = @stardog.list_dbs.body["databases"]
+      self
+    end
+
+    def with_reasoning(reasoning="QL")
+      @stardog = Stardog::stardog(@endpoint,@options.merge(:reasoning => reasoning))
       self
     end
 
@@ -677,6 +689,7 @@ module GRel
       ensure_db(db_name) do
         old_db_name = @db_name
         @db_name = db_name
+        @schema_graph = "#{db_name}:schema"
         if block_given?
           yield
           @db_name = old_db_name
@@ -737,6 +750,19 @@ module GRel
       @last_query_context.run
     end
 
+    def define(*args)
+      unless(args.length == 3 && !args.first.is_a?(Array))
+        args = args.inject([]) {|a,i| a += i }
+      end
+      triples = QL.to_turtle(args, true)
+      puts "STORING IN SCHEMA #{@schema_graph}"
+      puts triples
+      puts "IN"
+      puts @db_name
+      @stardog.add(@db_name, triples, @schema_graph, "text/turtle")
+      self
+    end
+
     def all
       results = run
       nodes = QL.from_bindings_to_nodes(results, @last_query_context)
@@ -747,7 +773,7 @@ module GRel
         while(!valid && c<sets.length)
           sets_keys, sets_query = sets[c]
           valid = sets_keys.inject(true) do |ac,k|
-            if (sets_query[k].is_a?(Hash))
+            if (sets_query[k].is_a?(Hash) || sets_query[k].is_a?(Symbol))
               ac && node[k]
             elsif (sets_query[k].is_a?(String) && sets_query[k].index("@id("))
               ac && node[k]
@@ -777,7 +803,7 @@ module GRel
 
     def ensure_db(db_name)
       unless(@dbs.include?(db_name))
-        @stardog.create_db(db_name)
+        @stardog.create_db(db_name, :options => { "reasoning.schema.graphs" => "#{db_name}:schema" })
         @dbs << db_name
       end
       yield if block_given?
@@ -788,7 +814,9 @@ module GRel
   def graph(name='http://localhost:5822/',options = {})
     options[:user] ||= "admin"
     options[:password] ||= "admin"
-    Base.new(name, options)
+    g = Base.new(name, options)
+    g.with_db(options[:db]) if(options[:db])
+    g
   end
 
 end # end of module GRel
