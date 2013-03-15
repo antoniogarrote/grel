@@ -136,8 +136,8 @@ module GRel
       TUPLE = "TUPLE"
       NODE = "NODE"
 
-      attr_reader :last_registered_subject, :nodes
-      attr_accessor :triples, :optional_triples, :optional, :union_triples, :union
+      attr_reader :last_registered_subject, :nodes, :projection, :limit, :offset, :order, :orig_query
+      attr_accessor :triples, :optional_triples, :optional, :unions
 
       def initialize(graph=nil)
         @id_counter = -1
@@ -145,14 +145,32 @@ module GRel
         @triples = []
         @optional_triples = []
         @optional_bgps = []
-        @union_triples = []
-        @union_bgps = []
         @projection = {}
         @nodes = {}
         @graph = graph
         @optional = false
-        @union = false
         @last_registered_subject = []
+        @unions = []
+        @limit = nil
+        @offset = nil
+        @orig_query = nil
+        @query_keys = []
+      end
+
+      def register_query(query)
+        @orig_query = query
+        query.each_pair do |k,v|
+          @query_keys << k if(k != :@id && k.to_s.index("$inv_").nil?)
+        end
+        self
+      end
+
+      def query_keys
+        sets = [[@query_keys,@orig_query]]
+        unions.each do |c|
+          sets += c.query_keys
+        end
+        sets
       end
 
       def optional=(value)
@@ -165,21 +183,9 @@ module GRel
         end
       end
 
-      def union=(value)
-        if(value == true)
-          @union = true
-        else
-          @union = false
-          @union_bgps << @union_triples
-          @union_triples = []
-        end
-      end
-
       def append(triples)
         if(@optional)
           @optional_triples += triples
-        elsif(@union)
-          @union_triples += triples
         else
           @triples += triples
         end
@@ -225,7 +231,7 @@ module GRel
         "?P_#{@id_counter}_#{@filters_counter}"
       end
 
-      def to_sparql
+      def to_sparql(preamble=true)
 
         bgps = @triples.map{|t| 
           if(t.is_a?(Filter))
@@ -245,37 +251,51 @@ module GRel
           }.join(" . ") + " }"
         }.join(" ")
 
-
-        query = "PREFIX : <http://grel.org/vocabulary#> PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> PREFIX rdfs: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>"
-        query = query + " PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> PREFIX fn: <http://www.w3.org/2005/xpath-functions#> " 
-        query += "DESCRIBE #{@projection.keys.join(' ')} WHERE { "
-
         main_bgp = "#{bgps}"
         unless(@optional_bgps.empty?)
           main_bgp += " #{optional_bgps}"
         end
 
-        if(@union_bgps.empty?)
-          query + "#{main_bgp} }"
-        else
-          union_bgps = @union_bgps.map{|optional_triples| 
-            "{ "+ optional_triples.map { |t|
-              if(t.is_a?(Filter))
-                t.acum
-              else
-                t.join(' ') 
-              end
-            }.join(" . ") + " }"
-          }.join(" UNION ")
+        query = if(preamble)
+          query = "PREFIX : <http://grel.org/vocabulary#> PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> PREFIX rdfs: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>"
+          query = query + " PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> PREFIX fn: <http://www.w3.org/2005/xpath-functions#> " 
 
-          query + "{ #{main_bgp} } UNION #{union_bgps} }"
+          if(@unions.length>0)
+            union_bgps = @unions.map{|u| u.to_sparql(false) }.join(" UNION ")
+            union_projections = @unions.map{|u| u.projection.keys }.flatten.uniq
+            all_subjects = (@projection.keys + union_projections).uniq
+            query += "DESCRIBE #{all_subjects.join(' ')} WHERE { { #{main_bgp} } UNION #{union_bgps} }"            
+          else
+            query += "DESCRIBE #{@projection.keys.join(' ')} WHERE { #{main_bgp} }"
+          end
+        else
+          "{ #{main_bgp} }"
         end
+      end
+
+      def limit=(limit)
+        @limit = limit
+        self
+      end
+
+      def offset=(offset)
+        @offset = offset
+        self
+      end
+
+      def union(other_context)
+        @unions << other_context
+        self
       end
 
       def run
         @graph.query(to_sparql)
       end
 
+      def required_properties
+        props = []
+        
+      end
     end # end of QueryContext
 
     class Filter
@@ -443,8 +463,6 @@ module GRel
           # $optional can point to an array of conditions that must be handled separetedly
           if(k.to_s == "$optional" && v.is_a?(Array))
             v.each{ |c| ac << [k,c] }
-          elsif(k.to_s == "$union" && v.is_a?(Array))
-            v.each{ |c| ac << [k,c] }
           else
             ac << [k,v]
           end
@@ -453,7 +471,6 @@ module GRel
           # process each property in the query hash
           inverse = false
           optional = false
-          union = false
           unless(k == :@id)
             prop = if(k.to_s.index("$inv_"))
                      inverse = true
@@ -461,9 +478,6 @@ module GRel
                    elsif(k.to_s == "$optional")
                      context.optional = true
                      optional = true
-                   elsif(k.to_s == "$union")
-                     context.union = true
-                     union = true
                    else
                      parse_property(k)
                    end
@@ -484,20 +498,11 @@ module GRel
                   [s, p, o]
                 end
                 context.optional = false
-              elsif(union)
-                subject_to_replace = value.last_registered_subject
-                context.node_to_optional(subject_to_replace)#, subject_var_id)
-                context.union_triples = context.union_triples.map do |(s,p,o)|
-                  s = (s == subject_to_replace ? subject_var_id : s)
-                  o = (o == subject_to_replace ? subject_var_id : o)
-                  [s, p, o]
-                end
-                context.union = false
               else
                 value = context.last_registered_subject
               end
             end
-            acum << [prop,value] unless (optional || union)
+            acum << [prop,value] unless optional
           end
         end
 
@@ -623,8 +628,15 @@ module GRel
         node.delete(:@id) unless node[:@id].index("@id(")
       end
 
-      nodes.each do |(node_id,node)|
+      nodes.each do |(node_id,node)|       
         node.each_pair do |k,v|
+          # weird things happening with describe queries and arrays
+          if(v.is_a?(Array))
+            v = v.uniq
+            v = v.first if v.length ==1
+            node[k] = v
+          end
+
           if(v.is_a?(Hash) && v[:@id] && nodes[v[:@id]])
             node[k] = nodes[v[:@id]]
           elsif(v.is_a?(Hash) && v[:@id])
@@ -692,14 +704,73 @@ module GRel
 
     def where(query)
       @last_query_context = QL::QueryContext.new(self)
-      QL.to_query(query, @last_query_context)
+      @last_query_context.register_query(query)
+      @last_query_context = QL.to_query(query, @last_query_context)
+      self
+    end
+
+    def union(query)
+      union_context = QL::QueryContext.new(self)
+      union_context.register_query(query)
+      union_context =  QL.to_query(query, union_context)
+
+      @last_query_context.union(union_context)
+      self
+    end
+
+    def limit(limit)
+      @last_query_context.limit = limit
+      self
+    end
+
+    def offset(offset)
+      @last_query_context.offset = offset
+      self
+    end
+
+    def order(order)
+      @last_query_context.order = order
+      self
+    end
+
+    def run
+      @last_query_context.run
+    end
+
+    def all
+      results = run
+      nodes = QL.from_bindings_to_nodes(results, @last_query_context)
+      sets = @last_query_context.query_keys
+      nodes.select do |node|
+        valid = false
+        c = 0
+        while(!valid && c<sets.length)
+          sets_keys, sets_query = sets[c]
+          valid = sets_keys.inject(true) do |ac,k|
+            if (sets_query[k].is_a?(Hash))
+              ac && node[k]
+            elsif (sets_query[k].is_a?(String) && sets_query[k].index("@id("))
+              ac && node[k]
+            else
+              ac && node[k] == sets_query[k]
+            end
+          end
+          c += 1
+        end
+        valid
+      end
     end
 
     def query(query)
       puts "QUERYING..."
       puts query
+      puts "** LIMIT #{@last_query_context.limit}" if @last_query_context.limit
+      puts "** OFFSET #{@last_query_context.offset}" if @last_query_context.offset
       puts "----------------------"
-      @stardog.query(@db_name,query, :describe => true).body
+      args = {:describe => true}
+      args[:offset] = @last_query_context.offset if @last_query_context.offset
+      args[:limit] = @last_query_context.limit if @last_query_context.limit
+      @stardog.query(@db_name,query, args).body
     end
 
     private

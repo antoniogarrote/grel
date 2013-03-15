@@ -157,16 +157,11 @@ describe "QL to query" do
     expect(context.to_sparql.index("DESCRIBE ?S_mg_0 WHERE { ?S_mg_0 :a \"1\"^^<http://www.w3.org/2001/XMLSchema#integer> OPTIONAL { ?S_mg_0 :f \"3\"^^<http://www.w3.org/2001/XMLSchema#integer> } OPTIONAL { ?S_mg_0 :g \"4\"^^<http://www.w3.org/2001/XMLSchema#integer> } }")).not_to be_nil
   end
 
-  it "should support union of BPGs in the query" do
-    context = QL.to_query(:a => 1, :$union => {:c => 1})
-    expect(context.to_sparql.index("DESCRIBE ?S_mg_0 WHERE { { ?S_mg_0 :a \"1\"^^<http://www.w3.org/2001/XMLSchema#integer> } UNION { ?S_mg_0 :c \"1\"^^<http://www.w3.org/2001/XMLSchema#integer> } }")).not_to be_nil
-
-    context = QL.to_query(:a => 1, :$union => [{:c => 1, :e => 2},{:d => 2, :f => 3}])
-    expect(context.to_sparql.index("DESCRIBE ?S_mg_0 WHERE { { ?S_mg_0 :a \"1\"^^<http://www.w3.org/2001/XMLSchema#integer> } UNION { ?S_mg_0 :c \"1\"^^<http://www.w3.org/2001/XMLSchema#integer> . ?S_mg_0 :e \"2\"^^<http://www.w3.org/2001/XMLSchema#integer> } UNION { ?S_mg_0 :d \"2\"^^<http://www.w3.org/2001/XMLSchema#integer> . ?S_mg_0 :f \"3\"^^<http://www.w3.org/2001/XMLSchema#integer> } }")).not_to be_nil
-
-    context = QL.to_query(:a => 1, :b => {:c => 2}, :$union => {:d => {:f => 3}})
-    expect(context.to_sparql.index("DESCRIBE ?S_mg_0 ?S_mg_1 ?S_mg_3 WHERE { { ?S_mg_1 :c \"2\"^^<http://www.w3.org/2001/XMLSchema#integer> . ?S_mg_0 :a \"1\"^^<http://www.w3.org/2001/XMLSchema#integer> . ?S_mg_0 :b ?S_mg_1 } UNION { ?S_mg_3 :f \"3\"^^<http://www.w3.org/2001/XMLSchema#integer> . ?S_mg_0 :d ?S_mg_3 } }")).not_to be_nil
+  it "should support union of queries" do
+    context = QL.to_query(:a => 1).union(QL.to_query(:a => 2))
+    expect(context.to_sparql.index("DESCRIBE ?S_mg_0 WHERE { { ?S_mg_0 :a \"1\"^^<http://www.w3.org/2001/XMLSchema#integer> } UNION { ?S_mg_0 :a \"2\"^^<http://www.w3.org/2001/XMLSchema#integer> } }")).not_to be_nil
   end
+
 end
 
 
@@ -329,6 +324,127 @@ end
     #expect(nodes.length).to be_eql(5)
   end
 
+  it "should handle union patterns in queries" do
+    incoming = [{:a =>1},{:a => 3},{:a => 2}]
+
+    mg = graph.
+      with_db(DB).
+      store(incoming)
+
+    results = mg.where(:a => 1).union(:a => 2).run
+    puts results.inspect
+    nodes = QL.from_bindings_to_nodes(results, mg.last_query_context)
+    puts nodes.inspect
+    nodes.each do |n|
+      expect(n[:a] == 1 || n[:a] == 2).to be_true
+    end
+
+    results = mg.where({}).run
+    nodes = QL.from_bindings_to_nodes(results, mg.last_query_context)
+    expect(nodes.length).to be_eql(3)
+  end
+
+  it "should handle relations between nodes" do
+    mg = graph.
+      with_db(DB).
+      store(:name    => 'Abhinay',
+            :surname => 'Mehta',
+            :type    => 'Hacker',
+            :@id     => 'abs').
+
+      store(:name    => 'Tom',
+            :surname => 'Hall',
+            :type    => 'Hacker',
+            :@id     => 'thattommyhall').
+
+      store(:name       => 'India',
+            :type       => 'Country',
+            :population => 1200,
+            :capital    => 'New Delhi',
+            :@id        => 'in').
+
+      store(:name       => 'United Kingdom',
+            :type       => 'Country',
+            :population => 62,
+            :capital    => 'London',
+            :@id        => 'uk').
+
+      store(:@id     => 'abs',
+            :citizen => '@id(in)').
+
+      store(:@id     => 'thattommyhall',
+            :citizen => '@id(uk)')
+
+
+    nodes = mg.where(:type => 'Hacker').all
+    mapping = nodes.inject({}){|a,i| a[i[:name]] = i[:citizen]; a}
+    expect(nodes.length).to be_eql(2)
+    expect(mapping["Abhinay"]).to be_eql("@id(in)")
+    expect(mapping["Tom"]).to be_eql("@id(uk)")
+
+
+    nodes= mg.where(:type => 'Hacker', :citizen => {}).all
+    expect(nodes.length).to be_eql(2)
+    mapping = nodes.inject({}){|a,i| a[i[:name]] = i[:citizen]; a}
+    expect(mapping["Abhinay"][:name]).to be_eql("India")
+    expect(mapping["Tom"][:name]).to be_eql("United Kingdom")
+
+
+    nodes = mg.where(:type => 'Hacker', :citizen => {:name => "India"}).all
+    expect(nodes.length).to be_eql(1)
+    mapping = nodes.inject({}){|a,i| a[i[:name]] = i[:citizen]; a}
+    expect(mapping["Abhinay"][:name]).to be_eql("India")
+    expect(mapping["Tom"]).to be_nil
+
+    nodes = mg.where(:type => 'Country', :$inv_citizen => {:name => "Abhinay"}).all
+    expect(nodes.length).to be_eql(1)
+    expect(nodes.first[:name]).to be_eql("India")
+
+    nodes = mg.where(:type => 'Country', :population => {:$gt => 100}).all
+    expect(nodes.length).to be_eql(1)
+    expect(nodes.first[:name]).to be_eql("India")
+
+    nodes = mg.where(:type => 'Country', :population => {:$lt => 100}).all
+    expect(nodes.length).to be_eql(1)
+    expect(nodes.first[:name]).to be_eql("United Kingdom")
+
+    nodes = mg.where(:type => 'Country', :population => {:$or => [{:$lt => 100},{:$gt => 1000}]}).all
+    expect(nodes.length).to be_eql(2)
+    
+    nodes = mg.where(:type => 'Country').union(:type => 'Hacker').all
+    mapping = nodes.inject("Country" => 0, "Hacker" => 0){|a,i| a[i[:type]] += 1; a}
+    expect(mapping["Country"]).to be_eql(2)
+    expect(mapping["Hacker"]).to be_eql(2)
+
+    # Abs is now an UK citizen
+    mg.store(:@id     => 'abs',
+             :citizen => '@id(uk)')
+
+
+    #results = @conn.query(DB,'PREFIX : <http://grel.org/vocabulary#> PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> PREFIX rdfs: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> PREFIX fn: <http://www.w3.org/2005/xpath-functions#> DESCRIBE ?S_mg_0 ?S_mg_1 WHERE { ?S_mg_0 :name "Abhinay" . ?S_mg_0 :citizen ?S_mg_1 }', :describe => true)
+
+    # results = @conn.query(DB,'PREFIX : <http://grel.org/vocabulary#> PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> PREFIX rdfs: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> PREFIX fn: <http://www.w3.org/2005/xpath-functions#> SELECT distinct ?S_mg_1 ?S_mg_0 WHERE { ?S_mg_0 :name "Abhinay" . ?S_mg_0 :citizen ?S_mg_1 }')
+
+
+    #    results = @conn.query(DB,'PREFIX : <http://grel.org/vocabulary#> PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> PREFIX rdfs: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> PREFIX fn: <http://www.w3.org/2005/xpath-functions#> SELECT ?S ?P ?O WHERE { ?S ?P ?O }')
+
+    #puts results.inspect
+    
+    nodes = mg.where(:name => 'Abhinay', :citizen => {}).all
+    expect(nodes.length).to be_eql(1)
+    abs = nodes.detect{|n| n[:name] == 'Abhinay' }
+    expect(abs[:citizen].length).to be_eql(2)
+
+
+    # results = mg.where(:type => 'Hacker').limit(4).offset(0).run
+    # nodes = QL.from_bindings_to_nodes(results, mg.last_query_context)
+    # puts "-- A"
+    # puts nodes
+    #  
+    # nodes = mg.where(:type => 'Hacker').limit(4).offset(4).all
+    # puts "-- B"
+    # puts nodes
+  end
 end
 
 #  /posts
