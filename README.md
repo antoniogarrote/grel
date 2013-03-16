@@ -92,7 +92,11 @@ Filters can be applied to properties to select valid objects:
     g.where(:@type => :Country, :population => {:$or => [{:$lt => 50},{:$gt => 1000}]}).all
     # [ {:@id => '@id(in)', :name => 'India', :population => 1200, ...'},
     #   {:@id => '@id(es)', :name => 'Spain', :population => 43, ...} ]
+    g.where(:@type => :Country, :name => {:$like => /.+a.+/}).all
+    # [ {:@id => '@id(es)', :name => 'Spain', :population => 43, ...} ]
 ```
+Valid filters are: *$and*, *$or*, *$lt*, *$lteq*, *$gt*, *$gteq*, *$eq*, *$in* and *$like*.
+
 
 Different optional patterns can be joined in a single query using the method *union*.
 ```ruby

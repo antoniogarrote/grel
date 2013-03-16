@@ -321,7 +321,7 @@ module GRel
         :$neq => true, :$eq => true, :$lt => true,
         :$lteq => true, :$gt => true, :$gteq => true,
         :$not => true, :$like => true,
-        :$or => true, :$and => true
+        :$or => true, :$and => true, :$in => true
       }
 
       def self.filter?(h)
@@ -345,6 +345,10 @@ module GRel
         k = h.keys.first
         v = h.values.first
         self.send "generate_#{k.to_s.split("$").last}".to_sym, v
+      end
+
+      def generate_in(v)
+        generate_or v.map{|x| {:$eq => x} }
       end
 
       def generate_neq(v)
