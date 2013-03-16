@@ -69,8 +69,10 @@ Queries can be performed using the *where* and passing a hash with a pattern for
 ```
 
 Nested objects can be retrieved specifying an empty hash for the property.
+By default, the method *all* will return an array with all the objects in the recovered, including objects nested in other objects properties. 
+If our query returns a graph with no cycles and we want to return only the top level objects that or not linked from other objects properties, we can pass the option *:unlinked => true* to the message.
 ```ruby
-    g.where(:@type => :Developer, :citizen => {}).all 
+    g.where(:@type => :Developer, :citizen => {}).all(:unlinked => true)
     # [ {:@id => '@id(abs)', :name => 'Abhinay', ...
     #    :citizen => {:@id => '@(in)', :name => 'India', ... }},
     #   {:@id => '@id(thattommyhall)', :name => 'Tom', ...
@@ -80,7 +82,7 @@ Nested objects can be retrieved specifying an empty hash for the property.
 ```
 Relationships between objects can be specified in inverse order using a key starting with *$inv*.
 ```ruby
-    g.where(:@type => :Country, :$inv_citizen => {:name => "Abhinay"}).all
+    g.where(:@type => :Country, :$inv_citizen => {:name => "Abhinay"}).all(:unlinked => true)
     # [ {:@id => '@id(in)', :name => 'India', ...'} ]
 ```
 Filters can be applied to properties to select valid objects:
@@ -103,7 +105,7 @@ If more than one object matches a property, the final set of matching objects wi
     g.store(:@id     => 'abs',
             :citizen => '@id(uk)').
 
-      where(:name => 'Abhinay', :citizen => {}).all
+      where(:name => 'Abhinay', :citizen => {}).all(:unlinked => true)
     # [ {:@id => '@id(abs)', :name => 'Abhinay', ...
     #    :citizen => [{:@id => '@(in)', :name => 'India', ... },
     #                 {:@id => '@(uk)', :name => 'United Kingdom', ..}]} ],
