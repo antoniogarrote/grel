@@ -146,7 +146,7 @@ An example using the *@domain* and *@range* declarations.
     g.define(:citizen, :@domain, :Citizen)   
     g.define(:citizen, :@range, :State)   
 
-    g.with_reasoning.where(:@type => :Citizen, :bornin => {:@type => :State}).all
+    g.with_reasoning.where(:@type => :Citizen, :citizen => {:@type => :State}).all
     # [{:@id => 'id(antoniogarrote)', :citizen => {'@id' => 'id(es)', :capital => 'Madrid', ... }, ...},
     #  {:@id => 'id(thattommyhall)',  :citizen => {'@id' => 'id(uk)', :capital => 'Madrid', ... }, ...}
     #  ... ]
