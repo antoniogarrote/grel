@@ -208,9 +208,7 @@ end
     incoming = {:a => 3, :c => {:f => 1}, :@id => "@id(hey2)"}
     mg.store(incoming)
   
-    results = mg.where({:a => 3, :c => {}}).run
-
-    nodes = QL.from_bindings_to_nodes(results, mg.last_query_context)
+    nodes = mg.where({:a => 3, :c => {}}).all(:unlinked => true)
     expect(nodes.first[:c][:f]).to be_eql(1)
 
     results = mg.where({:_p => 3}).run
@@ -316,12 +314,12 @@ end
       store(incoming)
  
     results = mg.where(:$optional => [{:a => 1},{:b => 2}]).run    
-    nodes = QL.from_bindings_to_nodes(results, mg.last_query_context)
+    nodes = QL.from_bindings_to_nodes(results, mg.last_query_context, :unlinked => true)
     expect(nodes.detect{|n| n[:b] }[:b].length).to be_eql(2)
     nodes.detect{|n| n[:b] }[:b].each do |n|
       expect(n[:c]).not_to be_nil
     end
-    #expect(nodes.length).to be_eql(5)
+     expect(nodes.length).to be_eql(1)
   end
 
   it "should handle union patterns in queries" do
@@ -332,9 +330,7 @@ end
       store(incoming)
 
     results = mg.where(:a => 1).union(:a => 2).run
-    puts results.inspect
     nodes = QL.from_bindings_to_nodes(results, mg.last_query_context)
-    puts nodes.inspect
     nodes.each do |n|
       expect(n[:a] == 1 || n[:a] == 2).to be_true
     end
@@ -383,32 +379,32 @@ end
     expect(mapping["Tom"]).to be_eql("@id(uk)")
 
 
-    nodes= mg.where(:type => 'Hacker', :citizen => {}).all
+    nodes= mg.where(:type => 'Hacker', :citizen => {}).all(:unlinked => true)
     expect(nodes.length).to be_eql(2)
     mapping = nodes.inject({}){|a,i| a[i[:name]] = i[:citizen]; a}
     expect(mapping["Abhinay"][:name]).to be_eql("India")
     expect(mapping["Tom"][:name]).to be_eql("United Kingdom")
 
 
-    nodes = mg.where(:type => 'Hacker', :citizen => {:name => "India"}).all
+    nodes = mg.where(:type => 'Hacker', :citizen => {:name => "India"}).all(:unlinked => true)
     expect(nodes.length).to be_eql(1)
     mapping = nodes.inject({}){|a,i| a[i[:name]] = i[:citizen]; a}
     expect(mapping["Abhinay"][:name]).to be_eql("India")
     expect(mapping["Tom"]).to be_nil
 
-    nodes = mg.where(:type => 'Country', :$inv_citizen => {:name => "Abhinay"}).all
+    nodes = mg.where(:type => 'Country', :$inv_citizen => {:name => "Abhinay"}).all(:unlinked => true)
     expect(nodes.length).to be_eql(1)
     expect(nodes.first[:name]).to be_eql("India")
 
-    nodes = mg.where(:type => 'Country', :population => {:$gt => 100}).all
+    nodes = mg.where(:type => 'Country', :population => {:$gt => 100}).all(:unlinked => true)
     expect(nodes.length).to be_eql(1)
     expect(nodes.first[:name]).to be_eql("India")
 
-    nodes = mg.where(:type => 'Country', :population => {:$lt => 100}).all
+    nodes = mg.where(:type => 'Country', :population => {:$lt => 100}).all(:unlinked => true)
     expect(nodes.length).to be_eql(1)
     expect(nodes.first[:name]).to be_eql("United Kingdom")
 
-    nodes = mg.where(:type => 'Country', :population => {:$or => [{:$lt => 100},{:$gt => 1000}]}).all
+    nodes = mg.where(:type => 'Country', :population => {:$or => [{:$lt => 100},{:$gt => 1000}]}).all(:unlinked => true)
     expect(nodes.length).to be_eql(2)
     
     nodes = mg.where(:type => 'Country').union(:type => 'Hacker').all
@@ -430,7 +426,7 @@ end
 
     #puts results.inspect
     
-    nodes = mg.where(:name => 'Abhinay', :citizen => {}).all
+    nodes = mg.where(:name => 'Abhinay', :citizen => {}).all(:unlinked => true)
     expect(nodes.length).to be_eql(1)
     abs = nodes.detect{|n| n[:name] == 'Abhinay' }
     expect(abs[:citizen].length).to be_eql(2)
@@ -462,7 +458,7 @@ end
     expect(results.body["results"]["bindings"].first["G"]["value"]).to be_eql("testgraph:schema")
    end
 
-   it "should support reasoning" do
+   it "should support reasoning with @suclass and @subproperty" do
      mg = graph.
        with_db(DB).
        store(:name    => 'Abhinay',
@@ -482,6 +478,30 @@ end
      nodes = mg.with_reasoning.where(:@type => :Person).all
 
      expect(nodes.length).to be_eql(2)
+   end
+
+   it "should support reasoning with @range and @domain" do
+     mg = graph.
+       with_db(DB).
+       store(:name    => 'John',
+             :@type   => :Hacker,
+             :@id     => 'jh',
+             :date    => Date.today,
+             :age     => 56,
+             :profit  => 2.34,
+             :lives   => {:name => 'Spain'})
+
+
+     mg.define(:lives, :@range, :Country)
+     mg.define(:lives, :@domain, :Citizen)
+
+     nodes = mg.with_reasoning.where({:@type => :Citizen}).all
+     expect(nodes.length).to be_eql(1)
+     expect(nodes.first[:name]).to be_eql('John')
+     
+     nodes = mg.with_reasoning.where({:@type => :Country}).all
+     expect(nodes.length).to be_eql(1)
+     expect(nodes.first[:name]).to be_eql('Spain')
    end
 end
 

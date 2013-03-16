@@ -112,7 +112,7 @@ If more than one object matches a property, the final set of matching objects wi
 
 # Inference
 
-Schema information can be added using the *define* method and assertions like *@subclass*, *@subproperty*, etc.
+Schema information can be added using the *define* method and assertions like *@subclass*, *@subproperty*, *@domain*, *@range*.
 
 ```ruby
     # All developers are People
@@ -131,6 +131,28 @@ If inference is enabled for a connection using the *with_reasoning* method, quer
     #  {:@id => 'id(thattommyhall)', :@type => :Developer, ...},
     #  {:@id => 'id(antoniogarrote)', :@type => :Developer, ...}]
 ```
+
+An example using the *@subproperty* declaration.
+```ruby
+    g.define(:citizen, :@subproperty, :bornin)   
+
+    g.with_reasoning.where(:bornin => {:@type => :Country, :capital => 'Madrid'}).all
+    # [{:@id => 'id(antoniogarrote)', :citizen => {'@id' => 'id(es)', :capital => 'Madrid', ... }, ...}]
+```
+
+
+An example using the *@domain* and *@range* declarations.
+```ruby
+    g.define(:citizen, :@domain, :Citizen)   
+    g.define(:citizen, :@range, :State)   
+
+    g.with_reasoning.where(:@type => :Citizen, :bornin => {:@type => :State}).all
+    # [{:@id => 'id(antoniogarrote)', :citizen => {'@id' => 'id(es)', :capital => 'Madrid', ... }, ...},
+    #  {:@id => 'id(thattommyhall)',  :citizen => {'@id' => 'id(uk)', :capital => 'Madrid', ... }, ...}
+    #  ... ]
+```
+
+
 
 ## Author and contact:
 

@@ -12,6 +12,14 @@ end
 
 module GRel
 
+  DEBUG = ENV["GREL_DEBUG"] || false
+
+  class Debugger
+    def self.debug(msg)
+      puts msg if DEBUG
+    end
+  end
+
   NAMESPACE = "http://grel.org/vocabulary#"
   ID_REGEX = /^\@id\((\w+)\)$/
   NIL = "\"http://www.w3.org/1999/02/22-rdf-syntax-ns#nil\""
@@ -58,6 +66,12 @@ module GRel
           "rdf:type"
         elsif(obj == :@subclass)
           "rdfs:subClassOf"
+        elsif(obj == :@subproperty)
+          "rdfs:subPropertyOf"
+        elsif(obj == :@domain)
+          "rdfs:domain"
+        elsif(obj == :@range)
+          "rdfs:range"
         else
           ":#{obj}"
         end
@@ -621,7 +635,8 @@ module GRel
       node
     end
 
-    def self.from_bindings_to_nodes(bindings,context)
+    def self.from_bindings_to_nodes(bindings,context, options = {})
+      unlinked = options[:unlinked] || false
       nodes = {}
       uris = {}
       json = bindings
@@ -643,13 +658,16 @@ module GRel
 
           if(v.is_a?(Hash) && v[:@id] && nodes[v[:@id]])
             node[k] = nodes[v[:@id]]
+            nodes.delete(v[:@id]) if unlinked
           elsif(v.is_a?(Hash) && v[:@id])
             node[k] = from_binding_to_id(v[:@id])
           elsif(v.is_a?(Array))
             node[k] = v.map do |o|
               # recursive execution for each element in the array
               if(o.is_a?(Hash) && o[:@id] && nodes[o[:@id]])
-                nodes[o[:@id]]
+                to_link = nodes[o[:@id]]
+                nodes.delete(o[:@id]) if unlinked
+                to_link
               elsif(o.is_a?(Hash) && o[:@id])
                 from_binding_to_id(o[:@id])
               else
@@ -677,11 +695,19 @@ module GRel
       @endpoint = endpoint
       @stardog = Stardog::stardog(endpoint,options)
       @dbs = @stardog.list_dbs.body["databases"]
+      @reasoning = false
       self
     end
 
     def with_reasoning(reasoning="QL")
+      @reasoning = true
       @stardog = Stardog::stardog(@endpoint,@options.merge(:reasoning => reasoning))
+      self
+    end
+
+    def without_reasoning
+      @reasoning = false
+      @stardog = Stardog::stardog(@endpoint,@options)
       self
     end
 
@@ -705,10 +731,10 @@ module GRel
           store(data)
         end
       else
-        puts "STORING"
-        puts QL.to_turtle(data)
-        puts "IN"
-        puts @db_name
+        GRel::Debugger.debug "STORING"
+        GRel::Debugger.debug QL.to_turtle(data)
+        GRel::Debugger.debug "IN"
+        GRel::Debugger.debug @db_name
         result = @stardog.add(@db_name, QL.to_turtle(data), nil, "text/turtle")
       end
       self
@@ -755,44 +781,55 @@ module GRel
         args = args.inject([]) {|a,i| a += i }
       end
       triples = QL.to_turtle(args, true)
-      puts "STORING IN SCHEMA #{@schema_graph}"
-      puts triples
-      puts "IN"
-      puts @db_name
+      GRel::Debugger.debug "STORING IN SCHEMA #{@schema_graph}"
+      GRel::Debugger.debug triples
+      GRel::Debugger.debug "IN"
+      GRel::Debugger.debug @db_name
       @stardog.add(@db_name, triples, @schema_graph, "text/turtle")
       self
     end
 
-    def all
+    def all(options = {})
+      unlinked = options[:unlinked] || false
+
       results = run
-      nodes = QL.from_bindings_to_nodes(results, @last_query_context)
-      sets = @last_query_context.query_keys
-      nodes.select do |node|
-        valid = false
-        c = 0
-        while(!valid && c<sets.length)
-          sets_keys, sets_query = sets[c]
-          valid = sets_keys.inject(true) do |ac,k|
-            if (sets_query[k].is_a?(Hash) || sets_query[k].is_a?(Symbol))
-              ac && node[k]
-            elsif (sets_query[k].is_a?(String) && sets_query[k].index("@id("))
-              ac && node[k]
-            else
-              ac && node[k] == sets_query[k]
-            end
-          end
-          c += 1
-        end
-        valid
-      end
+      nodes = QL.from_bindings_to_nodes(results, @last_query_context, :unlinked => unlinked)
+      nodes
+      #sets = @last_query_context.query_keys
+      #nodes.select do |node|
+      #  valid = false
+      #  c = 0
+      #  while(!valid && c<sets.length)
+      #    sets_keys, sets_query = sets[c]
+      #    valid = (sets_keys.empty?) || sets_keys.inject(true) do |ac,k|
+      #      value = nil
+      #      if (sets_query[k].is_a?(Hash) || (sets_query[k].is_a?(Symbol)))
+      #        value = ac && node[k]
+      #      end
+      #      if(value.nil? && @reasoning == true)
+      #        value = ac && node.values.include?(sets_query[k])
+      #      end
+      #      if (value.nil? && sets_query[k].is_a?(String) && sets_query[k].index("@id("))
+      #        value = ac && node[k]
+      #      end
+      #      if(value.nil?)
+      #         ac && node[k] == sets_query[k]
+      #      else
+      #        value
+      #      end
+      #    end
+      #    c += 1
+      #  end
+      #  valid
+      #end
     end
 
     def query(query)
-      puts "QUERYING..."
-      puts query
-      puts "** LIMIT #{@last_query_context.limit}" if @last_query_context.limit
-      puts "** OFFSET #{@last_query_context.offset}" if @last_query_context.offset
-      puts "----------------------"
+      GRel::Debugger.debug "QUERYING..."
+      GRel::Debugger.debug query
+      GRel::Debugger.debug "** LIMIT #{@last_query_context.limit}" if @last_query_context.limit
+      GRel::Debugger.debug "** OFFSET #{@last_query_context.offset}" if @last_query_context.offset
+      GRel::Debugger.debug "----------------------"
       args = {:describe => true}
       args[:offset] = @last_query_context.offset if @last_query_context.offset
       args[:limit] = @last_query_context.limit if @last_query_context.limit
