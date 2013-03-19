@@ -213,7 +213,7 @@ Validations and inference can be used together to infere additional infromation 
 
     # An exception is raised due to validation violation
 
-    g.with_reasoning.define(:citizen, :@domain, :State)
+    g.with_reasoning.define(:citizen, :@domain, :State).
       store(:@id => 'id(malditogeek)', :citizen => {:@id => 'id(ar)', :capital => 'Buenos Aires'}, ...)
     # Data is valid using reasoning since the @type :State for Argentina can be inferred.
 
