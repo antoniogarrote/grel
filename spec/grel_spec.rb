@@ -55,4 +55,70 @@ describe "graph query" do
 
     expect(results["@id"]).not_to be_nil
   end
+
+  it "should be possible to turn on validations for the database" do
+    g = graph.with_db(DB)
+    result = @conn.db_options(DB)
+    expect(result.body["icv.enabled"]).to be_eql(false)
+
+
+    g.with_validations(true)    
+    result = @conn.db_options(DB)
+    expect(result.body["icv.enabled"]).to be_eql(true)
+  end
+
+  it "should prevent insertions and raise an exception is a validation is violated" do
+    mg = graph.with_db(DB).with_validations(true)
+
+    mg.validate(:lives, :@range, :Country)
+
+    result = begin
+      mg.without_reasoning.store({:@id => "p2", :name => "person2", :lives => {:@id => "c2", :name => "Country2"}})
+      true
+    rescue ValidationError
+      false
+    end
+
+    expect(result).to be_false
+
+    results = mg.where({:lives => {}}).all
+    expect(results).to be_empty
+    
+    mg.store({:@id => "p3", :name => "person3", :lives => {:@id => "c3", :name => "Country3", :@type => :Country}})
+
+    results = mg.where({:lives => {}}).all    
+    expect(results).not_to be_empty
+  end
+
+  it "should be possible to retract validations" do
+    mg = graph.with_db(DB).with_validations(true)
+
+    mg.validate(:lives, :@range, :Country)
+
+    result = begin
+      mg.without_reasoning.store({:@id => "p2", :name => "person2", :lives => {:@id => "c2", :name => "Country2"}})
+      true
+    rescue ValidationError
+      false
+    end
+
+    expect(result).to be_false
+
+    results = mg.where({:lives => {}}).all
+    expect(results).to be_empty
+    
+    mg.retract_validation(:lives, :@range, :Country)
+
+    result = begin
+      mg.without_reasoning.store({:@id => "p2", :name => "person2", :lives => {:@id => "c2", :name => "Country2"}})
+      true
+    rescue ValidationError
+      false
+    end
+
+    expect(result).to be_true
+
+    results = mg.where({:lives => {}}).all    
+    expect(results).not_to be_empty
+  end
 end

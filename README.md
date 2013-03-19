@@ -143,7 +143,7 @@ An example using the *@subproperty* declaration.
     g.define(:citizen, :@subproperty, :bornin)   
 
     g.with_reasoning.where(:bornin => {:@type => :Country, :capital => 'Madrid'}).all
-    # [{:@id => 'id(antoniogarrote)', :citizen => {'@id' => 'id(es)', :capital => 'Madrid', ... }, ...}]
+    # [{:@id => 'id(antoniogarrote)', :citizen => {:@id => 'id(es)', :capital => 'Madrid', ... }, ...}]
 ```
 
 
@@ -153,12 +153,79 @@ An example using the *@domain* and *@range* declarations.
     g.define(:citizen, :@range, :State)   
 
     g.with_reasoning.where(:@type => :Citizen, :citizen => {:@type => :State}).all
-    # [{:@id => 'id(antoniogarrote)', :citizen => {'@id' => 'id(es)', :capital => 'Madrid', ... }, ...},
-    #  {:@id => 'id(thattommyhall)',  :citizen => {'@id' => 'id(uk)', :capital => 'Madrid', ... }, ...}
+    # [{:@id => 'id(antoniogarrote)', :citizen => {:@id => 'id(es)', :capital => 'Madrid', ... }, ...},
+    #  {:@id => 'id(thattommyhall)',  :citizen => {:@id => 'id(uk)', :capital => 'Madrid', ... }, ...}
     #  ... ]
 ```
 
+Schema definitions can be removed using the method *retract_definition*.
 
+An example using the *@domain* and *@range* declarations.
+```ruby
+    g.define(:citizen, :@domain, :Citizen)   
+    g.define(:citizen, :@range, :State)   
+
+    g.with_reasoning.where(:@type => :Citizen, :citizen => {:@type => :State}).all
+    # [{:@id => 'id(antoniogarrote)', :citizen => {:@id => 'id(es)', :capital => 'Madrid', ... }, ...},
+    #  {:@id => 'id(thattommyhall)',  :citizen => {:@id => 'id(uk)', :capital => 'Madrid', ... }, ...}
+    #  ... ]
+
+    g.retract_definition(:citizen, :@range, :State).where(:@type => :Citizen, :citizen => {:@type => :State}).all
+    # [ ]
+```
+
+Inference can be disabled sending the *without_reasoning* message.
+
+# Validations
+
+Reasoning support can also be used to validate the objects you insert in the graph. In this case, your schema definitions are interpreted not to infere new knowledge but to check that the structure of the objects inserted match the schema.
+
+Validations can be introduced in the graph using the *validate* message that receives an assertion with the *@subclass*, *@subproperty*, *@domain* or *@range* properties.
+
+Validations are turned on/off using the *with_validations* and *without_validations* messages.
+
+If a validation is violated, an exception will be raised. If validations are turned on and there's already invalid data in the graph, no further insertions will succeed.
+
+Validations can also be removed using the *retract_validation* message.
+
+```ruby
+    g = graph.with_db(DB) # new graph
+
+    g.with_validations.validate(:citizen, :@domain, :State)   
+
+    g.store(:@id => 'id(malditogeek)', :citizen => {:@id => 'id(ar)', :capital => 'Buenos Aires'}, ...)
+
+    # An exception is raised due to validation violation
+
+    g.store(:@id => 'ar', :capital => 'Buenos Aires', :@type => :State, :name => 'Argentina').
+      store(:@id => 'id(malditogeek)', :citizen => '@id(ar)')
+    # After adding the @type for Argentina, the insertion does not raise any exception.
+```
+
+Validations and inference can be used together to infere additional infromation that will make data valid according to the defined validations:
+
+```ruby
+    g = graph.with_db(DB) # new graph
+
+    g.with_validations.validate(:citizen, :@domain, :State)   
+
+    g.store(:@id => 'id(malditogeek)', :citizen => {:@id => 'id(ar)', :capital => 'Buenos Aires'}, ...)
+
+    # An exception is raised due to validation violation
+
+    g.with_reasoning.store(:@id => 'id(malditogeek)', :citizen => {:@id => 'id(ar)', :capital => 'Buenos Aires'}, ...)
+    # Data is valid using reasoning since the @type :State for Argentina can be inferred.
+
+    g.with_reasoning.where(:@type => :Citizen, :citizen => {:@type => :State}).all
+    # [{:@id => 'id(malditogeek)', :citizen => {:@id => 'id(ar)', :capital => 'Buenos Aires', ... }, ...}]
+
+    g.without_reasoning # graph is invalid now, no further operations can be committed.
+
+    g.without_validations # graph is again valid since no validations will be checked.
+```
+
+
+The details about how to use validations can be found in the Stardog documentation related to ICV (Integrity Constraints Validations) for the data base (http://stardog.com/docs/sdp/#validation).
 
 ## Author and contact:
 

@@ -12,6 +12,14 @@ end
 
 module GRel
 
+  class ValidationError < Stardog::ICVException
+    attr_accessor :icv_exception
+    def initialize(msg, exception)
+      super(msg)
+      @icv_exception = exception
+    end
+  end
+
   DEBUG = ENV["GREL_DEBUG"] || false
 
   class Debugger
@@ -698,6 +706,7 @@ module GRel
       @options = options
       @endpoint = endpoint
       @stardog = Stardog::stardog(endpoint,options)
+      with_validations(options[:validate] || false)
       @dbs = @stardog.list_dbs.body["databases"]
       @reasoning = false
       self
@@ -739,9 +748,11 @@ module GRel
         GRel::Debugger.debug QL.to_turtle(data)
         GRel::Debugger.debug "IN"
         GRel::Debugger.debug @db_name
-        result = @stardog.add(@db_name, QL.to_turtle(data), nil, "text/turtle")
+        @stardog.add(@db_name, QL.to_turtle(data), nil, "text/turtle")
       end
       self
+    rescue Stardog::ICVException => ex
+      raise ValidationError.new("Error storing objects in the graph. A Validation has failed.", ex)
     end
 
 
@@ -793,6 +804,45 @@ module GRel
       self
     end
 
+    def retract_definition(*args)
+      unless(args.length == 3 && !args.first.is_a?(Array))
+        args = args.inject([]) {|a,i| a += i }
+      end
+      triples = QL.to_turtle(args, true)
+      GRel::Debugger.debug "REMOVING FROM SCHEMA #{@schema_graph}"
+      GRel::Debugger.debug triples
+      GRel::Debugger.debug "IN"
+      GRel::Debugger.debug @db_name
+      @stardog.remove(@db_name, triples, @schema_graph, "text/turtle")
+      self
+    end
+
+    def validate(*args)
+      unless(args.length == 3 && !args.first.is_a?(Array))
+        args = args.inject([]) {|a,i| a += i }
+      end
+      triples = QL.to_turtle(args, true)
+      GRel::Debugger.debug "STORING IN VALIDATIONS #{@schema_graph}"
+      GRel::Debugger.debug triples
+      GRel::Debugger.debug "IN"
+      GRel::Debugger.debug @db_name
+      @stardog.add_icv(@db_name, triples, "text/turtle")
+      self
+    end
+
+    def retract_validation(*args)
+      unless(args.length == 3 && !args.first.is_a?(Array))
+        args = args.inject([]) {|a,i| a += i }
+      end
+      triples = QL.to_turtle(args, true)
+      GRel::Debugger.debug "REMOVING FROM SCHEMA #{@schema_graph}"
+      GRel::Debugger.debug triples
+      GRel::Debugger.debug "IN"
+      GRel::Debugger.debug @db_name
+      @stardog.remove_icv(@db_name, triples, "text/turtle")
+      self
+    end
+
     def all(options = {})
       unlinked = options[:unlinked] || false
 
@@ -840,6 +890,20 @@ module GRel
       @stardog.query(@db_name,query, args).body
     end
 
+    def with_validations(state = true)
+      @validations = state
+
+      @stardog.offline_db(@db_name)
+      @stardog.set_db_options(@db_name, "icv.enabled" => @validations)
+      @stardog.online_db(@db_name, 'WAIT')
+
+      self
+    end
+
+    def without_validations
+      with_validations(false)
+    end
+
     private
 
     def ensure_db(db_name)
@@ -855,6 +919,7 @@ module GRel
   def graph(name='http://localhost:5822/',options = {})
     options[:user] ||= "admin"
     options[:password] ||= "admin"
+    options[:validate] ||= false
     g = Base.new(name, options)
     g.with_db(options[:db]) if(options[:db])
     g
