@@ -217,7 +217,7 @@ Validations and inference can be used together to infere additional infromation 
       store(:@id => 'id(malditogeek)', :citizen => {:@id => 'id(ar)', :capital => 'Buenos Aires'}, ...)
     # Data is valid using reasoning since the @type :State for Argentina can be inferred.
 
-    g.with_reasoning.where(:@type => :Citizen, :citizen => {:@type => :State}).all
+    g.where(:@type => :Citizen, :citizen => {:@type => :State}).all
     # [{:@id => 'id(malditogeek)', :citizen => {:@id => 'id(ar)', :capital => 'Buenos Aires', ... }, ...}]
 
     g.without_reasoning # graph is invalid now, no further operations can be committed.
