@@ -258,6 +258,21 @@ Some examples of validations are:
     # No validation error is raised
 ```
 
+ - Participation constraints
+
+```ruby
+    g = graph.with_db(DB)
+
+    g.with_validations.validate(:Supervisor, :@some, [:supervises, :Employee])
+
+    g.store(:@type  => :Supervisor)
+
+    # An exception is raised, Supervisors must supervise employees
+    
+    g.store(:@type  => :Supervisor, :supervises => {:@type => :Employee})
+
+    # No validation error is raised
+```
 
 The details about how to use validations can be found in the Stardog documentation related to ICV (Integrity Constraints Validations) for the data base (http://stardog.com/docs/sdp/#validation).
 

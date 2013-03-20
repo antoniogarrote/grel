@@ -175,4 +175,31 @@ describe "graph query" do
     results = mg.where({}).all
     expect(results).not_to be_empty
   end
+
+  it "should be possible to assert validations in relationships between classes" do
+    mg = graph.with_db(DB).with_validations(true)
+
+    mg.validate(:Supervisor, :@some, [:supervises, :Employee])
+
+    result = begin
+               mg.store({:@id => 'a', :@type  => :Supervisor})
+               true
+             rescue ValidationError
+               false
+             end
+
+    expect(result).to be_false
+
+    result = begin
+               mg.store({:@id => 'a', :@type  => :Supervisor, :supervises => {:@type => :Employee}})
+               true
+             rescue ValidationError
+               false
+             end
+
+    expect(result).to be_true
+
+    results = mg.where({}).all
+    expect(results).not_to be_empty
+  end
 end

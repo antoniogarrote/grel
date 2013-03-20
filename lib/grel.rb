@@ -69,7 +69,9 @@ module GRel
     end
 
     def self.to_triples(obj)
-      if(obj.is_a?(Symbol))
+      if(obj.is_a?(BlankId))
+        obj.to_s
+      elsif(obj.is_a?(Symbol))
         if(obj == :@type)
           "rdf:type"
         elsif(obj == :@subclass)
@@ -80,6 +82,12 @@ module GRel
           "rdfs:domain"
         elsif(obj == :@range)
           "rdfs:range"
+        elsif(obj == :@some)
+          "<http://www.w3.org/2002/07/owl#someValuesFrom>"
+        elsif(obj == :"<http://www.w3.org/2002/07/owl#Restriction>")
+          "<http://www.w3.org/2002/07/owl#Restriction>"
+        elsif(obj == :"<http://www.w3.org/2002/07/owl#onProperty>")
+          "<http://www.w3.org/2002/07/owl#onProperty>"
         elsif(obj == :"<http://www.w3.org/2002/07/owl#DatatypeProperty>")
           "<http://www.w3.org/2002/07/owl#DatatypeProperty>"
         else
@@ -837,8 +845,22 @@ module GRel
       unless(args.length == 3 && !args.first.is_a?(Array))
         args = args.inject([]) {|a,i| a += i }
       end
+      
+      unfolded = []
+      args.each_slice(3) do |(s,p,o)|
+        if(p == :@some)
+          restriction = BlankId.new
+          unfolded += [s, :@subclass, restriction]
+          unfolded += [restriction, :@type, :"<http://www.w3.org/2002/07/owl#Restriction>"]
+          unfolded += [restriction, :"<http://www.w3.org/2002/07/owl#onProperty>", o.first]
+          unfolded += [restriction, :@some,o.last]
+        else
+          unfolded += [s,p,o]
+        end
+      end
 
-      additional_triples = []
+      args = unfolded
+      additional_triples = []      
       found = args.each_slice(3).detect{|(s,p,o)|  p == :@range && o.is_a?(Class)}
       if(found)
         additional_triples += [found.first, :@type, :"<http://www.w3.org/2002/07/owl#DatatypeProperty>"]
