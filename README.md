@@ -120,10 +120,12 @@ If more than one object matches a property, the final set of matching objects wi
 
 The message *remove* can be sent after running a query to remove the retrieved data from the graph:
 
+```ruby
     g.store(:@id     => 'abs',
             :citizen => '@id(uk)').
 
     g.where(:@id => 'abs').remove
+```
 
 # Inference
 
