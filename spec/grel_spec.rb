@@ -249,4 +249,58 @@ describe "graph query" do
     nodes = g.where({}).all
     expect(nodes.map{|n| n[:age]}.sort).to be_eql([20,54])
   end
+
+  it "should be possible to remove particular triples from the graph" do
+    g = graph.with_db(DB)
+
+    g.store(:name    => 'Abhinay',
+            :surname => 'Mehta',
+            :@type   => :Developer,
+            :@id     => 'abs').
+
+      store(:name    => 'Tom',
+            :surname => 'Hall',
+            :@type   => :Developer,
+            :@id     => 'thattommyhall').
+
+      store(:name       => 'India',
+            :@type      => :Country,
+            :population => 1200,
+            :capital    => 'New Delhi',
+            :@id        => 'in').
+
+      store(:name       => 'United Kingdom',
+            :@type      => :Country,
+            :population => 62,
+            :capital    => 'London',
+            :@id        => 'uk').
+
+      # Storing relationships
+      store(:@id     => 'abs',
+            :citizen => '@id(in)').
+
+      store(:@id     => 'abs',
+            :citizen => '@id(uk)').
+
+      store(:@id     => 'thattommyhall',
+            :citizen => '@id(uk)').
+
+      # Storing nested objects
+      store(:@id     => 'antoniogarrote',
+            :name    => 'Antonio',
+            :@type   => :Developer,
+            :citizen => {:name       => 'Spain',
+                         :@type      => :Country,
+                         :population => 43,
+                         :capital    => 'Madrid',
+                         :@id        => 'es'})             
+
+    nodes = g.where(:@id => 'es').all
+    expect(nodes.first[:population]).to be_eql(43)
+    
+    g.remove(:@id => 'es', :population => 43)
+
+    nodes = g.where(:@id => 'es').all
+    expect(nodes.first[:population]).to be_nil
+  end
 end

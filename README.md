@@ -171,6 +171,22 @@ The message *remove* can be sent after running a query to remove the retrieved d
     g.where(:@id => 'abs').remove
 ```
 
+If particular properties from the graph need to be removed from the graph without running a query, the *remove* message can be send directly to the graph object.
+This method is the opposite to an *store* operation.
+
+```ruby
+    g.store(:@id        => 'es',
+            :name       => 'Spain',
+            :population => 43)
+
+    g.where(:@id => 'es').first
+    # {:@id => '@id(es), :name => 'Spain', :population => 43}
+
+    g.remove(:@id => 'es', :population => 43)
+    g.where(:@id => 'es').first
+    # {:@id => '@id(es), :name => 'Spain'}
+```
+
 ## Inference
 
 Schema information can be added using the *define* method and assertions like *@subclass*, *@subproperty*, *@domain*, *@range*.
