@@ -281,14 +281,14 @@ Some examples of validations are:
 
     g.store(:@type  => :Supervisor, 
             :supervises => [{:@id => 'a', :@type => :Employee},
-                            {:@id => 'b', :@type => :Assitant}])
+                            {:@id => 'b', :@type => :Assistant}])
 
     # An exception is raised, all objectes supervised by a Supervisor must belong to
     # the Employee class
     
     g.store(:@type  => :Supervisor, 
             :supervises => [{:@id => 'a', :@type => :Employee},
-                            {:@id => 'b', :@type => [:Assitant, :Employee]}])
+                            {:@id => 'b', :@type => [:Assistant, :Employee]}])
 
 
     # No validation error is raised
