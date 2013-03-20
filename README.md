@@ -122,7 +122,7 @@ The message *remove* can be sent after running a query to remove the retrieved d
 
 ```ruby
     g.store(:@id     => 'abs',
-            :citizen => '@id(uk)').
+            :citizen => '@id(uk)')
 
     g.where(:@id => 'abs').remove
 ```
