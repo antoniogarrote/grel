@@ -281,7 +281,7 @@ Validations and inference can be used together to infere additional infromation 
 ```
 Some examples of validations are:
 
- - Data types in range, using the corresponding class *Date*, *Float*, *Fixnum*, *TrueClass*/*FalseClass*:
+ - Data types in range, using the corresponding class *Date*, *Float*, *Fixnum*, *TrueClass* / *FalseClass*:
 
 ```ruby
     g = graph.with_db(DB) # new graph
