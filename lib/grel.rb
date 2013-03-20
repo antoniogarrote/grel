@@ -133,7 +133,7 @@ module GRel
         # no blank nodes
         obj[:@id] = "@id(#{SecureRandom.hex})" if obj[:@id].nil?
         # normalising id values
-        obj[:@id] = "@id(#{obj[:@id]})" if obj[:@id].index("@id(") != 0
+        obj[:@id] = "@id(#{obj[:@id]})" if obj[:@id].index("@id(").nil?
 
         acum = []
         triples_acum = []
@@ -504,6 +504,7 @@ module GRel
 
         node_id = @context.next_node_id
         id = @data[:@id]
+        id = "@id(#{id})" if id && id.is_a?(String) && id.index("@id(").nil?        
         id = QL.to_query(id, context) if id
         subject_var_id,pred_var_id, obj_var_id = @context.register_node(id,node_id,@inverse)
 
@@ -897,6 +898,22 @@ module GRel
       self
     end
 
+    def remove(options = {})
+
+      args = {:describe => true}
+      args = {:accept => "application/rdf+xml"}
+      args[:offset] = @last_query_context.offset if @last_query_context.offset
+      args[:limit] = @last_query_context.limit if @last_query_context.limit
+
+
+      sparql = @last_query_context.to_sparql
+      triples = @stardog.query(@db_name,sparql, args).body
+
+      @stardog.remove(@db_name, triples, nil, "application/rdf+xml")
+
+      self
+    end
+
     def all(options = {})
       unlinked = options[:unlinked] || false
 
@@ -932,13 +949,14 @@ module GRel
       #end
     end
 
-    def query(query)
+    def query(query, options = {})
       GRel::Debugger.debug "QUERYING..."
       GRel::Debugger.debug query
       GRel::Debugger.debug "** LIMIT #{@last_query_context.limit}" if @last_query_context.limit
       GRel::Debugger.debug "** OFFSET #{@last_query_context.offset}" if @last_query_context.offset
       GRel::Debugger.debug "----------------------"
       args = {:describe => true}
+      args[:accept] = options[:accept] if options[:accept]
       args[:offset] = @last_query_context.offset if @last_query_context.offset
       args[:limit] = @last_query_context.limit if @last_query_context.limit
       @stardog.query(@db_name,query, args).body

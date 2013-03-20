@@ -234,4 +234,19 @@ describe "graph query" do
     results = mg.where({}).all
     expect(results).not_to be_empty
   end
+
+  it "should be possible to remove data from the graph" do
+    g = graph.with_db(DB).
+      store(:name => "a", :age => 12).
+      store(:name => "b", :age => 54).
+      store(:name => "c", :age => 20)
+
+    nodes = g.where({}).all
+    expect(nodes.map{|n| n[:age]}.sort).to be_eql([12,20,54])
+
+    g.where(:age => {:$lt => 18}).remove
+
+    nodes = g.where({}).all
+    expect(nodes.map{|n| n[:age]}.sort).to be_eql([20,54])
+  end
 end

@@ -116,6 +116,15 @@ If more than one object matches a property, the final set of matching objects wi
    
 ```
 
+# Removing data
+
+The message *remove* can be sent after running a query to remove the retrieved data from the graph:
+
+    g.store(:@id     => 'abs',
+            :citizen => '@id(uk)').
+
+    g.where(:@id => 'abs').remove
+
 # Inference
 
 Schema information can be added using the *define* method and assertions like *@subclass*, *@subproperty*, *@domain*, *@range*.
