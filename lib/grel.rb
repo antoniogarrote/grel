@@ -84,6 +84,8 @@ module GRel
           "rdfs:range"
         elsif(obj == :@some)
           "<http://www.w3.org/2002/07/owl#someValuesFrom>"
+        elsif(obj == :@all)
+          "<http://www.w3.org/2002/07/owl#allValuesFrom>"
         elsif(obj == :"<http://www.w3.org/2002/07/owl#Restriction>")
           "<http://www.w3.org/2002/07/owl#Restriction>"
         elsif(obj == :"<http://www.w3.org/2002/07/owl#onProperty>")
@@ -854,6 +856,12 @@ module GRel
           unfolded += [restriction, :@type, :"<http://www.w3.org/2002/07/owl#Restriction>"]
           unfolded += [restriction, :"<http://www.w3.org/2002/07/owl#onProperty>", o.first]
           unfolded += [restriction, :@some,o.last]
+        elsif(p == :@all)
+          restriction = BlankId.new
+          unfolded += [s, :@subclass, restriction]
+          unfolded += [restriction, :@type, :"<http://www.w3.org/2002/07/owl#Restriction>"]
+          unfolded += [restriction, :"<http://www.w3.org/2002/07/owl#onProperty>", o.first]
+          unfolded += [restriction, :@all,o.last]
         else
           unfolded += [s,p,o]
         end
