@@ -80,6 +80,8 @@ module GRel
           "rdfs:domain"
         elsif(obj == :@range)
           "rdfs:range"
+        elsif(obj == :"<http://www.w3.org/2002/07/owl#DatatypeProperty>")
+          "<http://www.w3.org/2002/07/owl#DatatypeProperty>"
         else
           ":#{obj}"
         end
@@ -91,6 +93,14 @@ module GRel
         end
       elsif(obj == nil)
         NIL
+      elsif(obj == Float)
+        "<http://www.w3.org/2001/XMLSchema#float>"
+      elsif(obj == Numeric || obj == Fixnum || obj == "Bignum")
+        "<http://www.w3.org/2001/XMLSchema#integer>"
+      elsif(obj == Time || obj == Date || obj == DateTime)
+        "<http://www.w3.org/2001/XMLSchema#dateTime>"
+      elsif(obj == TrueClass || obj == FalseClass)
+        "<http://www.w3.org/2001/XMLSchema#boolean>"
       elsif(obj == true || obj == false)
         "\"#{obj}\"^^<http://www.w3.org/2001/XMLSchema#boolean>"
       elsif(obj.is_a?(Float))
@@ -577,9 +587,9 @@ module GRel
       elsif(obj.is_a?(Numeric))
         "\"#{obj}\"^^<http://www.w3.org/2001/XMLSchema#integer>"
       elsif(obj.is_a?(Time))
-        "\"#{obj.iso8601}\"^^<http://www.w3.org/2001/XMLSchema#date>"
+        "\"#{obj.iso8601}\"^^<http://www.w3.org/2001/XMLSchema#dateTime>"
       elsif(obj.is_a?(Date))
-        "\"#{Time.new(obj.to_s).iso8601}\"^^<http://www.w3.org/2001/XMLSchema#date>"
+        "\"#{Time.new(obj.to_s).iso8601}\"^^<http://www.w3.org/2001/XMLSchema#dateTime>"
       elsif(obj.is_a?(Array))
         # TODO
       elsif(obj.is_a?(Hash))
@@ -808,7 +818,13 @@ module GRel
       unless(args.length == 3 && !args.first.is_a?(Array))
         args = args.inject([]) {|a,i| a += i }
       end
-      triples = QL.to_turtle(args, true)
+      additional_triples = []
+      found = args.each_slice(3).detect{|(s,p,o)|  p == :@range && o.is_a?(Class)}
+      if(found)
+        additional_triples += [found.first, :@type, :"<http://www.w3.org/2002/07/owl#DatatypeProperty>"]
+      end
+
+      triples = QL.to_turtle(args + additional_triples, true)
       GRel::Debugger.debug "REMOVING FROM SCHEMA #{@schema_graph}"
       GRel::Debugger.debug triples
       GRel::Debugger.debug "IN"
@@ -821,7 +837,15 @@ module GRel
       unless(args.length == 3 && !args.first.is_a?(Array))
         args = args.inject([]) {|a,i| a += i }
       end
-      triples = QL.to_turtle(args, true)
+
+      additional_triples = []
+      found = args.each_slice(3).detect{|(s,p,o)|  p == :@range && o.is_a?(Class)}
+      if(found)
+        additional_triples += [found.first, :@type, :"<http://www.w3.org/2002/07/owl#DatatypeProperty>"]
+      end
+
+
+      triples = QL.to_turtle(args + additional_triples, true)
       GRel::Debugger.debug "STORING IN VALIDATIONS #{@schema_graph}"
       GRel::Debugger.debug triples
       GRel::Debugger.debug "IN"
@@ -892,7 +916,6 @@ module GRel
 
     def with_validations(state = true)
       @validations = state
-
       @stardog.offline_db(@db_name)
       @stardog.set_db_options(@db_name, "icv.enabled" => @validations)
       @stardog.online_db(@db_name, 'WAIT')

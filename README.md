@@ -224,6 +224,39 @@ Validations and inference can be used together to infere additional infromation 
 
     g.without_validations # graph is again valid since no validations will be checked.
 ```
+Some examples of validations are:
+
+ - Data types in range, using the corresponding class *Date*, *Float*, *Fixnum*, *TrueClass*/*FalseClass*:
+
+```ruby
+    g = graph.with_db(DB) # new graph
+
+    g.with_validations.validate(:born, :@domain, Date) # born must have a Date value
+
+    g.store(:@id => 'antoniogarrote', :born => "1982-05-01", ...)
+
+    # An exception is raised due to validation violation, :born has a string value not a date vaue
+
+    g.store(:@id => 'antoniogarrote', :born => Date.parse("1982-05-01"), ...)
+
+    # No validation error is raised
+```
+
+ - Subclass / Superclass relationships
+
+```ruby
+    g = graph.with_db(DB) # new graph
+
+    g.with_validations.validate(:Developer, :@subclass, :Person) # all Developers must be human!
+
+    g.store(:@id => 'abhinay', :@type => :Developer, ...)
+
+    # An exception is raised due to validation violation, :Person @type is missing
+
+    g.store(:@id => 'abhinay', :@type => [:Developer, :Person], ...)
+
+    # No validation error is raised
+```
 
 
 The details about how to use validations can be found in the Stardog documentation related to ICV (Integrity Constraints Validations) for the data base (http://stardog.com/docs/sdp/#validation).

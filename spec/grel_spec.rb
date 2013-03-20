@@ -121,4 +121,58 @@ describe "graph query" do
     results = mg.where({:lives => {}}).all    
     expect(results).not_to be_empty
   end
+
+  it "should be possible to validate data types" do
+    mg = graph.with_db(DB).with_validations(true)
+
+    mg.validate(:born, :@range, Date)
+
+    result = begin
+      mg.store({:born => "1982-05-01"})
+      true
+    rescue ValidationError
+      false
+    end
+
+    expect(result).to be_false
+
+    result = begin
+      mg.store({:born => Date.parse("1982-05-01")})
+      true
+    rescue ValidationError
+      false
+    end
+
+    expect(result).to be_true
+
+    results = mg.where({:born => :_}).all
+    expect(results).not_to be_empty
+  end
+
+  it "Should be possible to validate subclass/superclass relationships" do
+    mg = graph.with_db(DB).with_validations(true)
+
+    mg.validate(:Developer, :@subclass, :Person)
+
+    result = begin
+      mg.store({:id => 'abs', :@type  => :Developer})
+      true
+    rescue ValidationError
+      false
+    end
+
+    expect(result).to be_false
+
+    result = begin
+      mg.store({:id => 'abs', :@type  => [:Developer, :Person]})
+      true
+    rescue ValidationError
+      false
+    end
+
+    expect(result).to be_true
+
+    results = mg.where({}).all
+    expect(results).not_to be_empty
+  end
 end
