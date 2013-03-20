@@ -50,7 +50,7 @@ This two queries are equivalent:
 
 ```ruby
     g.store(:@id     => '@id(abs)',
-            :name    => 'Abhinay'')
+            :name    => 'Abhinay')
 ```
 
 
