@@ -33,6 +33,23 @@ module GRel
   NIL = "\"http://www.w3.org/1999/02/22-rdf-syntax-ns#nil\""
   BNODE = "BNODE"
 
+  class NonNegativeInteger
+
+    def initialize(number)
+      @number = number
+    end
+
+    def method_missing(name, *args, &blk)
+      ret = @number.send(name, *args, &blk)
+      ret.is_a?(Numeric) ? MyNum.new(ret) : ret
+    end
+
+    def to_s
+      "\"#{@number}\"^^<http://www.w3.org/2001/XMLSchema#nonNegativeInteger>"
+    end
+
+  end
+
   class BlankId 
 
     attr_reader :blank_id

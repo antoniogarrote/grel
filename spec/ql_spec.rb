@@ -520,6 +520,243 @@
      expect(nodes.length).to be_eql(1)
      expect(nodes.first[:name]).to be_eql('Spain')
    end
+
+  it "should be possible to specify a matching exact cardinality" do
+    g = graph.with_db(DB)
+
+    g.validate(:Person, :@cardinality, {:property => :lives, :exact => 1})
+
+    g.with_validations
+
+    result = begin
+               g.store(:@id => 'agh',
+                       :@type => :Person,
+                       :name => 'Antonio',
+                       :lives => ['hey','ho'])
+               true
+             rescue Exception => ex
+               #puts ex.message
+               #puts ex.backtrace.join("\n")
+               false
+             end
+
+    expect(result).to be_false
+
+    result = begin
+               g.store(:@id => 'agh',
+                       :@type => :Person,
+                       :name => 'Antonio',
+                       :lives => 'hey')
+               true
+             rescue Exception => ex
+               #puts ex.message
+               #puts ex.backtrace.join("\n")
+               false
+             end
+
+    expect(result).to be_true
+  end
+
+  it "should be possible to specify minimum cardinality" do
+    g = graph.with_db(DB)
+
+    g.validate(:Person, :@cardinality, {:property => :lives, :min => 2})
+
+    g.with_validations
+
+    result = begin
+               g.store(:@id => 'agh',
+                       :@type => :Person,
+                       :name => 'Antonio')
+               true
+             rescue Exception => ex
+               #puts ex.message
+               #puts ex.backtrace.join("\n")
+               false
+             end
+
+    expect(result).to be_false
+
+    result = begin
+               g.store(:@id => 'agh',
+                       :@type => :Person,
+                       :name => 'Antonio',
+                       :lives => ["a"])
+               true
+             rescue Exception => ex
+               #puts ex.message
+               #puts ex.backtrace.join("\n")
+               false
+             end
+
+    expect(result).to be_false
+
+    result = begin
+               g.store(:@id => 'agh',
+                       :@type => :Person,
+                       :name => 'Antonio',
+                       :lives => ["a", "b"])
+               true
+             rescue Exception => ex
+               #puts ex.message
+               #puts ex.backtrace.join("\n")
+               false
+             end
+
+    expect(result).to be_true
+  end
+
+
+  it "should be possible to specify maximum cardinality" do
+    g = graph.with_db(DB)
+
+    g.validate(:Person, :@cardinality, {:property => :lives, :max => 2})
+
+    g.with_validations
+
+    result = begin
+               g.store(:@id => 'agh',
+                       :@type => :Person,
+                       :name => 'Antonio')
+               true
+             rescue Exception => ex
+               #puts ex.message
+               #puts ex.backtrace.join("\n")
+               false
+             end
+
+    expect(result).to be_true
+
+    result = begin
+               g.store(:@id => 'agh',
+                       :@type => :Person,
+                       :name => 'Antonio',
+                       :lives => ["a"])
+               true
+             rescue Exception => ex
+               #puts ex.message
+               #puts ex.backtrace.join("\n")
+               false
+             end
+
+    expect(result).to be_true
+
+    result = begin
+               g.store(:@id => 'agh',
+                       :@type => :Person,
+                       :name => 'Antonio',
+                       :lives => ["a", "b"])
+               true
+             rescue Exception => ex
+               #puts ex.message
+               #puts ex.backtrace.join("\n")
+               false
+             end
+
+    expect(result).to be_true
+
+    result = begin
+               g.store(:@id => 'agh',
+                       :@type => :Person,
+                       :name => 'Antonio',
+                       :lives => ["a", "b","c"])
+               true
+             rescue Exception => ex
+               #puts ex.message
+               #puts ex.backtrace.join("\n")
+               false
+             end
+
+    expect(result).to be_false
+
+  end
+
+  it "should be possible to specify mandatory cardinality" do
+    g = graph.with_db(DB)
+
+    g.validate(:Person, :@cardinality, {:property => :lives, :min => 1, :max => 1})
+
+    g.with_validations
+
+    result = begin
+               g.store(:@id => 'agh',
+                       :@type => :Person,
+                       :name => 'Antonio')
+               true
+             rescue Exception => ex
+               #puts ex.message
+               #puts ex.backtrace.join("\n")
+               false
+             end
+
+    expect(result).to be_false
+
+    result = begin
+               g.store(:@id => 'agh',
+                       :@type => :Person,
+                       :name => 'Antonio',
+                       :lives => ["a","b"])
+               true
+             rescue Exception => ex
+               #puts ex.message
+               #puts ex.backtrace.join("\n")
+               false
+             end
+
+    expect(result).to be_false
+
+    result = begin
+               g.store(:@id => 'agh',
+                       :@type => :Person,
+                       :name => 'Antonio',
+                       :lives => "a")
+               true
+             rescue Exception => ex
+               #puts ex.message
+               #puts ex.backtrace.join("\n")
+               false
+             end
+
+    expect(result).to be_true
+  end
+
+   it "Should be possible to validate cardinality associated to classes" do
+    g = graph.with_db(DB)
+
+    g.validate(:Person, :@cardinality, {:property => :lives, :exact => 1, :class => :Country})
+
+    g.with_validations
+
+    result = begin
+               g.store(:@id => 'agh',
+                       :@type => :Person,
+                       :name => 'Antonio',
+                       :lives => [{:@id => 'es',:@type => :Country},
+                                  {:@id => 'no', :@type => :Country}])
+               true
+             rescue Exception => ex
+               #puts ex.message
+               #puts ex.backtrace.join("\n")
+               false
+             end
+
+    expect(result).to be_false
+
+    result = begin
+               g.store(:@id => 'agh',
+                       :@type => :Person,
+                       :name => 'Antonio',
+                       :lives => 'hey',
+                       :lives => {:@id => 'es', :@type => :Country})
+               true
+             rescue Exception => ex
+               #puts ex.message
+               #puts ex.backtrace.join("\n")
+               false
+             end
+
+    expect(result).to be_true
+   end
  end
 
  #  /posts
