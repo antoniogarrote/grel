@@ -53,6 +53,8 @@ module GRel
           "<http://www.w3.org/2002/07/owl#onProperty>"
         elsif(obj == :"<http://www.w3.org/2002/07/owl#DatatypeProperty>")
           "<http://www.w3.org/2002/07/owl#DatatypeProperty>"
+        elsif(obj == :"<http://www.w3.org/2002/07/owl#ObjectProperty>")
+          "<http://www.w3.org/2002/07/owl#ObjectProperty>"
         else
           ":#{obj}"
         end

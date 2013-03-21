@@ -120,10 +120,6 @@ module GRel
         args = args.inject([]) {|a,i| a += i }
       end
       additional_triples = []
-      found = args.each_slice(3).detect{|(s,p,o)|  p == :@range && o.is_a?(Class)}
-      if(found)
-        additional_triples += [found.first, :@type, :"<http://www.w3.org/2002/07/owl#DatatypeProperty>"]
-      end
 
       triples = QL.to_turtle(args + additional_triples, true)
       GRel::Debugger.debug "REMOVING FROM SCHEMA #{@schema_graph}"
@@ -267,6 +263,12 @@ module GRel
     def parse_schema_axioms(args)
       unfolded = []
       args.each_slice(3) do |(s,p,o)|
+        if(p == :@range && o.is_a?(Class))
+          unfolded += [s, :@type, :"<http://www.w3.org/2002/07/owl#DatatypeProperty>"]
+        elsif(p == :@range)
+          unfolded += [s, :@type, :"<http://www.w3.org/2002/07/owl#ObjectProperty>"]
+        end
+
         if(p == :@some)
           restriction = BlankId.new
           unfolded += [s, :@subclass, restriction]
