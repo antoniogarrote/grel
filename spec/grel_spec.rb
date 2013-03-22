@@ -303,4 +303,62 @@ describe "graph query" do
     nodes = g.where(:@id => 'es').all
     expect(nodes.first[:population]).to be_nil
   end
+
+  it "should be possible to run tuple queries" do
+    g = graph.with_db(DB)
+
+    g.store(:name    => 'Abhinay',
+            :surname => 'Mehta',
+            :@type   => :Developer,
+            :@id     => 'abs').
+
+      store(:name    => 'Tom',
+            :surname => 'Hall',
+            :@type   => :Developer,
+            :@id     => 'thattommyhall').
+
+      store(:name       => 'India',
+            :@type      => :Country,
+            :population => 1200,
+            :capital    => 'New Delhi',
+            :@id        => 'in').
+
+      store(:name       => 'United Kingdom',
+            :@type      => :Country,
+            :population => 62,
+            :capital    => 'London',
+            :@id        => 'uk').
+
+      # Storing relationships
+      store(:@id     => 'abs',
+            :citizen => '@id(in)').
+
+      store(:@id     => 'abs',
+            :citizen => '@id(uk)').
+
+      store(:@id     => 'thattommyhall',
+            :citizen => '@id(uk)').
+
+      # Storing nested objects
+      store(:@id     => 'antoniogarrote',
+            :name    => 'Antonio',
+            :@type   => :Developer,
+            :citizen => {:name       => 'Spain',
+                         :@type      => :Country,
+                         :population => 43,
+                         :capital    => 'Madrid',
+                         :@id        => 'es'})             
+
+    tuples = g.where(:@id => :_id, :population => :_population, :capital => 'Madrid').tuples
+
+    expect(tuples.length).to be_eql(1)
+    expect(tuples.first[:id]).to be_eql("@id(es)")
+    expect(tuples.first[:population]).to be_eql(43)
+
+    tuples = g.where(:@id => :_id, :name => :_name, :citizen => { :name => 'Spain', :capital => :_capital }).tuples
+    expect(tuples.length).to be_eql(1)
+    expect(tuples.first[:id]).to be_eql("@id(antoniogarrote)")
+    expect(tuples.first[:name]).to be_eql("Antonio")
+    expect(tuples.first[:capital]).to be_eql("Madrid")
+  end
 end

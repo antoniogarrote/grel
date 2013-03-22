@@ -176,7 +176,7 @@ module GRel
         args = {:describe => true}
         args = {:accept => "application/rdf+xml"}
 
-        sparql = @last_query_context.to_sparql
+        sparql = @last_query_context.to_sparql_describe
         triples = @stardog.query(@db_name,sparql, args).body
 
         @stardog.remove(@db_name, triples, nil, "application/rdf+xml")
@@ -219,17 +219,41 @@ module GRel
       #end
     end
 
+    def tuples
+      results = run_tuples(@last_query_context.to_sparql_select)
+      results["results"]["bindings"].map do |h|
+        h.keys.each do |k|
+          h[k.to_sym] = QL.from_tuple_binding(h[k])
+          h.delete(k)
+        end
+        h
+      end
+    end
+
     def first(options = {})
       all(options).first
     end
 
     def query(query, options = {})
-      GRel::Debugger.debug "QUERYING..."
+      GRel::Debugger.debug "QUERYING DESCRIBE..."
       GRel::Debugger.debug query
       GRel::Debugger.debug "** LIMIT #{@last_query_context.limit}" if @last_query_context.limit
       GRel::Debugger.debug "** OFFSET #{@last_query_context.offset}" if @last_query_context.offset
       GRel::Debugger.debug "----------------------"
       args = {:describe => true}
+      args[:accept] = options[:accept] if options[:accept]
+      args[:offset] = @last_query_context.offset if @last_query_context.offset
+      args[:limit] = @last_query_context.limit if @last_query_context.limit
+      @stardog.query(@db_name,query, args).body
+    end
+
+    def run_tuples(query, options = {})
+      GRel::Debugger.debug "QUERYING SELECT..."
+      GRel::Debugger.debug query
+      GRel::Debugger.debug "** LIMIT #{@last_query_context.limit}" if @last_query_context.limit
+      GRel::Debugger.debug "** OFFSET #{@last_query_context.offset}" if @last_query_context.offset
+      GRel::Debugger.debug "----------------------"
+      args = {}
       args[:accept] = options[:accept] if options[:accept]
       args[:offset] = @last_query_context.offset if @last_query_context.offset
       args[:limit] = @last_query_context.limit if @last_query_context.limit

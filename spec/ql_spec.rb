@@ -109,62 +109,62 @@
    it "should transform a simple hash into a query context" do
      context = QL.to_query({})
      
-     expect(context.to_sparql.index("DESCRIBE ?S_mg_0 WHERE { ?S_mg_0 ?P_mg_0 ?O_mg_0 }")).not_to be_nil
+     expect(context.to_sparql_describe.index("DESCRIBE ?S_mg_0 WHERE { ?S_mg_0 ?P_mg_0 ?O_mg_0 }")).not_to be_nil
      
      context = QL.to_query({a: 1})
      
-     expect(context.to_sparql.index("DESCRIBE ?S_mg_0 WHERE { ?S_mg_0 :a \"1\"^^<http://www.w3.org/2001/XMLSchema#integer> }")).not_to be_nil
+     expect(context.to_sparql_describe.index("DESCRIBE ?S_mg_0 WHERE { ?S_mg_0 :a \"1\"^^<http://www.w3.org/2001/XMLSchema#integer> }")).not_to be_nil
      
      context = QL.to_query({a: 1, b: {c: 1}})
      
-     expect(context.to_sparql.index("DESCRIBE ?S_mg_0 ?S_mg_1 WHERE { ?S_mg_1 :c \"1\"^^<http://www.w3.org/2001/XMLSchema#integer> . ?S_mg_0 :a \"1\"^^<http://www.w3.org/2001/XMLSchema#integer> . ?S_mg_0 :b ?S_mg_1 }")).not_to be_nil
+     expect(context.to_sparql_describe.index("DESCRIBE ?S_mg_0 ?S_mg_1 WHERE { ?S_mg_1 :c \"1\"^^<http://www.w3.org/2001/XMLSchema#integer> . ?S_mg_0 :a \"1\"^^<http://www.w3.org/2001/XMLSchema#integer> . ?S_mg_0 :b ?S_mg_1 }")).not_to be_nil
    end
    
    it "should support to query for unknown properties" do
      context = QL.to_query({:a => :_, :_x => 1})
-     expect(context.to_sparql.index("DESCRIBE ?S_mg_0 WHERE { ?S_mg_0 :a ?X__1 . ?S_mg_0 ?X_x_2 \"1\"^^<http://www.w3.org/2001/XMLSchema#integer> }")).not_to be_nil
+     expect(context.to_sparql_describe.index("DESCRIBE ?S_mg_0 WHERE { ?S_mg_0 :a ?X__1 . ?S_mg_0 ?x \"1\"^^<http://www.w3.org/2001/XMLSchema#integer> }")).not_to be_nil
    end
    
    it "should support filters for values" do
      context = QL.to_query({:a => 1, :b => {:$neq => 3}})
-     expect(context.to_sparql.index("DESCRIBE ?S_mg_0 WHERE { ?S_mg_0 :a \"1\"^^<http://www.w3.org/2001/XMLSchema#integer> . ?S_mg_0 :b ?P_0_0 . FILTER((?P_0_0 != \"3\"^^<http://www.w3.org/2001/XMLSchema#integer>))")).not_to be_nil
+     expect(context.to_sparql_describe.index("DESCRIBE ?S_mg_0 WHERE { ?S_mg_0 :a \"1\"^^<http://www.w3.org/2001/XMLSchema#integer> . ?S_mg_0 :b ?P_0_0 . FILTER((?P_0_0 != \"3\"^^<http://www.w3.org/2001/XMLSchema#integer>))")).not_to be_nil
    end
    
    it "should support inverse properties" do
      context = QL.to_query({:a => 1, :$inv_c => {}})
-     expect(context.to_sparql.index("DESCRIBE ?S_mg_0 WHERE { ?S_mg_1 ?P_mg_1 ?O_mg_1 . ?S_mg_0 :a \"1\"^^<http://www.w3.org/2001/XMLSchema#integer> . ?S_mg_1 :c ?S_mg_0 }")).not_to be_nil
+     expect(context.to_sparql_describe.index("DESCRIBE ?S_mg_0 WHERE { ?S_mg_1 ?P_mg_1 ?O_mg_1 . ?S_mg_0 :a \"1\"^^<http://www.w3.org/2001/XMLSchema#integer> . ?S_mg_1 :c ?S_mg_0 }")).not_to be_nil
    end
 
    it "should support $in filters" do
      context = QL.to_query({:a => 1, :b => {:$in => [1,2,3,4,5]}})
-     expect(context.to_sparql.index("DESCRIBE ?S_mg_0 WHERE { ?S_mg_0 :a \"1\"^^<http://www.w3.org/2001/XMLSchema#integer> . ?S_mg_0 :b ?P_0_0 . FILTER(((?P_0_0 = \"1\"^^<http://www.w3.org/2001/XMLSchema#integer>)||(?P_0_0 = \"2\"^^<http://www.w3.org/2001/XMLSchema#integer>)||(?P_0_0 = \"3\"^^<http://www.w3.org/2001/XMLSchema#integer>)||(?P_0_0 = \"4\"^^<http://www.w3.org/2001/XMLSchema#integer>)||(?P_0_0 = \"5\"^^<http://www.w3.org/2001/XMLSchema#integer>))) }")).not_to be_nil
+     expect(context.to_sparql_describe.index("DESCRIBE ?S_mg_0 WHERE { ?S_mg_0 :a \"1\"^^<http://www.w3.org/2001/XMLSchema#integer> . ?S_mg_0 :b ?P_0_0 . FILTER(((?P_0_0 = \"1\"^^<http://www.w3.org/2001/XMLSchema#integer>)||(?P_0_0 = \"2\"^^<http://www.w3.org/2001/XMLSchema#integer>)||(?P_0_0 = \"3\"^^<http://www.w3.org/2001/XMLSchema#integer>)||(?P_0_0 = \"4\"^^<http://www.w3.org/2001/XMLSchema#integer>)||(?P_0_0 = \"5\"^^<http://www.w3.org/2001/XMLSchema#integer>))) }")).not_to be_nil
    end
 
    it "should support arrays of && conditions" do
      context = QL.to_query({:a => 1, :c => {:$and => [{:$lt => 5}, {:$not => {:$eq => 2}}]}})
-     expect(context.to_sparql.index("DESCRIBE ?S_mg_0 WHERE { ?S_mg_0 :a \"1\"^^<http://www.w3.org/2001/XMLSchema#integer> . ?S_mg_0 :c ?P_0_0 . FILTER(((?P_0_0 < \"5\"^^<http://www.w3.org/2001/XMLSchema#integer>)&&!((?P_0_0 = \"2\"^^<http://www.w3.org/2001/XMLSchema#integer>)))) }")).not_to be_nil
+     expect(context.to_sparql_describe.index("DESCRIBE ?S_mg_0 WHERE { ?S_mg_0 :a \"1\"^^<http://www.w3.org/2001/XMLSchema#integer> . ?S_mg_0 :c ?P_0_0 . FILTER(((?P_0_0 < \"5\"^^<http://www.w3.org/2001/XMLSchema#integer>)&&!((?P_0_0 = \"2\"^^<http://www.w3.org/2001/XMLSchema#integer>)))) }")).not_to be_nil
    end
 
    it "should support arrays of || conditions" do
      context = QL.to_query({:a => 1, :c => {:$or => [{:$lt => 5}, {:$not => {:$eq => 2}}]}})
-     expect(context.to_sparql.index("DESCRIBE ?S_mg_0 WHERE { ?S_mg_0 :a \"1\"^^<http://www.w3.org/2001/XMLSchema#integer> . ?S_mg_0 :c ?P_0_0 . FILTER(((?P_0_0 < \"5\"^^<http://www.w3.org/2001/XMLSchema#integer>)||!((?P_0_0 = \"2\"^^<http://www.w3.org/2001/XMLSchema#integer>)))) }")).not_to be_nil
+     expect(context.to_sparql_describe.index("DESCRIBE ?S_mg_0 WHERE { ?S_mg_0 :a \"1\"^^<http://www.w3.org/2001/XMLSchema#integer> . ?S_mg_0 :c ?P_0_0 . FILTER(((?P_0_0 < \"5\"^^<http://www.w3.org/2001/XMLSchema#integer>)||!((?P_0_0 = \"2\"^^<http://www.w3.org/2001/XMLSchema#integer>)))) }")).not_to be_nil
    end
 
    it "should support optional parts in the pattern" do
      context = QL.to_query({:a => 1, :b => 2, :$optional => {:c => 3, :d => 4}})
 
-     expect(context.to_sparql.index("DESCRIBE ?S_mg_0 WHERE { ?S_mg_0 :a \"1\"^^<http://www.w3.org/2001/XMLSchema#integer> . ?S_mg_0 :b \"2\"^^<http://www.w3.org/2001/XMLSchema#integer> OPTIONAL { ?S_mg_0 :c \"3\"^^<http://www.w3.org/2001/XMLSchema#integer> . ?S_mg_0 :d \"4\"^^<http://www.w3.org/2001/XMLSchema#integer> } }")).not_to be_nil
+     expect(context.to_sparql_describe.index("DESCRIBE ?S_mg_0 WHERE { ?S_mg_0 :a \"1\"^^<http://www.w3.org/2001/XMLSchema#integer> . ?S_mg_0 :b \"2\"^^<http://www.w3.org/2001/XMLSchema#integer> OPTIONAL { ?S_mg_0 :c \"3\"^^<http://www.w3.org/2001/XMLSchema#integer> . ?S_mg_0 :d \"4\"^^<http://www.w3.org/2001/XMLSchema#integer> } }")).not_to be_nil
 
      context = QL.to_query(:a => 1, :b => 2, :$optional => {:f => {:g => 1} })
-     expect(context.to_sparql.index("DESCRIBE ?S_mg_0 ?S_mg_2 WHERE { ?S_mg_0 :a \"1\"^^<http://www.w3.org/2001/XMLSchema#integer> . ?S_mg_0 :b \"2\"^^<http://www.w3.org/2001/XMLSchema#integer> OPTIONAL { ?S_mg_2 :g \"1\"^^<http://www.w3.org/2001/XMLSchema#integer> . ?S_mg_0 :f ?S_mg_2 } }")).not_to be_nil
+     expect(context.to_sparql_describe.index("DESCRIBE ?S_mg_0 ?S_mg_2 WHERE { ?S_mg_0 :a \"1\"^^<http://www.w3.org/2001/XMLSchema#integer> . ?S_mg_0 :b \"2\"^^<http://www.w3.org/2001/XMLSchema#integer> OPTIONAL { ?S_mg_2 :g \"1\"^^<http://www.w3.org/2001/XMLSchema#integer> . ?S_mg_0 :f ?S_mg_2 } }")).not_to be_nil
 
      context = QL.to_query(:a => 1, :$optional => [{:f => 3}, {:g => 4}])
-     expect(context.to_sparql.index("DESCRIBE ?S_mg_0 WHERE { ?S_mg_0 :a \"1\"^^<http://www.w3.org/2001/XMLSchema#integer> OPTIONAL { ?S_mg_0 :f \"3\"^^<http://www.w3.org/2001/XMLSchema#integer> } OPTIONAL { ?S_mg_0 :g \"4\"^^<http://www.w3.org/2001/XMLSchema#integer> } }")).not_to be_nil
+     expect(context.to_sparql_describe.index("DESCRIBE ?S_mg_0 WHERE { ?S_mg_0 :a \"1\"^^<http://www.w3.org/2001/XMLSchema#integer> OPTIONAL { ?S_mg_0 :f \"3\"^^<http://www.w3.org/2001/XMLSchema#integer> } OPTIONAL { ?S_mg_0 :g \"4\"^^<http://www.w3.org/2001/XMLSchema#integer> } }")).not_to be_nil
    end
 
    it "should support union of queries" do
      context = QL.to_query(:a => 1).union(QL.to_query(:a => 2))
-     expect(context.to_sparql.index("DESCRIBE ?S_mg_0 WHERE { { ?S_mg_0 :a \"1\"^^<http://www.w3.org/2001/XMLSchema#integer> } UNION { ?S_mg_0 :a \"2\"^^<http://www.w3.org/2001/XMLSchema#integer> } }")).not_to be_nil
+     expect(context.to_sparql_describe.index("DESCRIBE ?S_mg_0 WHERE { { ?S_mg_0 :a \"1\"^^<http://www.w3.org/2001/XMLSchema#integer> } UNION { ?S_mg_0 :a \"2\"^^<http://www.w3.org/2001/XMLSchema#integer> } }")).not_to be_nil
    end
 
  end

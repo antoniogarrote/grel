@@ -242,7 +242,7 @@ module GRel
         "?P_#{@id_counter}_#{@filters_counter}"
       end
 
-      def to_sparql(preamble=true)
+      def to_sparql_describe(preamble=true)
 
         bgps = @triples.map{|t| 
           if(t.is_a?(Filter))
@@ -272,12 +272,73 @@ module GRel
           query = query + " PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> PREFIX fn: <http://www.w3.org/2005/xpath-functions#> " 
 
           if(@unions.length>0)
-            union_bgps = @unions.map{|u| u.to_sparql(false) }.join(" UNION ")
+            union_bgps = @unions.map{|u| u.to_sparql_describe(false) }.join(" UNION ")
             union_projections = @unions.map{|u| u.projection.keys }.flatten.uniq
             all_subjects = (@projection.keys + union_projections).uniq
             query += "DESCRIBE #{all_subjects.join(' ')} WHERE { { #{main_bgp} } UNION #{union_bgps} }"            
           else
             query += "DESCRIBE #{@projection.keys.join(' ')} WHERE { #{main_bgp} }"
+          end
+        else
+          "{ #{main_bgp} }"
+        end
+      end
+
+      def to_sparql_select(preamble=true)
+
+        projection = {}
+
+        bgps = @triples.map{ |t| 
+          s,p,o = t
+          if(s.to_s.index("?X_") == 0 && p.to_s.index("?X_") == 0 && o.to_s.index("?X_") == 0)
+          elsif(s.to_s.index("?S_mg") == 0 && p.to_s.index("?P_mg") == 0 && o.to_s.index("?O_mg") == 0)
+            nil
+          else
+            projection[s] = true if((s.to_s.index("?") == 0) && s.to_s.index("?X_").nil? && s.index("_mg_").nil?)  
+            projection[p] = true if((p.to_s.index("?") == 0) && p.to_s.index("?X_").nil? && p.index("_mg_").nil?) 
+            projection[o] = true if((o.to_s.index("?") == 0) && o.to_s.index("?X_").nil? && o.index("_mg_").nil?) 
+            if(t.is_a?(Filter))
+              t.acum
+            else
+              t.join(' ') 
+            end
+          end
+        }.compact.join(" . ")
+
+        optional_bgps = @optional_bgps.map{|optional_triples| 
+          "OPTIONAL { "+ optional_triples.map { |t|
+            s,p,o = t
+            if(s.to_s.index("?") == 0 && p.to_s.index("?") == 0 && o.to_s.index("?") == 0)
+              nil
+            else
+              projection[s] = true if((s.to_s.index("?") == 0) && s.to_s.index("?X_").nil?)  
+              projection[p] = true if((p.to_s.index("?") == 0) && p.to_s.index("?X_").nil?) 
+              projection[o] = true if((o.to_s.index("?") == 0) && o.to_s.index("?X_").nil?) 
+              if(t.is_a?(Filter))
+                t.acum
+              else
+                t.join(' ') 
+              end
+            end
+          }.compact.join(" . ") + " }"
+        }.join(" ")
+
+        main_bgp = "#{bgps}"
+        unless(@optional_bgps.empty?)
+          main_bgp += " #{optional_bgps}"
+        end
+
+        query = if(preamble)
+          query = "PREFIX : <http://grel.org/vocabulary#> PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> PREFIX rdfs: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>"
+          query = query + " PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> PREFIX fn: <http://www.w3.org/2005/xpath-functions#> " 
+
+          if(@unions.length>0)
+            union_bgps = @unions.map{|u| u.to_sparql_describe(false) }.join(" UNION ")
+            all_subjects = projection.keys
+            query += "SELECT DISTINCT #{all_subjects.join(' ')} WHERE { { #{main_bgp} } UNION #{union_bgps} }"            
+          else
+            all_subjects = projection.keys
+            query += "SELECT DISTINCT #{all_subjects.join(' ')} WHERE { #{main_bgp} }"
           end
         else
           "{ #{main_bgp} }"
@@ -300,7 +361,7 @@ module GRel
       end
 
       def run
-        @graph.query(to_sparql)
+        @graph.query(to_sparql_describe)
       end
 
       def required_properties
@@ -547,8 +608,10 @@ module GRel
           "rdf:type"
         elsif(obj.to_s.index("$inv_"))
           ":#{obj.to_s.split("$inv_").last}"
-        elsif(obj.to_s.index("_"))
+        elsif(obj.to_s == "_")
           "?X_#{obj.to_s.split('_').last}_#{context.next_node_id}"
+        elsif(obj.to_s.index("_"))
+          "?#{obj.to_s.split("_").drop(1).join("_")}"
         else
           ":#{obj}"
         end
@@ -587,6 +650,17 @@ module GRel
       end
     end # end of to_query
 
+    def self.from_tuple_binding(tuple_value)
+      if(tuple_value["type"] == "uri")
+        from_binding_to_id(tuple_value["value"])
+      elsif(tuple_value["type"] == "literal")
+        tuple_value["value"]
+      else
+        tuple_value["@type"] = tuple_value["datatype"]
+        tuple_value["@value"] = tuple_value["value"]
+        from_binding_value(tuple_value)
+      end
+    end
 
     def self.from_binding_to_id(obj)
       if(!obj.is_a?(String))
@@ -611,6 +685,12 @@ module GRel
       elsif(obj.is_a?(Hash) && obj["@type"])
         if(obj["@type"] == "http://www.w3.org/2001/XMLSchema#dateTime")
           Time.parse(obj["@value"])
+        elsif(obj["@type"] == "http://www.w3.org/2001/XMLSchema#integer")
+          obj["@value"].to_i
+        elsif(obj["@type"] == "http://www.w3.org/2001/XMLSchema#float")
+          obj["@value"].to_f
+        elsif(obj["@type"] == "http://www.w3.org/2001/XMLSchema#boolean")
+          (obj["@value"] == "true" ? true : false)
         else
           obj["@value"]
         end
