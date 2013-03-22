@@ -2,7 +2,6 @@ require 'stardog'
 require 'time'
 require 'uri'
 require 'securerandom'
-require 'debugger'
 
 class Array
   def triples_id
