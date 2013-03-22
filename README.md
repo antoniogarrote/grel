@@ -197,6 +197,10 @@ Tuple variables are defined in the query as symbols starting by an underscore *:
 ```ruby
     g.where(:@id => :_id, :name => :_first_name, :citizen => { :name => 'Spain', :capital => :_capital }).tuples
     # [ {:id => '@id(antoniogarrote)', :first_name => 'Antonio', :capital => 'Madrid} ]
+
+   # variables can also be added into properties not only values
+   g.where(:_property => "Antonio").tuples
+   # [ {:property => :name} ]
 ```
 
 ## Inference
