@@ -1,5 +1,6 @@
 module GRel
 
+  # Base class for the graph of ruby objects stored in Stardog
   class Base
 
     include Stardog
@@ -7,6 +8,14 @@ module GRel
     attr_accessor :connection, :last_query_context
     attr_reader :db_name, :schema_graph
 
+    # Builds the graph with the provided connection string and options.
+    # - endpoint : connection string. localhost:5822 by default.
+    # - options: hash of options:
+    #    + user : user name for authentication
+    #    + password : password for authentication
+    #    + validate : should validate integrity constraints
+    #    + db : name of the db to use
+    # Returns the newly built graph object.
     def initialize(endpoint, options) 
       @options = options
       @endpoint = endpoint
@@ -17,6 +26,12 @@ module GRel
       self
     end
 
+    # Turns on reasoning in queries.
+    # The type of reasoning must be provided as an argument.
+    # By default 'QL' is provided.
+    # Reasoning will remain turned on for all operations in the graph until it is
+    # explicitely turned off with the *without_reasoning* message.
+    # It returns the current graph object.
     def with_reasoning(reasoning="QL")
       @reasoning = true
       @connection = stardog(@endpoint,@options.merge(:reasoning => reasoning))
@@ -26,12 +41,21 @@ module GRel
       self
     end
 
+    # Turns off reasoning in queries.
+    # Reasoning will remain turned off until enabled again with the *with_reasoning* message.
+    # It returns the current graph object.
     def without_reasoning
       @reasoning = false
       @connection = stardog(@endpoint,@options)
       self
     end
 
+    # Sets the current Stardog database this graph is connected to.
+    # It accepts the name of the database as an argument.
+    # If an optional block is provided, operations in the block
+    # will be executed in the provided database and the old database 
+    # will be restored afterwards.
+    # It returns the current graph object.
     def with_db(db_name)
       ensure_db(db_name) do
         old_db_name = @db_name
@@ -46,6 +70,12 @@ module GRel
     end
 
 
+    # Stores a graph of ruby objects encoded as a nested collection of hashes in a database.
+    # Arguments:
+    #  - data : objects to be stored.
+    #  - db_name : optional database where this objects will be stored.
+    # It returns the current graph object.
+    # if a validation fails, a ValidationError will be raised.
     def store(data, db_name=nil)
       if(db_name)
         with_db(db_name) do
@@ -64,6 +94,11 @@ module GRel
     end
 
 
+    # Builds a query for the graph of objects.
+    # The query is expressed as a pattern of nested hashes that will be matched agains the data
+    # stored in the graph.
+    # Wildcard values and filters can also be added to the query.
+    # It returns the current graph object.
     def where(query)
       @last_query_context = QL::QueryContext.new(self)
       @last_query_context.register_query(query)
@@ -71,6 +106,10 @@ module GRel
       self
     end
 
+    # Adds another pattern to the current query being defined.
+    # It accepts a query pattern hash identical to the one accepted by the
+    # *where* method.
+    # It returns the current graph object.
     def union(query)
       union_context = QL::QueryContext.new(self)
       union_context.register_query(query)
@@ -80,25 +119,44 @@ module GRel
       self
     end
 
+    # Limits how many triples will be returned from the server.
+    # The limit refers to triples, not nodes in the graph.
+    # It returns the current graph object.
     def limit(limit)
       @last_query_context.limit = limit
       self
     end
 
+    # Skip the first offset number of triples in the response returned from
+    # the server.
+    # The offset refers to triples, not nodes in the graph.
+    # It returns the current graph object.
     def offset(offset)
       @last_query_context.offset = offset
       self
     end
+    
+#    def order(order)
+#      @last_query_context.order = order
+#      self
+#    end
 
-    def order(order)
-      @last_query_context.order = order
-      self
-    end
-
+    # Exceutes the current query returning the raw response from the server
+    # It returns the a list of JSON-LD linked objects.
     def run
       @last_query_context.run
     end
 
+    # Defines schema meta data that will be used in the processing of queries
+    # if reasoning is activated.
+    # It accepts a list of definitions as an argument.
+    # Valid definitions are:
+    #  - @subclass definitions
+    #  - @subproperty definitions
+    #  - @domain definitions
+    #  - @range defintions
+    #  - @cardinality definitions
+    # It returns the current graph object.
     def define(*args)
       unless(args.length == 3 && !args.first.is_a?(Array))
         args = args.inject([]) {|a,i| a += i; a }
@@ -115,13 +173,17 @@ module GRel
       self
     end
 
+    # Drop definition statements from the schema meta data.
+    # It accepts statements equivalent to the ones provided to the *define* method.
+    # It returns the current graph object.
     def retract_definition(*args)
       unless(args.length == 3 && !args.first.is_a?(Array))
         args = args.inject([]) {|a,i| a += i }
       end
-      additional_triples = []
 
-      triples = QL.to_turtle(args + additional_triples, true)
+      args = parse_schema_axioms(args)
+
+      triples = QL.to_turtle(args, true)
       GRel::Debugger.debug "REMOVING FROM SCHEMA #{@schema_graph}"
       GRel::Debugger.debug triples
       GRel::Debugger.debug "IN"
@@ -130,6 +192,17 @@ module GRel
       self
     end
 
+    # Adds a validation statement to the graph.
+    # Validations will be checked in every *store* operation if validations are activated.
+    # A ValidationError exception will be raised if a validation fails.
+    # It accepts a list of definitions as an argument.
+    # Valid definitions are:
+    #  - @subclass definitions
+    #  - @subproperty definitions
+    #  - @domain definitions
+    #  - @range defintions
+    #  - @cardinality definitions
+    # It returns the current graph object.
     def validate(*args)
       unless(args.detect{|e| !e.is_a?(Array)})
         args = args.inject([]) {|a,i| a += i; a }
@@ -152,6 +225,9 @@ module GRel
       self
     end
 
+    # Removes a validation from the graph.
+    # It accepts a list of validation statements equivalent to the ones accepted by the *validate* method.
+    # It returns the current graph object.
     def retract_validation(*args)
       unless(args.length == 3 && !args.first.is_a?(Array))
         args = args.inject([]) {|a,i| a += i }
@@ -165,6 +241,11 @@ module GRel
       self
     end
 
+    # Removes data from the graph of objects.
+    # If no arguments are provided, the nodes returned from the last executed query will
+    # be removed from the graph.
+    # If a graph of objects are provided, the equivalent statements will be removed instead.
+    # It returns the current graph object.
     def remove(data = nil, options = {})
       if data
         GRel::Debugger.debug "REMMOVING"
@@ -184,6 +265,10 @@ module GRel
       self
     end
 
+    # Executes the current defined query and returns a list of matching noes from the graph.
+    # Nodes will be correctly linked in the returned list.
+    # if the option *:unlinked* is provided with true value, only the top level nodes that has not incoming links
+    # will be returned.
     def all(options = {})
       unlinked = options[:unlinked] || false
 
@@ -219,6 +304,8 @@ module GRel
       #end
     end
 
+    # Executes the current defined query returning a list of hashes where pairs key,value
+    # are bound to the tuple variables in the query hash and retrived values for those variables.
     def tuples
       results = run_tuples(@last_query_context.to_sparql_select)
       results["results"]["bindings"].map do |h|
@@ -230,10 +317,13 @@ module GRel
       end
     end
 
+    # Returns only the first node from the list of retrieved nodes in an all query.
     def first(options = {})
       all(options).first
     end
 
+    # Executes a raw SPARQL DESCRIBE query for the current defined query.
+    # It returns the results of the query without any other processing.
     def query(query, options = {})
       GRel::Debugger.debug "QUERYING DESCRIBE..."
       GRel::Debugger.debug query
@@ -247,6 +337,8 @@ module GRel
       @connection.query(@db_name,query, args).body
     end
 
+    # Executes a raw SPARQL SELECT query for the current defined query.
+    # It returns the results of the query without any other processing.
     def run_tuples(query, options = {})
       GRel::Debugger.debug "QUERYING SELECT..."
       GRel::Debugger.debug query
@@ -260,6 +352,9 @@ module GRel
       @connection.query(@db_name,query, args).body
     end
 
+    # It turns on validations for any insertion in the graph.
+    # Validations will remain turned on until they are disabled using the *without_validations* message.
+    # It returns the current graph.
     def with_validations(state = true)
       @validations = state
       @connection.offline_db(@db_name)
@@ -269,6 +364,9 @@ module GRel
       self
     end
 
+    # It disables validations for any insertion in the graph.
+    # Validations will remain turned off until they are enabled again using the *with_validations* message.
+    # It returns the current graph.
     def without_validations
       with_validations(false)
     end
