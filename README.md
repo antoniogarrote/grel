@@ -187,6 +187,18 @@ This method is the opposite to an *store* operation.
     # {:@id => '@id(es), :name => 'Spain'}
 ```
 
+## Tuple Queries
+
+Sometimes we just want to retrieve particular facts from the data graph instead of full nodes. Tuple queries makes it possible to retrieve elements of a graph pattern matching the data graph. 
+Results will be returned as hashes where each property is one of the variables in the graph pattern.
+
+Tuple variables are defined in the query as symbols starting by an underscore *:_variable_name*:
+
+```ruby
+    g.where(:@id => :_id, :_first_name => :_name, :citizen => { :name => 'Spain', :capital => :_capital }).tuples
+    # [ {:id => '@id(antoniogarrote)', :first_name => 'Antonio', :capital => 'Madrid} ]
+```
+
 ## Inference
 
 Schema information can be added using the *define* method and assertions like *@subclass*, *@subproperty*, *@domain*, *@range*.
@@ -364,6 +376,25 @@ Some examples of validations are:
 
     # No validation error is raised
 ```
+
+ - Cardinality constraints
+
+    g = graph.with_db(DB).with_validations
+
+    g.validate(:Person, :@cardinality, {:property => :lives, :max => 1, :min => 1})
+
+    g.store(:@type => :Person,
+            :name => 'Antonio',
+            :lives => [{:@id => 'es'},{:@id => 'uk'}])
+
+
+    # An exception is raised, People can only live in one place
+
+    g.store(:@type => :Person,
+            :name => 'Antonio',
+            :lives => '@id(uk)')
+
+    # No validation error is raised
 
 The details about how to use validations can be found in the Stardog documentation related to ICV (Integrity Constraints Validations) for the data base (http://stardog.com/docs/sdp/#validation).
 
