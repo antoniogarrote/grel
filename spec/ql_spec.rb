@@ -470,7 +470,7 @@
    it "should allow to store schema definitions" do
      results = graph.with_db(DB).define(:a, :@subclass, :b)
 
-     results = graph.stardog.query(DB,"SELECT ?G ?S ?P ?O WHERE { graph ?G { ?S ?P ?O} }")
+     results = graph.connection.query(DB,"SELECT ?G ?S ?P ?O WHERE { graph ?G { ?S ?P ?O} }")
      expect(results.body["results"]["bindings"].first["P"]["value"]).to be_eql("http://www.w3.org/2000/01/rdf-schema#subClassOf")
      expect(results.body["results"]["bindings"].first["G"]["value"]).to be_eql("testgraph:schema")
    end

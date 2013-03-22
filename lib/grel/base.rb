@@ -4,31 +4,31 @@ module GRel
 
     include Stardog
 
-    attr_accessor :stardog, :last_query_context
+    attr_accessor :connection, :last_query_context
     attr_reader :db_name, :schema_graph
 
     def initialize(endpoint, options) 
       @options = options
       @endpoint = endpoint
-      @stardog = Stardog::stardog(endpoint,options)
+      @connection = stardog(endpoint,options)
       @validations = options[:validate] || false
-      @dbs = @stardog.list_dbs.body["databases"]
+      @dbs = @connection.list_dbs.body["databases"]
       @reasoning = false
       self
     end
 
     def with_reasoning(reasoning="QL")
       @reasoning = true
-      @stardog = Stardog::stardog(@endpoint,@options.merge(:reasoning => reasoning))
-      @stardog.offline_db(@db_name)
-      @stardog.set_db_options(@db_name, "icv.reasoning.type" => reasoning)
-      @stardog.online_db(@db_name, 'WAIT')
+      @connection = stardog(@endpoint,@options.merge(:reasoning => reasoning))
+      @connection.offline_db(@db_name)
+      @connection.set_db_options(@db_name, "icv.reasoning.type" => reasoning)
+      @connection.online_db(@db_name, 'WAIT')
       self
     end
 
     def without_reasoning
       @reasoning = false
-      @stardog = Stardog::stardog(@endpoint,@options)
+      @connection = stardog(@endpoint,@options)
       self
     end
 
@@ -56,7 +56,7 @@ module GRel
         GRel::Debugger.debug QL.to_turtle(data)
         GRel::Debugger.debug "IN"
         GRel::Debugger.debug @db_name
-        @stardog.add(@db_name, QL.to_turtle(data), nil, "text/turtle")
+        @connection.add(@db_name, QL.to_turtle(data), nil, "text/turtle")
       end
       self
     rescue Stardog::ICVException => ex
@@ -111,7 +111,7 @@ module GRel
       GRel::Debugger.debug triples
       GRel::Debugger.debug "IN"
       GRel::Debugger.debug @db_name
-      @stardog.add(@db_name, triples, @schema_graph, "text/turtle")
+      @connection.add(@db_name, triples, @schema_graph, "text/turtle")
       self
     end
 
@@ -126,7 +126,7 @@ module GRel
       GRel::Debugger.debug triples
       GRel::Debugger.debug "IN"
       GRel::Debugger.debug @db_name
-      @stardog.remove(@db_name, triples, @schema_graph, "text/turtle")
+      @connection.remove(@db_name, triples, @schema_graph, "text/turtle")
       self
     end
 
@@ -148,7 +148,7 @@ module GRel
       GRel::Debugger.debug triples
       GRel::Debugger.debug "IN"
       GRel::Debugger.debug @db_name
-      @stardog.add_icv(@db_name, triples, "text/turtle")
+      @connection.add_icv(@db_name, triples, "text/turtle")
       self
     end
 
@@ -161,7 +161,7 @@ module GRel
       GRel::Debugger.debug triples
       GRel::Debugger.debug "IN"
       GRel::Debugger.debug @db_name
-      @stardog.remove_icv(@db_name, triples, "text/turtle")
+      @connection.remove_icv(@db_name, triples, "text/turtle")
       self
     end
 
@@ -171,15 +171,15 @@ module GRel
         GRel::Debugger.debug QL.to_turtle(data)
         GRel::Debugger.debug "IN"
         GRel::Debugger.debug @db_name
-        @stardog.remove(@db_name, QL.to_turtle(data), nil, "text/turtle")
+        @connection.remove(@db_name, QL.to_turtle(data), nil, "text/turtle")
       else
         args = {:describe => true}
         args = {:accept => "application/rdf+xml"}
 
         sparql = @last_query_context.to_sparql_describe
-        triples = @stardog.query(@db_name,sparql, args).body
+        triples = @connection.query(@db_name,sparql, args).body
 
-        @stardog.remove(@db_name, triples, nil, "application/rdf+xml")
+        @connection.remove(@db_name, triples, nil, "application/rdf+xml")
       end
       self
     end
@@ -244,7 +244,7 @@ module GRel
       args[:accept] = options[:accept] if options[:accept]
       args[:offset] = @last_query_context.offset if @last_query_context.offset
       args[:limit] = @last_query_context.limit if @last_query_context.limit
-      @stardog.query(@db_name,query, args).body
+      @connection.query(@db_name,query, args).body
     end
 
     def run_tuples(query, options = {})
@@ -257,14 +257,14 @@ module GRel
       args[:accept] = options[:accept] if options[:accept]
       args[:offset] = @last_query_context.offset if @last_query_context.offset
       args[:limit] = @last_query_context.limit if @last_query_context.limit
-      @stardog.query(@db_name,query, args).body
+      @connection.query(@db_name,query, args).body
     end
 
     def with_validations(state = true)
       @validations = state
-      @stardog.offline_db(@db_name)
-      @stardog.set_db_options(@db_name, "icv.enabled" => @validations)
-      @stardog.online_db(@db_name, 'WAIT')
+      @connection.offline_db(@db_name)
+      @connection.set_db_options(@db_name, "icv.enabled" => @validations)
+      @connection.online_db(@db_name, 'WAIT')
 
       self
     end
@@ -277,8 +277,8 @@ module GRel
 
     def ensure_db(db_name)
       unless(@dbs.include?(db_name))
-        @stardog.create_db(db_name, :options => { "reasoning.schema.graphs" => "#{db_name}:schema" })
-        @stardog.with_validations(@validations) if @validations == true
+        @connection.create_db(db_name, :options => { "reasoning.schema.graphs" => "#{db_name}:schema" })
+        @connection.with_validations(@validations) if @validations == true
         @dbs << db_name
       end
       yield if block_given?
