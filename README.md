@@ -195,7 +195,7 @@ Results will be returned as hashes where each property is one of the variables i
 Tuple variables are defined in the query as symbols starting by an underscore *:_variable_name*:
 
 ```ruby
-    g.where(:@id => :_id, :_first_name => :_name, :citizen => { :name => 'Spain', :capital => :_capital }).tuples
+    g.where(:@id => :_id, :name => :_first_name, :citizen => { :name => 'Spain', :capital => :_capital }).tuples
     # [ {:id => '@id(antoniogarrote)', :first_name => 'Antonio', :capital => 'Madrid} ]
 ```
 
