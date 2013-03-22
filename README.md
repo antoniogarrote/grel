@@ -1,6 +1,6 @@
 #GRel
 
-A small ruby library that makes it easy to store and query ruby objects stored in a RDF database like Stardog.
+A small ruby library that makes it easy to store and query ruby objects stored in the RDF database [Stardog](http://stardog.com/).
 
 ## Initialization
 ```ruby
@@ -399,6 +399,10 @@ Some examples of validations are:
 ```
 
 The details about how to use validations can be found in the Stardog documentation related to ICV (Integrity Constraints Validations) for the data base (http://stardog.com/docs/sdp/#validation).
+
+## License
+
+Licensed under the Apache2 license.
 
 ## Author and contact:
 
