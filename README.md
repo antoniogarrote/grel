@@ -379,6 +379,7 @@ Some examples of validations are:
 
  - Cardinality constraints
 
+```ruby
     g = graph.with_db(DB).with_validations
 
     g.validate(:Person, :@cardinality, {:property => :lives, :max => 1, :min => 1})
@@ -395,6 +396,7 @@ Some examples of validations are:
             :lives => '@id(uk)')
 
     # No validation error is raised
+```
 
 The details about how to use validations can be found in the Stardog documentation related to ICV (Integrity Constraints Validations) for the data base (http://stardog.com/docs/sdp/#validation).
 
