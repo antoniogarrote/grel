@@ -11,10 +11,11 @@ module GRel
     # Builds the graph with the provided connection string and options.
     # - endpoint : connection string. localhost:5822 by default.
     # - options: hash of options:
-    #    + user : user name for authentication
-    #    + password : password for authentication
-    #    + validate : should validate integrity constraints
-    #    + db : name of the db to use
+    # Valid options are:
+    # - user : user name for authentication
+    # - password : password for authentication
+    # - validate : should validate integrity constraints
+    # - db : name of the db to use
     # Returns the newly built graph object.
     def initialize(endpoint, options) 
       @options = options
@@ -30,7 +31,7 @@ module GRel
     # The type of reasoning must be provided as an argument.
     # By default 'QL' is provided.
     # Reasoning will remain turned on for all operations in the graph until it is
-    # explicitely turned off with the *without_reasoning* message.
+    # explicitely turned off with the +without_reasoning+ message.
     # It returns the current graph object.
     def with_reasoning(reasoning="QL")
       @reasoning = true
@@ -42,7 +43,7 @@ module GRel
     end
 
     # Turns off reasoning in queries.
-    # Reasoning will remain turned off until enabled again with the *with_reasoning* message.
+    # Reasoning will remain turned off until enabled again with the +with_reasoning+ message.
     # It returns the current graph object.
     def without_reasoning
       @reasoning = false
@@ -72,8 +73,8 @@ module GRel
 
     # Stores a graph of ruby objects encoded as a nested collection of hashes in a database.
     # Arguments:
-    #  - data : objects to be stored.
-    #  - db_name : optional database where this objects will be stored.
+    # - data : objects to be stored.
+    # - db_name : optional database where this objects will be stored.
     # It returns the current graph object.
     # if a validation fails, a ValidationError will be raised.
     def store(data, db_name=nil)
@@ -108,7 +109,7 @@ module GRel
 
     # Adds another pattern to the current query being defined.
     # It accepts a query pattern hash identical to the one accepted by the
-    # *where* method.
+    # +where+ method.
     # It returns the current graph object.
     def union(query)
       union_context = QL::QueryContext.new(self)
@@ -151,11 +152,11 @@ module GRel
     # if reasoning is activated.
     # It accepts a list of definitions as an argument.
     # Valid definitions are:
-    #  - @subclass definitions
-    #  - @subproperty definitions
-    #  - @domain definitions
-    #  - @range defintions
-    #  - @cardinality definitions
+    # - @subclass definitions
+    # - @subproperty definitions
+    # - @domain definitions
+    # - @range defintions
+    # - @cardinality definitions
     # It returns the current graph object.
     def define(*args)
       unless(args.length == 3 && !args.first.is_a?(Array))
@@ -174,7 +175,7 @@ module GRel
     end
 
     # Drop definition statements from the schema meta data.
-    # It accepts statements equivalent to the ones provided to the *define* method.
+    # It accepts statements equivalent to the ones provided to the +define+ method.
     # It returns the current graph object.
     def retract_definition(*args)
       unless(args.length == 3 && !args.first.is_a?(Array))
@@ -193,15 +194,15 @@ module GRel
     end
 
     # Adds a validation statement to the graph.
-    # Validations will be checked in every *store* operation if validations are activated.
+    # Validations will be checked in every +store+ operation if validations are activated.
     # A ValidationError exception will be raised if a validation fails.
     # It accepts a list of definitions as an argument.
     # Valid definitions are:
-    #  - @subclass definitions
-    #  - @subproperty definitions
-    #  - @domain definitions
-    #  - @range defintions
-    #  - @cardinality definitions
+    # - @subclass definitions
+    # - @subproperty definitions
+    # - @domain definitions
+    # - @range defintions
+    # - @cardinality definitions
     # It returns the current graph object.
     def validate(*args)
       unless(args.detect{|e| !e.is_a?(Array)})
@@ -226,7 +227,7 @@ module GRel
     end
 
     # Removes a validation from the graph.
-    # It accepts a list of validation statements equivalent to the ones accepted by the *validate* method.
+    # It accepts a list of validation statements equivalent to the ones accepted by the +validate+ method.
     # It returns the current graph object.
     def retract_validation(*args)
       unless(args.length == 3 && !args.first.is_a?(Array))
@@ -267,7 +268,7 @@ module GRel
 
     # Executes the current defined query and returns a list of matching noes from the graph.
     # Nodes will be correctly linked in the returned list.
-    # if the option *:unlinked* is provided with true value, only the top level nodes that has not incoming links
+    # if the option +:unlinked+ is provided with true value, only the top level nodes that has not incoming links
     # will be returned.
     def all(options = {})
       unlinked = options[:unlinked] || false
@@ -353,7 +354,7 @@ module GRel
     end
 
     # It turns on validations for any insertion in the graph.
-    # Validations will remain turned on until they are disabled using the *without_validations* message.
+    # Validations will remain turned on until they are disabled using the +without_validations+ message.
     # It returns the current graph.
     def with_validations(state = true)
       @validations = state
@@ -365,7 +366,7 @@ module GRel
     end
 
     # It disables validations for any insertion in the graph.
-    # Validations will remain turned off until they are enabled again using the *with_validations* message.
+    # Validations will remain turned off until they are enabled again using the +with_validations+ message.
     # It returns the current graph.
     def without_validations
       with_validations(false)

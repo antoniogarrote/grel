@@ -126,14 +126,17 @@ If our query returns a graph with no cycles and we want to return only the top l
 ```
 Relationships between objects can be specified in inverse order using a key starting with *$inv*.
 ```ruby
-    g.where(:@type => :Country, :$inv_citizen => {:name => "Abhinay"}).all(:unlinked => true)
+    g.where(:@type => :Country, 
+            :$inv_citizen => {:name => "Abhinay"}).all(:unlinked => true)
     # [ {:@id => '@id(in)', :name => 'India', ...'} ]
 ```
 Filters can be applied to properties to select valid objects:
 ```ruby
-    g.where(:@type => :Country, :population => {:$gt => 100}).all
+    g.where(:@type => :Country, 
+            :population => {:$gt => 100}).all
     # [ {:@id => '@id(in)', :name => 'India', :population => 1200, ...'} ]
-    g.where(:@type => :Country, :population => {:$or => [{:$lt => 50},{:$gt => 1000}]}).all
+    g.where(:@type => :Country, 
+            :population => {:$or => [{:$lt => 50},{:$gt => 1000}]}).all
     # [ {:@id => '@id(in)', :name => 'India', :population => 1200, ...'},
     #   {:@id => '@id(es)', :name => 'Spain', :population => 43, ...} ]
     g.where(:@type => :Country, :name => {:$like => /.+a.+/}).all
@@ -195,12 +198,17 @@ Results will be returned as hashes where each property is one of the variables i
 Tuple variables are defined in the query as symbols starting by an underscore *:_variable_name*:
 
 ```ruby
-    g.where(:@id => :_id, :name => :_first_name, :citizen => { :name => 'Spain', :capital => :_capital }).tuples
-    # [ {:id => '@id(antoniogarrote)', :first_name => 'Antonio', :capital => 'Madrid} ]
+    g.where(:@id => :_id, 
+            :name => :_first_name, 
+            :citizen => { :name => 'Spain', 
+                          :capital => :_capital }).tuples
+    # [ {:id => '@id(antoniogarrote)', 
+    #    :first_name => 'Antonio', 
+    #    :capital => 'Madrid} ]
 
-   # variables can also be added into properties not only values
-   g.where(:_property => "Antonio").tuples
-   # [ {:property => :name} ]
+    # variables can also be added into properties not only values
+    g.where(:_property => "Antonio").tuples
+    # [ {:property => :name} ]
 ```
 
 ## Inference
@@ -220,17 +228,23 @@ If inference is enabled for a connection using the *with_reasoning* method, quer
 
     # With reasoning
     g.with_reasoning.where(:@type => :Person).all
-    # [{:@id => 'id(abs)', :@type => :Developer, ...},
-    #  {:@id => 'id(thattommyhall)', :@type => :Developer, ...},
-    #  {:@id => 'id(antoniogarrote)', :@type => :Developer, ...}]
+    # [{:@id => 'id(abs)', 
+    #   :@type => :Developer, ...},
+    #  {:@id => 'id(thattommyhall)', 
+    #   :@type => :Developer, ...},
+    #  {:@id => 'id(antoniogarrote)', 
+    #   :@type => :Developer, ...}]
 ```
 
 An example using the *@subproperty* declaration.
 ```ruby
     g.define(:citizen, :@subproperty, :bornin)   
 
-    g.with_reasoning.where(:bornin => {:@type => :Country, :capital => 'Madrid'}).all
-    # [{:@id => 'id(antoniogarrote)', :citizen => {:@id => 'id(es)', :capital => 'Madrid', ... }, ...}]
+    g.with_reasoning.where(:bornin => {:@type => :Country, 
+                                       :capital => 'Madrid'}).all
+    # [{:@id => 'id(antoniogarrote)', 
+    #   :citizen => {:@id => 'id(es)', 
+    #                :capital => 'Madrid', ... }, ...}]
 ```
 
 
@@ -239,9 +253,14 @@ An example using the *@domain* and *@range* declarations.
     g.define(:citizen, :@domain, :Citizen)   
     g.define(:citizen, :@range, :State)   
 
-    g.with_reasoning.where(:@type => :Citizen, :citizen => {:@type => :State}).all
-    # [{:@id => 'id(antoniogarrote)', :citizen => {:@id => 'id(es)', :capital => 'Madrid', ... }, ...},
-    #  {:@id => 'id(thattommyhall)',  :citizen => {:@id => 'id(uk)', :capital => 'Madrid', ... }, ...}
+    g.with_reasoning.where(:@type => :Citizen, 
+                           :citizen => {:@type => :State}).all
+    # [{:@id => 'id(antoniogarrote)', 
+    #   :citizen => {:@id => 'id(es)', 
+    #                :capital => 'Madrid', ... }, ...},
+    #  {:@id => 'id(thattommyhall)',  
+    #   :citizen => {:@id => 'id(uk)', 
+    #                :capital => 'Madrid', ... }, ...}
     #  ... ]
 ```
 
@@ -252,9 +271,14 @@ An example using the *@domain* and *@range* declarations.
     g.define(:citizen, :@domain, :Citizen)   
     g.define(:citizen, :@range, :State)   
 
-    g.with_reasoning.where(:@type => :Citizen, :citizen => {:@type => :State}).all
-    # [{:@id => 'id(antoniogarrote)', :citizen => {:@id => 'id(es)', :capital => 'Madrid', ... }, ...},
-    #  {:@id => 'id(thattommyhall)',  :citizen => {:@id => 'id(uk)', :capital => 'Madrid', ... }, ...}
+    g.with_reasoning.where(:@type => :Citizen, 
+                           :citizen => {:@type => :State}).all
+    # [{:@id => 'id(antoniogarrote)', 
+    #   :citizen => {:@id => 'id(es)', 
+    #                :capital => 'Madrid', ... }, ...},
+    #  {:@id => 'id(thattommyhall)',  
+    #   :citizen => {:@id => 'id(uk)', 
+    #                :capital => 'Madrid', ... }, ...}
     #  ... ]
 
     g.retract_definition(:citizen, :@range, :State).where(:@type => :Citizen, :citizen => {:@type => :State}).all
@@ -280,12 +304,18 @@ Validations can also be removed using the *retract_validation* message.
 
     g.with_validations.validate(:citizen, :@domain, :State)   
 
-    g.store(:@id => 'id(malditogeek)', :citizen => {:@id => 'id(ar)', :capital => 'Buenos Aires'}, ...)
+    g.store(:@id => 'id(malditogeek)', 
+            :citizen => {:@id => 'id(ar)', 
+                         :capital => 'Buenos Aires'}, ...)
 
     # An exception is raised due to validation violation
 
-    g.store(:@id => 'ar', :capital => 'Buenos Aires', :@type => :State, :name => 'Argentina').
-      store(:@id => 'id(malditogeek)', :citizen => '@id(ar)')
+    g.store(:@id => 'ar', 
+            :capital => 'Buenos Aires', 
+            :@type => :State, 
+            :name => 'Argentina').
+      store(:@id => 'id(malditogeek)', 
+            :citizen => '@id(ar)')
     # After adding the @type for Argentina, the insertion does not raise any exception.
 ```
 
@@ -296,16 +326,23 @@ Validations and inference can be used together to infere additional infromation 
 
     g.with_validations.validate(:citizen, :@domain, :State)   
 
-    g.store(:@id => 'id(malditogeek)', :citizen => {:@id => 'id(ar)', :capital => 'Buenos Aires'}, ...)
+    g.store(:@id => 'id(malditogeek)', 
+            :citizen => {:@id => 'id(ar)', 
+                         :capital => 'Buenos Aires'}, ...)
 
     # An exception is raised due to validation violation
 
     g.with_reasoning.define(:citizen, :@domain, :State).
-      store(:@id => 'id(malditogeek)', :citizen => {:@id => 'id(ar)', :capital => 'Buenos Aires'}, ...)
+      store(:@id => 'id(malditogeek)', 
+            :citizen => {:@id => 'id(ar)', 
+                         :capital => 'Buenos Aires'}, ...)
     # Data is valid using reasoning since the @type :State for Argentina can be inferred.
 
-    g.where(:@type => :Citizen, :citizen => {:@type => :State}).all
-    # [{:@id => 'id(malditogeek)', :citizen => {:@id => 'id(ar)', :capital => 'Buenos Aires', ... }, ...}]
+    g.where(:@type => :Citizen, 
+            :citizen => {:@type => :State}).all
+    # [{:@id => 'id(malditogeek)', 
+    #   :citizen => {:@id => 'id(ar)', 
+    #                :capital => 'Buenos Aires', ... }, ...}]
 
     g.without_reasoning # graph is invalid now, no further operations can be committed.
 
@@ -386,7 +423,9 @@ Some examples of validations are:
 ```ruby
     g = graph.with_db(DB).with_validations
 
-    g.validate(:Person, :@cardinality, {:property => :lives, :max => 1, :min => 1})
+    g.validate(:Person, :@cardinality, {:property => :lives, 
+                                        :max => 1, 
+                                        :min => 1})
 
     g.store(:@type => :Person,
             :name => 'Antonio',
