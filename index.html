@@ -1,36 +1,51 @@
 <!DOCTYPE html>
 <html>
-
   <head>
-    <meta charset='utf-8' />
-    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
-    <meta name="description" content="Grel : Query and manipulation library of ruby objects in a  Stardog RDF graph" />
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=640" />
 
-    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+    <link rel="stylesheet" href="stylesheets/core.css" media="screen"/>
+    <link rel="stylesheet" href="stylesheets/mobile.css" media="handheld, only screen and (max-device-width:640px)"/>
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css"/>
 
-    <title>Grel</title>
+    <script type="text/javascript" src="javascripts/modernizr.js"></script>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script type="text/javascript" src="javascripts/headsmart.min.js"></script>
+    <script type="text/javascript">
+      $(document).ready(function () {
+        $('#main_content').headsmart()
+      })
+    </script>
+    <title>Grel by antoniogarrote</title>
   </head>
 
   <body>
+    <a id="forkme_banner" href="https://github.com/antoniogarrote/grel">View on GitHub</a>
+    <div class="shell">
 
-    <!-- HEADER -->
-    <div id="header_wrap" class="outer">
-        <header class="inner">
-          <a id="forkme_banner" href="https://github.com/antoniogarrote/grel">View on GitHub</a>
+      <header>
+        <span class="ribbon-outer">
+          <span class="ribbon-inner">
+            <h1>Grel</h1>
+            <h2>Query and manipulation library of ruby objects in a  Stardog RDF graph</h2>
+          </span>
+          <span class="left-tail"></span>
+          <span class="right-tail"></span>
+        </span>
+      </header>
 
-          <h1 id="project_title">Grel</h1>
-          <h2 id="project_tagline">Query and manipulation library of ruby objects in a  Stardog RDF graph</h2>
+      <section id="downloads">
+        <span class="inner">
+          <a href="https://github.com/antoniogarrote/grel/zipball/master" class="zip"><em>download</em> .ZIP</a><a href="https://github.com/antoniogarrote/grel/tarball/master" class="tgz"><em>download</em> .TGZ</a>
+        </span>
+      </section>
 
-            <section id="downloads">
-              <a class="zip_download_link" href="https://github.com/antoniogarrote/grel/zipball/master">Download this project as a .zip file</a>
-              <a class="tar_download_link" href="https://github.com/antoniogarrote/grel/tarball/master">Download this project as a tar.gz file</a>
-            </section>
-        </header>
-    </div>
 
-    <!-- MAIN CONTENT -->
-    <div id="main_content_wrap" class="outer">
-      <section id="main_content" class="inner">
+      <span class="banner-fix"></span>
+
+
+      <section id="main_content">
         <h1>GRel</h1>
 
 <p>A small ruby library that makes it easy to store and query ruby objects stored in the RDF database <a href="http://stardog.com/">Stardog</a>.</p>
@@ -157,15 +172,18 @@ If our query returns a graph with no cycles and we want to return only the top l
 
 <p>Relationships between objects can be specified in inverse order using a key starting with <em>$inv</em>.</p>
 
-<div class="highlight"><pre>    <span class="n">g</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="ss">:@type</span> <span class="o">=&gt;</span> <span class="ss">:Country</span><span class="p">,</span> <span class="p">:</span><span class="vg">$inv_citizen</span> <span class="o">=&gt;</span> <span class="p">{</span><span class="ss">:name</span> <span class="o">=&gt;</span> <span class="s2">"Abhinay"</span><span class="p">})</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="ss">:unlinked</span> <span class="o">=&gt;</span> <span class="kp">true</span><span class="p">)</span>
+<div class="highlight"><pre>    <span class="n">g</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="ss">:@type</span> <span class="o">=&gt;</span> <span class="ss">:Country</span><span class="p">,</span> 
+            <span class="p">:</span><span class="vg">$inv_citizen</span> <span class="o">=&gt;</span> <span class="p">{</span><span class="ss">:name</span> <span class="o">=&gt;</span> <span class="s2">"Abhinay"</span><span class="p">})</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="ss">:unlinked</span> <span class="o">=&gt;</span> <span class="kp">true</span><span class="p">)</span>
     <span class="c1"># [ {:@id =&gt; '@id(in)', :name =&gt; 'India', ...'} ]</span>
 </pre></div>
 
 <p>Filters can be applied to properties to select valid objects:</p>
 
-<div class="highlight"><pre>    <span class="n">g</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="ss">:@type</span> <span class="o">=&gt;</span> <span class="ss">:Country</span><span class="p">,</span> <span class="ss">:population</span> <span class="o">=&gt;</span> <span class="p">{:</span><span class="vg">$gt</span> <span class="o">=&gt;</span> <span class="mi">100</span><span class="p">})</span><span class="o">.</span><span class="n">all</span>
+<div class="highlight"><pre>    <span class="n">g</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="ss">:@type</span> <span class="o">=&gt;</span> <span class="ss">:Country</span><span class="p">,</span> 
+            <span class="ss">:population</span> <span class="o">=&gt;</span> <span class="p">{:</span><span class="vg">$gt</span> <span class="o">=&gt;</span> <span class="mi">100</span><span class="p">})</span><span class="o">.</span><span class="n">all</span>
     <span class="c1"># [ {:@id =&gt; '@id(in)', :name =&gt; 'India', :population =&gt; 1200, ...'} ]</span>
-    <span class="n">g</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="ss">:@type</span> <span class="o">=&gt;</span> <span class="ss">:Country</span><span class="p">,</span> <span class="ss">:population</span> <span class="o">=&gt;</span> <span class="p">{:</span><span class="vg">$or</span> <span class="o">=&gt;</span> <span class="o">[</span><span class="p">{:</span><span class="vg">$lt</span> <span class="o">=&gt;</span> <span class="mi">50</span><span class="p">},{:</span><span class="vg">$gt</span> <span class="o">=&gt;</span> <span class="mi">1000</span><span class="p">}</span><span class="o">]</span><span class="p">})</span><span class="o">.</span><span class="n">all</span>
+    <span class="n">g</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="ss">:@type</span> <span class="o">=&gt;</span> <span class="ss">:Country</span><span class="p">,</span> 
+            <span class="ss">:population</span> <span class="o">=&gt;</span> <span class="p">{:</span><span class="vg">$or</span> <span class="o">=&gt;</span> <span class="o">[</span><span class="p">{:</span><span class="vg">$lt</span> <span class="o">=&gt;</span> <span class="mi">50</span><span class="p">},{:</span><span class="vg">$gt</span> <span class="o">=&gt;</span> <span class="mi">1000</span><span class="p">}</span><span class="o">]</span><span class="p">})</span><span class="o">.</span><span class="n">all</span>
     <span class="c1"># [ {:@id =&gt; '@id(in)', :name =&gt; 'India', :population =&gt; 1200, ...'},</span>
     <span class="c1">#   {:@id =&gt; '@id(es)', :name =&gt; 'Spain', :population =&gt; 43, ...} ]</span>
     <span class="n">g</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="ss">:@type</span> <span class="o">=&gt;</span> <span class="ss">:Country</span><span class="p">,</span> <span class="ss">:name</span> <span class="o">=&gt;</span> <span class="p">{:</span><span class="vg">$like</span> <span class="o">=&gt;</span> <span class="sr">/.+a.+/</span><span class="p">})</span><span class="o">.</span><span class="n">all</span>
@@ -224,12 +242,17 @@ Results will be returned as hashes where each property is one of the variables i
 
 <p>Tuple variables are defined in the query as symbols starting by an underscore <em>:_variable_name</em>:</p>
 
-<div class="highlight"><pre>    <span class="n">g</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="ss">:@id</span> <span class="o">=&gt;</span> <span class="ss">:_id</span><span class="p">,</span> <span class="ss">:name</span> <span class="o">=&gt;</span> <span class="ss">:_first_name</span><span class="p">,</span> <span class="ss">:citizen</span> <span class="o">=&gt;</span> <span class="p">{</span> <span class="ss">:name</span> <span class="o">=&gt;</span> <span class="s1">'Spain'</span><span class="p">,</span> <span class="ss">:capital</span> <span class="o">=&gt;</span> <span class="ss">:_capital</span> <span class="p">})</span><span class="o">.</span><span class="n">tuples</span>
-    <span class="c1"># [ {:id =&gt; '@id(antoniogarrote)', :first_name =&gt; 'Antonio', :capital =&gt; 'Madrid} ]</span>
+<div class="highlight"><pre>    <span class="n">g</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="ss">:@id</span> <span class="o">=&gt;</span> <span class="ss">:_id</span><span class="p">,</span> 
+            <span class="ss">:name</span> <span class="o">=&gt;</span> <span class="ss">:_first_name</span><span class="p">,</span> 
+            <span class="ss">:citizen</span> <span class="o">=&gt;</span> <span class="p">{</span> <span class="ss">:name</span> <span class="o">=&gt;</span> <span class="s1">'Spain'</span><span class="p">,</span> 
+                          <span class="ss">:capital</span> <span class="o">=&gt;</span> <span class="ss">:_capital</span> <span class="p">})</span><span class="o">.</span><span class="n">tuples</span>
+    <span class="c1"># [ {:id =&gt; '@id(antoniogarrote)', </span>
+    <span class="c1">#    :first_name =&gt; 'Antonio', </span>
+    <span class="c1">#    :capital =&gt; 'Madrid} ]</span>
 
-   <span class="c1"># variables can also be added into properties not only values</span>
-   <span class="n">g</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="ss">:_property</span> <span class="o">=&gt;</span> <span class="s2">"Antonio"</span><span class="p">)</span><span class="o">.</span><span class="n">tuples</span>
-   <span class="c1"># [ {:property =&gt; :name} ]</span>
+    <span class="c1"># variables can also be added into properties not only values</span>
+    <span class="n">g</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="ss">:_property</span> <span class="o">=&gt;</span> <span class="s2">"Antonio"</span><span class="p">)</span><span class="o">.</span><span class="n">tuples</span>
+    <span class="c1"># [ {:property =&gt; :name} ]</span>
 </pre></div>
 
 <h2>Inference</h2>
@@ -248,17 +271,23 @@ Results will be returned as hashes where each property is one of the variables i
 
     <span class="c1"># With reasoning</span>
     <span class="n">g</span><span class="o">.</span><span class="n">with_reasoning</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="ss">:@type</span> <span class="o">=&gt;</span> <span class="ss">:Person</span><span class="p">)</span><span class="o">.</span><span class="n">all</span>
-    <span class="c1"># [{:@id =&gt; 'id(abs)', :@type =&gt; :Developer, ...},</span>
-    <span class="c1">#  {:@id =&gt; 'id(thattommyhall)', :@type =&gt; :Developer, ...},</span>
-    <span class="c1">#  {:@id =&gt; 'id(antoniogarrote)', :@type =&gt; :Developer, ...}]</span>
+    <span class="c1"># [{:@id =&gt; 'id(abs)', </span>
+    <span class="c1">#   :@type =&gt; :Developer, ...},</span>
+    <span class="c1">#  {:@id =&gt; 'id(thattommyhall)', </span>
+    <span class="c1">#   :@type =&gt; :Developer, ...},</span>
+    <span class="c1">#  {:@id =&gt; 'id(antoniogarrote)', </span>
+    <span class="c1">#   :@type =&gt; :Developer, ...}]</span>
 </pre></div>
 
 <p>An example using the <em>@subproperty</em> declaration.</p>
 
 <div class="highlight"><pre>    <span class="n">g</span><span class="o">.</span><span class="n">define</span><span class="p">(</span><span class="ss">:citizen</span><span class="p">,</span> <span class="ss">:@subproperty</span><span class="p">,</span> <span class="ss">:bornin</span><span class="p">)</span>   
 
-    <span class="n">g</span><span class="o">.</span><span class="n">with_reasoning</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="ss">:bornin</span> <span class="o">=&gt;</span> <span class="p">{</span><span class="ss">:@type</span> <span class="o">=&gt;</span> <span class="ss">:Country</span><span class="p">,</span> <span class="ss">:capital</span> <span class="o">=&gt;</span> <span class="s1">'Madrid'</span><span class="p">})</span><span class="o">.</span><span class="n">all</span>
-    <span class="c1"># [{:@id =&gt; 'id(antoniogarrote)', :citizen =&gt; {:@id =&gt; 'id(es)', :capital =&gt; 'Madrid', ... }, ...}]</span>
+    <span class="n">g</span><span class="o">.</span><span class="n">with_reasoning</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="ss">:bornin</span> <span class="o">=&gt;</span> <span class="p">{</span><span class="ss">:@type</span> <span class="o">=&gt;</span> <span class="ss">:Country</span><span class="p">,</span> 
+                                       <span class="ss">:capital</span> <span class="o">=&gt;</span> <span class="s1">'Madrid'</span><span class="p">})</span><span class="o">.</span><span class="n">all</span>
+    <span class="c1"># [{:@id =&gt; 'id(antoniogarrote)', </span>
+    <span class="c1">#   :citizen =&gt; {:@id =&gt; 'id(es)', </span>
+    <span class="c1">#                :capital =&gt; 'Madrid', ... }, ...}]</span>
 </pre></div>
 
 <p>An example using the <em>@domain</em> and <em>@range</em> declarations.</p>
@@ -266,9 +295,14 @@ Results will be returned as hashes where each property is one of the variables i
 <div class="highlight"><pre>    <span class="n">g</span><span class="o">.</span><span class="n">define</span><span class="p">(</span><span class="ss">:citizen</span><span class="p">,</span> <span class="ss">:@domain</span><span class="p">,</span> <span class="ss">:Citizen</span><span class="p">)</span>   
     <span class="n">g</span><span class="o">.</span><span class="n">define</span><span class="p">(</span><span class="ss">:citizen</span><span class="p">,</span> <span class="ss">:@range</span><span class="p">,</span> <span class="ss">:State</span><span class="p">)</span>   
 
-    <span class="n">g</span><span class="o">.</span><span class="n">with_reasoning</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="ss">:@type</span> <span class="o">=&gt;</span> <span class="ss">:Citizen</span><span class="p">,</span> <span class="ss">:citizen</span> <span class="o">=&gt;</span> <span class="p">{</span><span class="ss">:@type</span> <span class="o">=&gt;</span> <span class="ss">:State</span><span class="p">})</span><span class="o">.</span><span class="n">all</span>
-    <span class="c1"># [{:@id =&gt; 'id(antoniogarrote)', :citizen =&gt; {:@id =&gt; 'id(es)', :capital =&gt; 'Madrid', ... }, ...},</span>
-    <span class="c1">#  {:@id =&gt; 'id(thattommyhall)',  :citizen =&gt; {:@id =&gt; 'id(uk)', :capital =&gt; 'Madrid', ... }, ...}</span>
+    <span class="n">g</span><span class="o">.</span><span class="n">with_reasoning</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="ss">:@type</span> <span class="o">=&gt;</span> <span class="ss">:Citizen</span><span class="p">,</span> 
+                           <span class="ss">:citizen</span> <span class="o">=&gt;</span> <span class="p">{</span><span class="ss">:@type</span> <span class="o">=&gt;</span> <span class="ss">:State</span><span class="p">})</span><span class="o">.</span><span class="n">all</span>
+    <span class="c1"># [{:@id =&gt; 'id(antoniogarrote)', </span>
+    <span class="c1">#   :citizen =&gt; {:@id =&gt; 'id(es)', </span>
+    <span class="c1">#                :capital =&gt; 'Madrid', ... }, ...},</span>
+    <span class="c1">#  {:@id =&gt; 'id(thattommyhall)',  </span>
+    <span class="c1">#   :citizen =&gt; {:@id =&gt; 'id(uk)', </span>
+    <span class="c1">#                :capital =&gt; 'Madrid', ... }, ...}</span>
     <span class="c1">#  ... ]</span>
 </pre></div>
 
@@ -279,9 +313,14 @@ Results will be returned as hashes where each property is one of the variables i
 <div class="highlight"><pre>    <span class="n">g</span><span class="o">.</span><span class="n">define</span><span class="p">(</span><span class="ss">:citizen</span><span class="p">,</span> <span class="ss">:@domain</span><span class="p">,</span> <span class="ss">:Citizen</span><span class="p">)</span>   
     <span class="n">g</span><span class="o">.</span><span class="n">define</span><span class="p">(</span><span class="ss">:citizen</span><span class="p">,</span> <span class="ss">:@range</span><span class="p">,</span> <span class="ss">:State</span><span class="p">)</span>   
 
-    <span class="n">g</span><span class="o">.</span><span class="n">with_reasoning</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="ss">:@type</span> <span class="o">=&gt;</span> <span class="ss">:Citizen</span><span class="p">,</span> <span class="ss">:citizen</span> <span class="o">=&gt;</span> <span class="p">{</span><span class="ss">:@type</span> <span class="o">=&gt;</span> <span class="ss">:State</span><span class="p">})</span><span class="o">.</span><span class="n">all</span>
-    <span class="c1"># [{:@id =&gt; 'id(antoniogarrote)', :citizen =&gt; {:@id =&gt; 'id(es)', :capital =&gt; 'Madrid', ... }, ...},</span>
-    <span class="c1">#  {:@id =&gt; 'id(thattommyhall)',  :citizen =&gt; {:@id =&gt; 'id(uk)', :capital =&gt; 'Madrid', ... }, ...}</span>
+    <span class="n">g</span><span class="o">.</span><span class="n">with_reasoning</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="ss">:@type</span> <span class="o">=&gt;</span> <span class="ss">:Citizen</span><span class="p">,</span> 
+                           <span class="ss">:citizen</span> <span class="o">=&gt;</span> <span class="p">{</span><span class="ss">:@type</span> <span class="o">=&gt;</span> <span class="ss">:State</span><span class="p">})</span><span class="o">.</span><span class="n">all</span>
+    <span class="c1"># [{:@id =&gt; 'id(antoniogarrote)', </span>
+    <span class="c1">#   :citizen =&gt; {:@id =&gt; 'id(es)', </span>
+    <span class="c1">#                :capital =&gt; 'Madrid', ... }, ...},</span>
+    <span class="c1">#  {:@id =&gt; 'id(thattommyhall)',  </span>
+    <span class="c1">#   :citizen =&gt; {:@id =&gt; 'id(uk)', </span>
+    <span class="c1">#                :capital =&gt; 'Madrid', ... }, ...}</span>
     <span class="c1">#  ... ]</span>
 
     <span class="n">g</span><span class="o">.</span><span class="n">retract_definition</span><span class="p">(</span><span class="ss">:citizen</span><span class="p">,</span> <span class="ss">:@range</span><span class="p">,</span> <span class="ss">:State</span><span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="ss">:@type</span> <span class="o">=&gt;</span> <span class="ss">:Citizen</span><span class="p">,</span> <span class="ss">:citizen</span> <span class="o">=&gt;</span> <span class="p">{</span><span class="ss">:@type</span> <span class="o">=&gt;</span> <span class="ss">:State</span><span class="p">})</span><span class="o">.</span><span class="n">all</span>
@@ -306,12 +345,18 @@ Results will be returned as hashes where each property is one of the variables i
 
     <span class="n">g</span><span class="o">.</span><span class="n">with_validations</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="ss">:citizen</span><span class="p">,</span> <span class="ss">:@domain</span><span class="p">,</span> <span class="ss">:State</span><span class="p">)</span>   
 
-    <span class="n">g</span><span class="o">.</span><span class="n">store</span><span class="p">(</span><span class="ss">:@id</span> <span class="o">=&gt;</span> <span class="s1">'id(malditogeek)'</span><span class="p">,</span> <span class="ss">:citizen</span> <span class="o">=&gt;</span> <span class="p">{</span><span class="ss">:@id</span> <span class="o">=&gt;</span> <span class="s1">'id(ar)'</span><span class="p">,</span> <span class="ss">:capital</span> <span class="o">=&gt;</span> <span class="s1">'Buenos Aires'</span><span class="p">},</span> <span class="o">.</span><span class="n">.</span><span class="o">.</span><span class="p">)</span>
+    <span class="n">g</span><span class="o">.</span><span class="n">store</span><span class="p">(</span><span class="ss">:@id</span> <span class="o">=&gt;</span> <span class="s1">'id(malditogeek)'</span><span class="p">,</span> 
+            <span class="ss">:citizen</span> <span class="o">=&gt;</span> <span class="p">{</span><span class="ss">:@id</span> <span class="o">=&gt;</span> <span class="s1">'id(ar)'</span><span class="p">,</span> 
+                         <span class="ss">:capital</span> <span class="o">=&gt;</span> <span class="s1">'Buenos Aires'</span><span class="p">},</span> <span class="o">.</span><span class="n">.</span><span class="o">.</span><span class="p">)</span>
 
     <span class="c1"># An exception is raised due to validation violation</span>
 
-    <span class="n">g</span><span class="o">.</span><span class="n">store</span><span class="p">(</span><span class="ss">:@id</span> <span class="o">=&gt;</span> <span class="s1">'ar'</span><span class="p">,</span> <span class="ss">:capital</span> <span class="o">=&gt;</span> <span class="s1">'Buenos Aires'</span><span class="p">,</span> <span class="ss">:@type</span> <span class="o">=&gt;</span> <span class="ss">:State</span><span class="p">,</span> <span class="ss">:name</span> <span class="o">=&gt;</span> <span class="s1">'Argentina'</span><span class="p">)</span><span class="o">.</span>
-      <span class="n">store</span><span class="p">(</span><span class="ss">:@id</span> <span class="o">=&gt;</span> <span class="s1">'id(malditogeek)'</span><span class="p">,</span> <span class="ss">:citizen</span> <span class="o">=&gt;</span> <span class="s1">'@id(ar)'</span><span class="p">)</span>
+    <span class="n">g</span><span class="o">.</span><span class="n">store</span><span class="p">(</span><span class="ss">:@id</span> <span class="o">=&gt;</span> <span class="s1">'ar'</span><span class="p">,</span> 
+            <span class="ss">:capital</span> <span class="o">=&gt;</span> <span class="s1">'Buenos Aires'</span><span class="p">,</span> 
+            <span class="ss">:@type</span> <span class="o">=&gt;</span> <span class="ss">:State</span><span class="p">,</span> 
+            <span class="ss">:name</span> <span class="o">=&gt;</span> <span class="s1">'Argentina'</span><span class="p">)</span><span class="o">.</span>
+      <span class="n">store</span><span class="p">(</span><span class="ss">:@id</span> <span class="o">=&gt;</span> <span class="s1">'id(malditogeek)'</span><span class="p">,</span> 
+            <span class="ss">:citizen</span> <span class="o">=&gt;</span> <span class="s1">'@id(ar)'</span><span class="p">)</span>
     <span class="c1"># After adding the @type for Argentina, the insertion does not raise any exception.</span>
 </pre></div>
 
@@ -321,16 +366,23 @@ Results will be returned as hashes where each property is one of the variables i
 
     <span class="n">g</span><span class="o">.</span><span class="n">with_validations</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="ss">:citizen</span><span class="p">,</span> <span class="ss">:@domain</span><span class="p">,</span> <span class="ss">:State</span><span class="p">)</span>   
 
-    <span class="n">g</span><span class="o">.</span><span class="n">store</span><span class="p">(</span><span class="ss">:@id</span> <span class="o">=&gt;</span> <span class="s1">'id(malditogeek)'</span><span class="p">,</span> <span class="ss">:citizen</span> <span class="o">=&gt;</span> <span class="p">{</span><span class="ss">:@id</span> <span class="o">=&gt;</span> <span class="s1">'id(ar)'</span><span class="p">,</span> <span class="ss">:capital</span> <span class="o">=&gt;</span> <span class="s1">'Buenos Aires'</span><span class="p">},</span> <span class="o">.</span><span class="n">.</span><span class="o">.</span><span class="p">)</span>
+    <span class="n">g</span><span class="o">.</span><span class="n">store</span><span class="p">(</span><span class="ss">:@id</span> <span class="o">=&gt;</span> <span class="s1">'id(malditogeek)'</span><span class="p">,</span> 
+            <span class="ss">:citizen</span> <span class="o">=&gt;</span> <span class="p">{</span><span class="ss">:@id</span> <span class="o">=&gt;</span> <span class="s1">'id(ar)'</span><span class="p">,</span> 
+                         <span class="ss">:capital</span> <span class="o">=&gt;</span> <span class="s1">'Buenos Aires'</span><span class="p">},</span> <span class="o">.</span><span class="n">.</span><span class="o">.</span><span class="p">)</span>
 
     <span class="c1"># An exception is raised due to validation violation</span>
 
     <span class="n">g</span><span class="o">.</span><span class="n">with_reasoning</span><span class="o">.</span><span class="n">define</span><span class="p">(</span><span class="ss">:citizen</span><span class="p">,</span> <span class="ss">:@domain</span><span class="p">,</span> <span class="ss">:State</span><span class="p">)</span><span class="o">.</span>
-      <span class="n">store</span><span class="p">(</span><span class="ss">:@id</span> <span class="o">=&gt;</span> <span class="s1">'id(malditogeek)'</span><span class="p">,</span> <span class="ss">:citizen</span> <span class="o">=&gt;</span> <span class="p">{</span><span class="ss">:@id</span> <span class="o">=&gt;</span> <span class="s1">'id(ar)'</span><span class="p">,</span> <span class="ss">:capital</span> <span class="o">=&gt;</span> <span class="s1">'Buenos Aires'</span><span class="p">},</span> <span class="o">.</span><span class="n">.</span><span class="o">.</span><span class="p">)</span>
+      <span class="n">store</span><span class="p">(</span><span class="ss">:@id</span> <span class="o">=&gt;</span> <span class="s1">'id(malditogeek)'</span><span class="p">,</span> 
+            <span class="ss">:citizen</span> <span class="o">=&gt;</span> <span class="p">{</span><span class="ss">:@id</span> <span class="o">=&gt;</span> <span class="s1">'id(ar)'</span><span class="p">,</span> 
+                         <span class="ss">:capital</span> <span class="o">=&gt;</span> <span class="s1">'Buenos Aires'</span><span class="p">},</span> <span class="o">.</span><span class="n">.</span><span class="o">.</span><span class="p">)</span>
     <span class="c1"># Data is valid using reasoning since the @type :State for Argentina can be inferred.</span>
 
-    <span class="n">g</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="ss">:@type</span> <span class="o">=&gt;</span> <span class="ss">:Citizen</span><span class="p">,</span> <span class="ss">:citizen</span> <span class="o">=&gt;</span> <span class="p">{</span><span class="ss">:@type</span> <span class="o">=&gt;</span> <span class="ss">:State</span><span class="p">})</span><span class="o">.</span><span class="n">all</span>
-    <span class="c1"># [{:@id =&gt; 'id(malditogeek)', :citizen =&gt; {:@id =&gt; 'id(ar)', :capital =&gt; 'Buenos Aires', ... }, ...}]</span>
+    <span class="n">g</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="ss">:@type</span> <span class="o">=&gt;</span> <span class="ss">:Citizen</span><span class="p">,</span> 
+            <span class="ss">:citizen</span> <span class="o">=&gt;</span> <span class="p">{</span><span class="ss">:@type</span> <span class="o">=&gt;</span> <span class="ss">:State</span><span class="p">})</span><span class="o">.</span><span class="n">all</span>
+    <span class="c1"># [{:@id =&gt; 'id(malditogeek)', </span>
+    <span class="c1">#   :citizen =&gt; {:@id =&gt; 'id(ar)', </span>
+    <span class="c1">#                :capital =&gt; 'Buenos Aires', ... }, ...}]</span>
 
     <span class="n">g</span><span class="o">.</span><span class="n">without_reasoning</span> <span class="c1"># graph is invalid now, no further operations can be committed.</span>
 
@@ -407,7 +459,9 @@ Results will be returned as hashes where each property is one of the variables i
 <li>Cardinality constraints</li>
 </ul><div class="highlight"><pre>    <span class="n">g</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">with_db</span><span class="p">(</span><span class="no">DB</span><span class="p">)</span><span class="o">.</span><span class="n">with_validations</span>
 
-    <span class="n">g</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="ss">:Person</span><span class="p">,</span> <span class="ss">:@cardinality</span><span class="p">,</span> <span class="p">{</span><span class="ss">:property</span> <span class="o">=&gt;</span> <span class="ss">:lives</span><span class="p">,</span> <span class="ss">:max</span> <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">,</span> <span class="ss">:min</span> <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">})</span>
+    <span class="n">g</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="ss">:Person</span><span class="p">,</span> <span class="ss">:@cardinality</span><span class="p">,</span> <span class="p">{</span><span class="ss">:property</span> <span class="o">=&gt;</span> <span class="ss">:lives</span><span class="p">,</span> 
+                                        <span class="ss">:max</span> <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">,</span> 
+                                        <span class="ss">:min</span> <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">})</span>
 
     <span class="n">g</span><span class="o">.</span><span class="n">store</span><span class="p">(</span><span class="ss">:@type</span> <span class="o">=&gt;</span> <span class="ss">:Person</span><span class="p">,</span>
             <span class="ss">:name</span> <span class="o">=&gt;</span> <span class="s1">'Antonio'</span><span class="p">,</span>
@@ -433,14 +487,19 @@ Results will be returned as hashes where each property is one of the variables i
 
 <p>Antonio Garrote (<a href="mailto:antoniogarrote@gmail.com">antoniogarrote@gmail.com</a>)</p>
       </section>
-    </div>
 
-    <!-- FOOTER  -->
-    <div id="footer_wrap" class="outer">
-      <footer class="inner">
-        <p class="copyright">Grel maintained by <a href="https://github.com/antoniogarrote">antoniogarrote</a></p>
-        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      <footer>
+        <span class="ribbon-outer">
+          <span class="ribbon-inner">
+            <p>this project by <a href="https://github.com/antoniogarrote">antoniogarrote</a> can be found on <a href="https://github.com/antoniogarrote/grel">GitHub</a></p>
+          </span>
+          <span class="left-tail"></span>
+          <span class="right-tail"></span>
+        </span>
+        <p>Generated with <a href="http://pages.github.com">GitHub Pages</a> using Merlot</p>
+        <span class="octocat"></span>
       </footer>
+
     </div>
 
               <script type="text/javascript">
@@ -453,7 +512,6 @@ Results will be returned as hashes where each property is one of the variables i
             pageTracker._trackPageview();
             } catch(err) {}
           </script>
-
 
   </body>
 </html>
