@@ -2,6 +2,8 @@
 
 A small ruby library that makes it easy to store and query ruby objects stored in the RDF database [Stardog](http://stardog.com/).
 
+RDoc documentation for the project can be found [here](http://antoniogarrote.github.com/grel/doc/index.html).
+
 ## Initialization
 ```ruby
     require 'grel'
