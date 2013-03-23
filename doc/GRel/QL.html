@@ -1,0 +1,763 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+
+  <title>Module: GRel::QL</title>
+
+  <link rel="stylesheet" href="../rdoc.css" type="text/css" media="screen" />
+
+  <script src="../js/jquery.js" type="text/javascript" charset="utf-8"></script>
+  <script src="../js/thickbox-compressed.js" type="text/javascript" charset="utf-8"></script>
+  <script src="../js/quicksearch.js" type="text/javascript" charset="utf-8"></script>
+  <script src="../js/darkfish.js" type="text/javascript" charset="utf-8"></script>
+
+</head>
+<body id="top" class="module">
+
+  <div id="metadata">
+    <div id="home-metadata">
+      <div id="home-section" class="section">
+        <h3 class="section-header">
+          <a href="../index.html">Home</a>
+          <a href="../index.html#classes">Classes</a>
+          <a href="../index.html#methods">Methods</a>
+        </h3>
+      </div>
+    </div>
+
+    <div id="file-metadata">
+      <div id="file-list-section" class="section">
+        <h3 class="section-header">In Files</h3>
+        <div class="section-body">
+          <ul>
+          
+            <li><a href="../lib/grel/ql_rb.html?TB_iframe=true&amp;height=550&amp;width=785"
+              class="thickbox" title="lib/grel/ql.rb">lib/grel/ql.rb</a></li>
+          
+          </ul>
+        </div>
+      </div>
+
+      
+    </div>
+
+    <div id="class-metadata">
+      
+
+      
+
+      
+      <!-- Namespace Contents -->
+      <div id="namespace-list-section" class="section">
+        <h3 class="section-header">Namespace</h3>
+        <ul class="link-list">
+          
+          <li><span class="type">CLASS</span> <a href="QL/BGP.html">GRel::QL::BGP</a></li>
+          
+          <li><span class="type">CLASS</span> <a href="QL/Filter.html">GRel::QL::Filter</a></li>
+          
+          <li><span class="type">CLASS</span> <a href="QL/QueryContext.html">GRel::QL::QueryContext</a></li>
+          
+        </ul>
+      </div>
+      
+
+      
+      <!-- Method Quickref -->
+      <div id="method-list-section" class="section">
+        <h3 class="section-header">Methods</h3>
+        <ul class="link-list">
+          
+          <li><a href="#method-c-from_binding_hash">::from_binding_hash</a></li>
+          
+          <li><a href="#method-c-from_binding_to_id">::from_binding_to_id</a></li>
+          
+          <li><a href="#method-c-from_binding_value">::from_binding_value</a></li>
+          
+          <li><a href="#method-c-from_bindings_to_nodes">::from_bindings_to_nodes</a></li>
+          
+          <li><a href="#method-c-from_tuple_binding">::from_tuple_binding</a></li>
+          
+          <li><a href="#method-c-to_id">::to_id</a></li>
+          
+          <li><a href="#method-c-to_query">::to_query</a></li>
+          
+          <li><a href="#method-c-to_triples">::to_triples</a></li>
+          
+          <li><a href="#method-c-to_turtle">::to_turtle</a></li>
+          
+        </ul>
+      </div>
+      
+
+      
+    </div>
+
+    <div id="project-metadata">
+      
+      
+      <div id="fileindex-section" class="section project-section">
+        <h3 class="section-header">Files</h3>
+        <ul>
+        
+          <li class="file"><a href="../COPYING.html">COPYING</a></li>
+        
+          <li class="file"><a href="../Gemfile.html">Gemfile</a></li>
+        
+          <li class="file"><a href="../LICENSE.html">LICENSE</a></li>
+        
+        </ul>
+      </div>
+      
+
+      <div id="classindex-section" class="section project-section">
+        <h3 class="section-header">Class/Module Index
+          <span class="search-toggle"><img src="../images/find.png"
+            height="16" width="16" alt="[+]"
+            title="show/hide quicksearch" /></span></h3>
+        <form action="#" method="get" accept-charset="utf-8" class="initially-hidden">
+        <fieldset>
+          <legend>Quicksearch</legend>
+          <input type="text" name="quicksearch" value=""
+            class="quicksearch-field" />
+        </fieldset>
+        </form>
+
+        <ul class="link-list">
+        
+          <li><a href="../GRel.html">GRel</a></li>
+        
+          <li><a href="../GRel/Base.html">GRel::Base</a></li>
+        
+          <li><a href="../GRel/BlankId.html">GRel::BlankId</a></li>
+        
+          <li><a href="../GRel/Debugger.html">GRel::Debugger</a></li>
+        
+          <li><a href="../GRel/NonNegativeInteger.html">GRel::NonNegativeInteger</a></li>
+        
+          <li><a href="../GRel/QL.html">GRel::QL</a></li>
+        
+          <li><a href="../GRel/QL/BGP.html">GRel::QL::BGP</a></li>
+        
+          <li><a href="../GRel/QL/Filter.html">GRel::QL::Filter</a></li>
+        
+          <li><a href="../GRel/QL/QueryContext.html">GRel::QL::QueryContext</a></li>
+        
+          <li><a href="../GRel/ValidationError.html">GRel::ValidationError</a></li>
+        
+          <li><a href="../Array.html">Array</a></li>
+        
+          <li><a href="../Object.html">Object</a></li>
+        
+        </ul>
+        <div id="no-class-search-results" style="display: none;">No matching classes.</div>
+      </div>
+
+      
+    </div>
+  </div>
+
+  <div id="documentation">
+    <h1 class="module">GRel::QL</h1>
+
+    <div id="description" class="description">
+      
+    </div><!-- description -->
+
+    
+    
+    
+    <div id="5Buntitled-5D" class="documentation-section">
+      
+
+      
+
+      
+
+      
+
+      <!-- Methods -->
+      
+      <div id="public-class-method-details" class="method-section section">
+        <h3 class="section-header">Public Class Methods</h3>
+
+      
+        <div id="from_binding_hash-method" class="method-detail ">
+          <a name="method-c-from_binding_hash"></a>
+
+          
+          <div class="method-heading">
+            <span class="method-name">from_binding_hash</span><span
+              class="method-args">(node)</span>
+            <span class="method-click-advice">click to toggle source</span>
+          </div>
+          
+
+          <div class="method-description">
+            
+            
+            
+
+            
+            <div class="method-source-code" id="from_binding_hash-source">
+<pre>
+<span class="ruby-comment"># File lib/grel/ql.rb, line 704</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">from_binding_hash</span>(<span class="ruby-identifier">node</span>)
+  <span class="ruby-identifier">node</span> = <span class="ruby-identifier">node</span>.<span class="ruby-identifier">raw_json</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">node</span>.<span class="ruby-identifier">respond_to?</span>(<span class="ruby-value">:raw_json</span>)
+  <span class="ruby-identifier">node</span>.<span class="ruby-identifier">delete</span>(<span class="ruby-string">&quot;@context&quot;</span>)
+  <span class="ruby-identifier">node</span> = <span class="ruby-identifier">node</span>.<span class="ruby-identifier">to_a</span>.<span class="ruby-identifier">inject</span>({}) <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">ac</span>, (<span class="ruby-identifier">p</span>,<span class="ruby-identifier">v</span>)<span class="ruby-operator">|</span>
+    <span class="ruby-identifier">p</span> = <span class="ruby-identifier">p</span>[<span class="ruby-value">1</span><span class="ruby-operator">..</span><span class="ruby-value">-1</span>].<span class="ruby-identifier">to_sym</span> <span class="ruby-keyword">if</span>(<span class="ruby-identifier">p</span>.<span class="ruby-identifier">index</span>(<span class="ruby-string">&quot;:&quot;</span>) <span class="ruby-operator">==</span> <span class="ruby-value">0</span>)
+    <span class="ruby-identifier">p</span> = <span class="ruby-identifier">p</span>.<span class="ruby-identifier">to_sym</span> <span class="ruby-keyword">if</span>(<span class="ruby-identifier">p</span> <span class="ruby-operator">==</span> <span class="ruby-string">&quot;@id&quot;</span> <span class="ruby-operator">||</span> <span class="ruby-identifier">p</span> <span class="ruby-operator">==</span> <span class="ruby-string">&quot;@type&quot;</span>)
+    <span class="ruby-identifier">v</span> = <span class="ruby-identifier">from_binding_value</span>(<span class="ruby-identifier">v</span>)
+    <span class="ruby-identifier">ac</span>[<span class="ruby-identifier">p</span>] = <span class="ruby-identifier">v</span>; <span class="ruby-identifier">ac</span>
+  <span class="ruby-keyword">end</span>
+  <span class="ruby-identifier">node</span>
+<span class="ruby-keyword">end</span></pre>
+            </div><!-- from_binding_hash-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- from_binding_hash-method -->
+
+      
+        <div id="from_binding_to_id-method" class="method-detail ">
+          <a name="method-c-from_binding_to_id"></a>
+
+          
+          <div class="method-heading">
+            <span class="method-name">from_binding_to_id</span><span
+              class="method-args">(obj)</span>
+            <span class="method-click-advice">click to toggle source</span>
+          </div>
+          
+
+          <div class="method-description">
+            
+            
+            
+
+            
+            <div class="method-source-code" id="from_binding_to_id-source">
+<pre>
+<span class="ruby-comment"># File lib/grel/ql.rb, line 665</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">from_binding_to_id</span>(<span class="ruby-identifier">obj</span>)
+  <span class="ruby-keyword">if</span>(<span class="ruby-operator">!</span><span class="ruby-identifier">obj</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">String</span>))
+    <span class="ruby-identifier">obj</span>
+  <span class="ruby-keyword">elsif</span>(<span class="ruby-identifier">obj</span> <span class="ruby-operator">==</span> <span class="ruby-node">&quot;http://www.w3.org/1999/02/22-rdf-syntax-ns#nil&quot;</span>)
+    <span class="ruby-keyword">nil</span>
+  <span class="ruby-keyword">elsif</span>(<span class="ruby-identifier">obj</span>.<span class="ruby-identifier">index</span>(<span class="ruby-string">&quot;http://grel.org/ids/id/&quot;</span>))
+    <span class="ruby-identifier">val</span> = <span class="ruby-constant">URI</span>.<span class="ruby-identifier">unescape</span>(<span class="ruby-identifier">obj</span>.<span class="ruby-identifier">split</span>(<span class="ruby-string">&quot;http://grel.org/ids/id/&quot;</span>).<span class="ruby-identifier">last</span>)
+    <span class="ruby-node">&quot;@id(#{val})&quot;</span>
+  <span class="ruby-keyword">elsif</span>(<span class="ruby-identifier">obj</span>.<span class="ruby-identifier">index</span>(<span class="ruby-string">&quot;http://grel.org/ids/&quot;</span>))
+    <span class="ruby-constant">URI</span>.<span class="ruby-identifier">unescape</span>(<span class="ruby-identifier">obj</span>.<span class="ruby-identifier">split</span>(<span class="ruby-string">&quot;http://grel.org/ids/&quot;</span>).<span class="ruby-identifier">last</span>)
+  <span class="ruby-keyword">elsif</span>(<span class="ruby-identifier">obj</span>.<span class="ruby-identifier">index</span>(<span class="ruby-node">&quot;http://grel.org/vocabulary#&quot;</span>))
+    <span class="ruby-identifier">obj</span>.<span class="ruby-identifier">split</span>(<span class="ruby-node">&quot;http://grel.org/vocabulary#&quot;</span>).<span class="ruby-identifier">last</span>.<span class="ruby-identifier">to_sym</span>
+  <span class="ruby-keyword">else</span>
+    <span class="ruby-identifier">obj</span>
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+            </div><!-- from_binding_to_id-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- from_binding_to_id-method -->
+
+      
+        <div id="from_binding_value-method" class="method-detail ">
+          <a name="method-c-from_binding_value"></a>
+
+          
+          <div class="method-heading">
+            <span class="method-name">from_binding_value</span><span
+              class="method-args">(obj)</span>
+            <span class="method-click-advice">click to toggle source</span>
+          </div>
+          
+
+          <div class="method-description">
+            
+            
+            
+
+            
+            <div class="method-source-code" id="from_binding_value-source">
+<pre>
+<span class="ruby-comment"># File lib/grel/ql.rb, line 682</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">from_binding_value</span>(<span class="ruby-identifier">obj</span>)
+  <span class="ruby-keyword">if</span>(<span class="ruby-identifier">obj</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Hash</span>) <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">obj</span>[<span class="ruby-string">&quot;@id&quot;</span>])
+    <span class="ruby-identifier">from_binding_hash</span>(<span class="ruby-identifier">obj</span>)
+  <span class="ruby-keyword">elsif</span>(<span class="ruby-identifier">obj</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Hash</span>) <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">obj</span>[<span class="ruby-string">&quot;@type&quot;</span>])
+    <span class="ruby-keyword">if</span>(<span class="ruby-identifier">obj</span>[<span class="ruby-string">&quot;@type&quot;</span>] <span class="ruby-operator">==</span> <span class="ruby-node">&quot;http://www.w3.org/2001/XMLSchema#dateTime&quot;</span>)
+      <span class="ruby-constant">Time</span>.<span class="ruby-identifier">parse</span>(<span class="ruby-identifier">obj</span>[<span class="ruby-string">&quot;@value&quot;</span>])
+    <span class="ruby-keyword">elsif</span>(<span class="ruby-identifier">obj</span>[<span class="ruby-string">&quot;@type&quot;</span>] <span class="ruby-operator">==</span> <span class="ruby-node">&quot;http://www.w3.org/2001/XMLSchema#integer&quot;</span>)
+      <span class="ruby-identifier">obj</span>[<span class="ruby-string">&quot;@value&quot;</span>].<span class="ruby-identifier">to_i</span>
+    <span class="ruby-keyword">elsif</span>(<span class="ruby-identifier">obj</span>[<span class="ruby-string">&quot;@type&quot;</span>] <span class="ruby-operator">==</span> <span class="ruby-node">&quot;http://www.w3.org/2001/XMLSchema#float&quot;</span>)
+      <span class="ruby-identifier">obj</span>[<span class="ruby-string">&quot;@value&quot;</span>].<span class="ruby-identifier">to_f</span>
+    <span class="ruby-keyword">elsif</span>(<span class="ruby-identifier">obj</span>[<span class="ruby-string">&quot;@type&quot;</span>] <span class="ruby-operator">==</span> <span class="ruby-node">&quot;http://www.w3.org/2001/XMLSchema#boolean&quot;</span>)
+      (<span class="ruby-identifier">obj</span>[<span class="ruby-string">&quot;@value&quot;</span>] <span class="ruby-operator">==</span> <span class="ruby-string">&quot;true&quot;</span> <span class="ruby-operator">?</span> <span class="ruby-keyword">true</span> <span class="ruby-operator">:</span> <span class="ruby-keyword">false</span>)
+    <span class="ruby-keyword">else</span>
+      <span class="ruby-identifier">obj</span>[<span class="ruby-string">&quot;@value&quot;</span>]
+    <span class="ruby-keyword">end</span>
+  <span class="ruby-keyword">elsif</span>(<span class="ruby-identifier">obj</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Array</span>))
+    <span class="ruby-identifier">obj</span>.<span class="ruby-identifier">map</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">o</span><span class="ruby-operator">|</span> <span class="ruby-identifier">from_binding_value</span>(<span class="ruby-identifier">o</span>)}
+  <span class="ruby-keyword">else</span>
+    <span class="ruby-identifier">from_binding_to_id</span>(<span class="ruby-identifier">obj</span>)
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+            </div><!-- from_binding_value-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- from_binding_value-method -->
+
+      
+        <div id="from_bindings_to_nodes-method" class="method-detail ">
+          <a name="method-c-from_bindings_to_nodes"></a>
+
+          
+          <div class="method-heading">
+            <span class="method-name">from_bindings_to_nodes</span><span
+              class="method-args">(bindings,context, options = {})</span>
+            <span class="method-click-advice">click to toggle source</span>
+          </div>
+          
+
+          <div class="method-description">
+            
+            
+            
+
+            
+            <div class="method-source-code" id="from_bindings_to_nodes-source">
+<pre>
+<span class="ruby-comment"># File lib/grel/ql.rb, line 716</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">from_bindings_to_nodes</span>(<span class="ruby-identifier">bindings</span>,<span class="ruby-identifier">context</span>, <span class="ruby-identifier">options</span> = {})
+  <span class="ruby-identifier">unlinked</span> = <span class="ruby-identifier">options</span>[<span class="ruby-value">:unlinked</span>] <span class="ruby-operator">||</span> <span class="ruby-keyword">false</span>
+  <span class="ruby-identifier">nodes</span> = {}
+  <span class="ruby-identifier">uris</span> = {}
+  <span class="ruby-identifier">json</span> = <span class="ruby-identifier">bindings</span>
+  <span class="ruby-identifier">json</span> = [<span class="ruby-identifier">json</span>] <span class="ruby-keyword">unless</span> <span class="ruby-identifier">json</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Array</span>)
+  <span class="ruby-identifier">json</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span><span class="ruby-operator">|</span><span class="ruby-identifier">node</span><span class="ruby-operator">|</span>
+    <span class="ruby-identifier">node</span> = <span class="ruby-identifier">from_binding_hash</span>(<span class="ruby-identifier">node</span>)
+    <span class="ruby-identifier">nodes</span>[<span class="ruby-identifier">node</span>[<span class="ruby-value">:@id</span>]] = <span class="ruby-identifier">node</span>
+    <span class="ruby-identifier">node</span>.<span class="ruby-identifier">delete</span>(<span class="ruby-value">:@id</span>) <span class="ruby-keyword">unless</span> <span class="ruby-identifier">node</span>[<span class="ruby-value">:@id</span>].<span class="ruby-identifier">index</span>(<span class="ruby-string">&quot;@id(&quot;</span>)
+  <span class="ruby-keyword">end</span>
+
+  <span class="ruby-identifier">nodes</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span>(<span class="ruby-identifier">node_id</span>,<span class="ruby-identifier">node</span>)<span class="ruby-operator">|</span>       
+    <span class="ruby-identifier">node</span>.<span class="ruby-identifier">each_pair</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">k</span>,<span class="ruby-identifier">v</span><span class="ruby-operator">|</span>
+      <span class="ruby-comment"># weird things happening with describe queries and arrays</span>
+      <span class="ruby-keyword">if</span>(<span class="ruby-identifier">v</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Array</span>))
+        <span class="ruby-identifier">v</span> = <span class="ruby-identifier">v</span>.<span class="ruby-identifier">uniq</span>
+        <span class="ruby-identifier">v</span> = <span class="ruby-identifier">v</span>.<span class="ruby-identifier">first</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">v</span>.<span class="ruby-identifier">length</span> <span class="ruby-operator">==</span><span class="ruby-value">1</span>
+        <span class="ruby-identifier">node</span>[<span class="ruby-identifier">k</span>] = <span class="ruby-identifier">v</span>
+      <span class="ruby-keyword">end</span>
+
+      <span class="ruby-keyword">if</span>(<span class="ruby-identifier">v</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Hash</span>) <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">v</span>[<span class="ruby-value">:@id</span>] <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">nodes</span>[<span class="ruby-identifier">v</span>[<span class="ruby-value">:@id</span>]])
+        <span class="ruby-identifier">node</span>[<span class="ruby-identifier">k</span>] = <span class="ruby-identifier">nodes</span>[<span class="ruby-identifier">v</span>[<span class="ruby-value">:@id</span>]]
+        <span class="ruby-identifier">nodes</span>.<span class="ruby-identifier">delete</span>(<span class="ruby-identifier">v</span>[<span class="ruby-value">:@id</span>]) <span class="ruby-keyword">if</span> <span class="ruby-identifier">unlinked</span>
+      <span class="ruby-keyword">elsif</span>(<span class="ruby-identifier">v</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Hash</span>) <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">v</span>[<span class="ruby-value">:@id</span>])
+        <span class="ruby-identifier">node</span>[<span class="ruby-identifier">k</span>] = <span class="ruby-identifier">from_binding_to_id</span>(<span class="ruby-identifier">v</span>[<span class="ruby-value">:@id</span>])
+      <span class="ruby-keyword">elsif</span>(<span class="ruby-identifier">v</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Array</span>))
+        <span class="ruby-identifier">node</span>[<span class="ruby-identifier">k</span>] = <span class="ruby-identifier">v</span>.<span class="ruby-identifier">map</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">o</span><span class="ruby-operator">|</span>
+          <span class="ruby-comment"># recursive execution for each element in the array</span>
+          <span class="ruby-keyword">if</span>(<span class="ruby-identifier">o</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Hash</span>) <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">o</span>[<span class="ruby-value">:@id</span>] <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">nodes</span>[<span class="ruby-identifier">o</span>[<span class="ruby-value">:@id</span>]])
+            <span class="ruby-identifier">to_link</span> = <span class="ruby-identifier">nodes</span>[<span class="ruby-identifier">o</span>[<span class="ruby-value">:@id</span>]]
+            <span class="ruby-identifier">nodes</span>.<span class="ruby-identifier">delete</span>(<span class="ruby-identifier">o</span>[<span class="ruby-value">:@id</span>]) <span class="ruby-keyword">if</span> <span class="ruby-identifier">unlinked</span>
+            <span class="ruby-identifier">to_link</span>
+          <span class="ruby-keyword">elsif</span>(<span class="ruby-identifier">o</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Hash</span>) <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">o</span>[<span class="ruby-value">:@id</span>])
+            <span class="ruby-identifier">from_binding_to_id</span>(<span class="ruby-identifier">o</span>[<span class="ruby-value">:@id</span>])
+          <span class="ruby-keyword">else</span>
+            <span class="ruby-identifier">o</span>
+          <span class="ruby-keyword">end</span>
+        <span class="ruby-keyword">end</span>
+      <span class="ruby-keyword">end</span>
+    <span class="ruby-keyword">end</span>
+  <span class="ruby-keyword">end</span>
+
+  <span class="ruby-identifier">nodes</span>.<span class="ruby-identifier">values</span>
+<span class="ruby-keyword">end</span></pre>
+            </div><!-- from_bindings_to_nodes-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- from_bindings_to_nodes-method -->
+
+      
+        <div id="from_tuple_binding-method" class="method-detail ">
+          <a name="method-c-from_tuple_binding"></a>
+
+          
+          <div class="method-heading">
+            <span class="method-name">from_tuple_binding</span><span
+              class="method-args">(tuple_value)</span>
+            <span class="method-click-advice">click to toggle source</span>
+          </div>
+          
+
+          <div class="method-description">
+            
+            
+            
+
+            
+            <div class="method-source-code" id="from_tuple_binding-source">
+<pre>
+<span class="ruby-comment"># File lib/grel/ql.rb, line 653</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">from_tuple_binding</span>(<span class="ruby-identifier">tuple_value</span>)
+  <span class="ruby-keyword">if</span>(<span class="ruby-identifier">tuple_value</span>[<span class="ruby-string">&quot;type&quot;</span>] <span class="ruby-operator">==</span> <span class="ruby-string">&quot;uri&quot;</span>)
+    <span class="ruby-identifier">from_binding_to_id</span>(<span class="ruby-identifier">tuple_value</span>[<span class="ruby-string">&quot;value&quot;</span>])
+  <span class="ruby-keyword">elsif</span>(<span class="ruby-identifier">tuple_value</span>[<span class="ruby-string">&quot;type&quot;</span>] <span class="ruby-operator">==</span> <span class="ruby-string">&quot;literal&quot;</span>)
+    <span class="ruby-identifier">tuple_value</span>[<span class="ruby-string">&quot;value&quot;</span>]
+  <span class="ruby-keyword">else</span>
+    <span class="ruby-identifier">tuple_value</span>[<span class="ruby-string">&quot;@type&quot;</span>] = <span class="ruby-identifier">tuple_value</span>[<span class="ruby-string">&quot;datatype&quot;</span>]
+    <span class="ruby-identifier">tuple_value</span>[<span class="ruby-string">&quot;@value&quot;</span>] = <span class="ruby-identifier">tuple_value</span>[<span class="ruby-string">&quot;value&quot;</span>]
+    <span class="ruby-identifier">from_binding_value</span>(<span class="ruby-identifier">tuple_value</span>)
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+            </div><!-- from_tuple_binding-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- from_tuple_binding-method -->
+
+      
+        <div id="to_id-method" class="method-detail ">
+          <a name="method-c-to_id"></a>
+
+          
+          <div class="method-heading">
+            <span class="method-name">to_id</span><span
+              class="method-args">(obj)</span>
+            <span class="method-click-advice">click to toggle source</span>
+          </div>
+          
+
+          <div class="method-description">
+            
+            
+            
+
+            
+            <div class="method-source-code" id="to_id-source">
+<pre>
+<span class="ruby-comment"># File lib/grel/ql.rb, line 3</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">to_id</span>(<span class="ruby-identifier">obj</span>)
+  <span class="ruby-keyword">if</span>(<span class="ruby-identifier">obj</span> <span class="ruby-operator">=~</span> <span class="ruby-constant">ID_REGEX</span>)
+    <span class="ruby-node">&quot;&lt;http://grel.org/ids/id/#{URI.encode(ID_REGEX.match(obj)[1])}&gt;&quot;</span>
+  <span class="ruby-keyword">else</span>
+    <span class="ruby-node">&quot;&lt;http://grel.org/ids/#{URI.encode(obj)}&gt;&quot;</span>
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+            </div><!-- to_id-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- to_id-method -->
+
+      
+        <div id="to_query-method" class="method-detail ">
+          <a name="method-c-to_query"></a>
+
+          
+          <div class="method-heading">
+            <span class="method-name">to_query</span><span
+              class="method-args">(obj,context=QL::QueryContext.new, inverse=false)</span>
+            <span class="method-click-advice">click to toggle source</span>
+          </div>
+          
+
+          <div class="method-description">
+            
+            
+            
+
+            
+            <div class="method-source-code" id="to_query-source">
+<pre>
+<span class="ruby-comment"># File lib/grel/ql.rb, line 605</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">to_query</span>(<span class="ruby-identifier">obj</span>,<span class="ruby-identifier">context</span>=<span class="ruby-constant">QL</span><span class="ruby-operator">::</span><span class="ruby-constant">QueryContext</span>.<span class="ruby-identifier">new</span>, <span class="ruby-identifier">inverse</span>=<span class="ruby-keyword">false</span>)
+  <span class="ruby-keyword">if</span>(<span class="ruby-identifier">obj</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Symbol</span>))
+    <span class="ruby-keyword">if</span>(<span class="ruby-identifier">obj</span> <span class="ruby-operator">==</span> <span class="ruby-value">:@type</span>)
+      <span class="ruby-string">&quot;rdf:type&quot;</span>
+    <span class="ruby-keyword">elsif</span>(<span class="ruby-identifier">obj</span>.<span class="ruby-identifier">to_s</span>.<span class="ruby-identifier">index</span>(<span class="ruby-string">&quot;$inv_&quot;</span>))
+      <span class="ruby-node">&quot;:#{obj.to_s.split(&quot;$inv_&quot;).last}&quot;</span>
+    <span class="ruby-keyword">elsif</span>(<span class="ruby-identifier">obj</span>.<span class="ruby-identifier">to_s</span> <span class="ruby-operator">==</span> <span class="ruby-string">&quot;_&quot;</span>)
+      <span class="ruby-node">&quot;?X_#{obj.to_s.split('_').last}_#{context.next_node_id}&quot;</span>
+    <span class="ruby-keyword">elsif</span>(<span class="ruby-identifier">obj</span>.<span class="ruby-identifier">to_s</span>.<span class="ruby-identifier">index</span>(<span class="ruby-string">&quot;_&quot;</span>))
+      <span class="ruby-node">&quot;?#{obj.to_s.split(&quot;_&quot;).drop(1).join(&quot;_&quot;)}&quot;</span>
+    <span class="ruby-keyword">else</span>
+      <span class="ruby-node">&quot;:#{obj}&quot;</span>
+    <span class="ruby-keyword">end</span>
+  <span class="ruby-keyword">elsif</span>(<span class="ruby-identifier">obj</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">String</span>))
+    <span class="ruby-keyword">if</span>(<span class="ruby-identifier">obj</span> <span class="ruby-operator">=~</span> <span class="ruby-constant">ID_REGEX</span>)
+      <span class="ruby-constant">QL</span>.<span class="ruby-identifier">to_id</span>(<span class="ruby-identifier">obj</span>)
+    <span class="ruby-keyword">else</span>
+      <span class="ruby-node">&quot;\&quot;#{obj}\&quot;&quot;</span>
+    <span class="ruby-keyword">end</span>
+  <span class="ruby-keyword">elsif</span>(<span class="ruby-identifier">obj</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Float</span>))
+    <span class="ruby-node">&quot;\&quot;#{obj}\&quot;^^&lt;http://www.w3.org/2001/XMLSchema#float&gt;&quot;</span>
+  <span class="ruby-keyword">elsif</span>(<span class="ruby-identifier">obj</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Numeric</span>))
+    <span class="ruby-node">&quot;\&quot;#{obj}\&quot;^^&lt;http://www.w3.org/2001/XMLSchema#integer&gt;&quot;</span>
+  <span class="ruby-keyword">elsif</span>(<span class="ruby-identifier">obj</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Time</span>))
+    <span class="ruby-node">&quot;\&quot;#{obj.iso8601}\&quot;^^&lt;http://www.w3.org/2001/XMLSchema#dateTime&gt;&quot;</span>
+  <span class="ruby-keyword">elsif</span>(<span class="ruby-identifier">obj</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Date</span>))
+    <span class="ruby-node">&quot;\&quot;#{Time.new(obj.to_s).iso8601}\&quot;^^&lt;http://www.w3.org/2001/XMLSchema#dateTime&gt;&quot;</span>
+  <span class="ruby-keyword">elsif</span>(<span class="ruby-identifier">obj</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Array</span>))
+    <span class="ruby-comment"># TODO</span>
+  <span class="ruby-keyword">elsif</span>(<span class="ruby-identifier">obj</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Hash</span>))
+    <span class="ruby-keyword">if</span>(<span class="ruby-constant">Filter</span>.<span class="ruby-identifier">filter?</span>(<span class="ruby-identifier">obj</span>))
+      <span class="ruby-identifier">filter</span> = <span class="ruby-constant">Filter</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">context</span>)
+      <span class="ruby-identifier">filter</span>.<span class="ruby-identifier">parse</span>(<span class="ruby-identifier">obj</span>)
+      <span class="ruby-identifier">filter</span>
+    <span class="ruby-keyword">else</span>
+      <span class="ruby-identifier">bgp</span> = <span class="ruby-constant">BGP</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">obj</span>,<span class="ruby-identifier">context</span>,<span class="ruby-identifier">inverse</span>)
+      <span class="ruby-identifier">context</span>.<span class="ruby-identifier">append</span>(<span class="ruby-identifier">bgp</span>.<span class="ruby-identifier">to_query</span>)
+      <span class="ruby-identifier">context</span>
+    <span class="ruby-keyword">end</span>
+  <span class="ruby-keyword">else</span>
+    <span class="ruby-keyword">if</span>(<span class="ruby-identifier">obj</span>.<span class="ruby-identifier">respond_to?</span>(<span class="ruby-value">:to_query</span>))
+      <span class="ruby-identifier">obj</span>.<span class="ruby-identifier">to_query</span>(<span class="ruby-identifier">context</span>)
+    <span class="ruby-keyword">else</span>
+      <span class="ruby-node">&quot;\&quot;#{obj}\&quot;&quot;</span>
+    <span class="ruby-keyword">end</span>
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+            </div><!-- to_query-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- to_query-method -->
+
+      
+        <div id="to_triples-method" class="method-detail ">
+          <a name="method-c-to_triples"></a>
+
+          
+          <div class="method-heading">
+            <span class="method-name">to_triples</span><span
+              class="method-args">(obj)</span>
+            <span class="method-click-advice">click to toggle source</span>
+          </div>
+          
+
+          <div class="method-description">
+            
+            
+            
+
+            
+            <div class="method-source-code" id="to_triples-source">
+<pre>
+<span class="ruby-comment"># File lib/grel/ql.rb, line 18</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">to_triples</span>(<span class="ruby-identifier">obj</span>)
+  <span class="ruby-keyword">if</span>(<span class="ruby-identifier">obj</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">BlankId</span>))
+    <span class="ruby-identifier">obj</span>.<span class="ruby-identifier">to_s</span>
+  <span class="ruby-keyword">elsif</span>(<span class="ruby-identifier">obj</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Symbol</span>))
+    <span class="ruby-keyword">if</span>(<span class="ruby-identifier">obj</span> <span class="ruby-operator">==</span> <span class="ruby-value">:@type</span>)
+      <span class="ruby-string">&quot;rdf:type&quot;</span>
+    <span class="ruby-keyword">elsif</span>(<span class="ruby-identifier">obj</span> <span class="ruby-operator">==</span> <span class="ruby-value">:@subclass</span>)
+      <span class="ruby-string">&quot;rdfs:subClassOf&quot;</span>
+    <span class="ruby-keyword">elsif</span>(<span class="ruby-identifier">obj</span> <span class="ruby-operator">==</span> <span class="ruby-value">:@subproperty</span>)
+      <span class="ruby-string">&quot;rdfs:subPropertyOf&quot;</span>
+    <span class="ruby-keyword">elsif</span>(<span class="ruby-identifier">obj</span> <span class="ruby-operator">==</span> <span class="ruby-value">:@domain</span>)
+      <span class="ruby-string">&quot;rdfs:domain&quot;</span>
+    <span class="ruby-keyword">elsif</span>(<span class="ruby-identifier">obj</span> <span class="ruby-operator">==</span> <span class="ruby-value">:@range</span>)
+      <span class="ruby-string">&quot;rdfs:range&quot;</span>
+    <span class="ruby-keyword">elsif</span>(<span class="ruby-identifier">obj</span> <span class="ruby-operator">==</span> <span class="ruby-value">:&quot;&lt;http://www.w3.org/2002/07/owl#onClass&gt;&quot;</span>)
+      <span class="ruby-node">&quot;&lt;http://www.w3.org/2002/07/owl#onClass&gt;&quot;</span>
+    <span class="ruby-keyword">elsif</span>(<span class="ruby-identifier">obj</span> <span class="ruby-operator">==</span> <span class="ruby-value">:&quot;&lt;http://www.w3.org/2002/07/owl#qualifiedCardinality&gt;&quot;</span>)
+      <span class="ruby-node">&quot;&lt;http://www.w3.org/2002/07/owl#qualifiedCardinality&gt;&quot;</span>
+    <span class="ruby-keyword">elsif</span>(<span class="ruby-identifier">obj</span> <span class="ruby-operator">==</span> <span class="ruby-value">:&quot;&lt;http://www.w3.org/2002/07/owl#minCardinality&gt;&quot;</span>)
+      <span class="ruby-node">&quot;&lt;http://www.w3.org/2002/07/owl#minCardinality&gt;&quot;</span>
+    <span class="ruby-keyword">elsif</span>(<span class="ruby-identifier">obj</span> <span class="ruby-operator">==</span> <span class="ruby-value">:&quot;&lt;http://www.w3.org/2002/07/owl#maxCardinality&gt;&quot;</span>)
+      <span class="ruby-node">&quot;&lt;http://www.w3.org/2002/07/owl#maxCardinality&gt;&quot;</span>
+    <span class="ruby-keyword">elsif</span>(<span class="ruby-identifier">obj</span> <span class="ruby-operator">==</span> <span class="ruby-value">:&quot;&lt;http://www.w3.org/2002/07/owl#minQualifiedCardinality&gt;&quot;</span>)
+      <span class="ruby-node">&quot;&lt;http://www.w3.org/2002/07/owl#minQualifiedCardinality&gt;&quot;</span>
+    <span class="ruby-keyword">elsif</span>(<span class="ruby-identifier">obj</span> <span class="ruby-operator">==</span> <span class="ruby-value">:&quot;&lt;http://www.w3.org/2002/07/owl#maxQualifiedCardinality&gt;&quot;</span>)
+      <span class="ruby-node">&quot;&lt;http://www.w3.org/2002/07/owl#maxQualifiedCardinality&gt;&quot;</span>
+    <span class="ruby-keyword">elsif</span>(<span class="ruby-identifier">obj</span> <span class="ruby-operator">==</span> <span class="ruby-value">:&quot;&lt;http://www.w3.org/2002/07/owl#cardinality&gt;&quot;</span>)
+      <span class="ruby-node">&quot;&lt;http://www.w3.org/2002/07/owl#cardinality&gt;&quot;</span>
+    <span class="ruby-keyword">elsif</span>(<span class="ruby-identifier">obj</span> <span class="ruby-operator">==</span> <span class="ruby-value">:@some</span>)
+      <span class="ruby-node">&quot;&lt;http://www.w3.org/2002/07/owl#someValuesFrom&gt;&quot;</span>
+    <span class="ruby-keyword">elsif</span>(<span class="ruby-identifier">obj</span> <span class="ruby-operator">==</span> <span class="ruby-value">:@all</span>)
+      <span class="ruby-node">&quot;&lt;http://www.w3.org/2002/07/owl#allValuesFrom&gt;&quot;</span>
+    <span class="ruby-keyword">elsif</span>(<span class="ruby-identifier">obj</span> <span class="ruby-operator">==</span> <span class="ruby-value">:&quot;&lt;http://www.w3.org/2002/07/owl#Restriction&gt;&quot;</span>)
+      <span class="ruby-node">&quot;&lt;http://www.w3.org/2002/07/owl#Restriction&gt;&quot;</span>
+    <span class="ruby-keyword">elsif</span>(<span class="ruby-identifier">obj</span> <span class="ruby-operator">==</span> <span class="ruby-value">:&quot;&lt;http://www.w3.org/2002/07/owl#onProperty&gt;&quot;</span>)
+      <span class="ruby-node">&quot;&lt;http://www.w3.org/2002/07/owl#onProperty&gt;&quot;</span>
+    <span class="ruby-keyword">elsif</span>(<span class="ruby-identifier">obj</span> <span class="ruby-operator">==</span> <span class="ruby-value">:&quot;&lt;http://www.w3.org/2002/07/owl#DatatypeProperty&gt;&quot;</span>)
+      <span class="ruby-node">&quot;&lt;http://www.w3.org/2002/07/owl#DatatypeProperty&gt;&quot;</span>
+    <span class="ruby-keyword">elsif</span>(<span class="ruby-identifier">obj</span> <span class="ruby-operator">==</span> <span class="ruby-value">:&quot;&lt;http://www.w3.org/2002/07/owl#ObjectProperty&gt;&quot;</span>)
+      <span class="ruby-node">&quot;&lt;http://www.w3.org/2002/07/owl#ObjectProperty&gt;&quot;</span>
+    <span class="ruby-keyword">else</span>
+      <span class="ruby-node">&quot;:#{obj}&quot;</span>
+    <span class="ruby-keyword">end</span>
+  <span class="ruby-keyword">elsif</span>(<span class="ruby-identifier">obj</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">String</span>))
+    <span class="ruby-keyword">if</span>(<span class="ruby-identifier">obj</span> <span class="ruby-operator">=~</span> <span class="ruby-constant">ID_REGEX</span>)
+      <span class="ruby-constant">QL</span>.<span class="ruby-identifier">to_id</span>(<span class="ruby-identifier">obj</span>)
+    <span class="ruby-keyword">else</span>
+      <span class="ruby-node">&quot;\&quot;#{obj}\&quot;&quot;</span>
+    <span class="ruby-keyword">end</span>
+  <span class="ruby-keyword">elsif</span>(<span class="ruby-identifier">obj</span> <span class="ruby-operator">==</span> <span class="ruby-keyword">nil</span>)
+    <span class="ruby-constant">NIL</span>
+  <span class="ruby-keyword">elsif</span>(<span class="ruby-identifier">obj</span> <span class="ruby-operator">==</span> <span class="ruby-constant">Float</span>)
+    <span class="ruby-node">&quot;&lt;http://www.w3.org/2001/XMLSchema#float&gt;&quot;</span>
+  <span class="ruby-keyword">elsif</span>(<span class="ruby-identifier">obj</span> <span class="ruby-operator">==</span> <span class="ruby-constant">Numeric</span> <span class="ruby-operator">||</span> <span class="ruby-identifier">obj</span> <span class="ruby-operator">==</span> <span class="ruby-constant">Fixnum</span> <span class="ruby-operator">||</span> <span class="ruby-identifier">obj</span> <span class="ruby-operator">==</span> <span class="ruby-string">&quot;Bignum&quot;</span>)
+    <span class="ruby-node">&quot;&lt;http://www.w3.org/2001/XMLSchema#integer&gt;&quot;</span>
+  <span class="ruby-keyword">elsif</span>(<span class="ruby-identifier">obj</span> <span class="ruby-operator">==</span> <span class="ruby-constant">Time</span> <span class="ruby-operator">||</span> <span class="ruby-identifier">obj</span> <span class="ruby-operator">==</span> <span class="ruby-constant">Date</span> <span class="ruby-operator">||</span> <span class="ruby-identifier">obj</span> <span class="ruby-operator">==</span> <span class="ruby-constant">DateTime</span>)
+    <span class="ruby-node">&quot;&lt;http://www.w3.org/2001/XMLSchema#dateTime&gt;&quot;</span>
+  <span class="ruby-keyword">elsif</span>(<span class="ruby-identifier">obj</span> <span class="ruby-operator">==</span> <span class="ruby-constant">TrueClass</span> <span class="ruby-operator">||</span> <span class="ruby-identifier">obj</span> <span class="ruby-operator">==</span> <span class="ruby-constant">FalseClass</span>)
+    <span class="ruby-node">&quot;&lt;http://www.w3.org/2001/XMLSchema#boolean&gt;&quot;</span>
+  <span class="ruby-keyword">elsif</span>(<span class="ruby-identifier">obj</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">NonNegativeInteger</span>))
+    <span class="ruby-identifier">obj</span>.<span class="ruby-identifier">to_s</span>
+  <span class="ruby-keyword">elsif</span>(<span class="ruby-identifier">obj</span> <span class="ruby-operator">==</span> <span class="ruby-keyword">true</span> <span class="ruby-operator">||</span> <span class="ruby-identifier">obj</span> <span class="ruby-operator">==</span> <span class="ruby-keyword">false</span>)
+    <span class="ruby-node">&quot;\&quot;#{obj}\&quot;^^&lt;http://www.w3.org/2001/XMLSchema#boolean&gt;&quot;</span>
+  <span class="ruby-keyword">elsif</span>(<span class="ruby-identifier">obj</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Float</span>))
+    <span class="ruby-node">&quot;\&quot;#{obj}\&quot;^^&lt;http://www.w3.org/2001/XMLSchema#float&gt;&quot;</span>
+  <span class="ruby-keyword">elsif</span>(<span class="ruby-identifier">obj</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Numeric</span>))
+    <span class="ruby-node">&quot;\&quot;#{obj}\&quot;^^&lt;http://www.w3.org/2001/XMLSchema#integer&gt;&quot;</span>
+  <span class="ruby-keyword">elsif</span>(<span class="ruby-identifier">obj</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Time</span>))
+    <span class="ruby-node">&quot;\&quot;#{obj.iso8601}\&quot;^^&lt;http://www.w3.org/2001/XMLSchema#dateTime&gt;&quot;</span>
+  <span class="ruby-keyword">elsif</span>(<span class="ruby-identifier">obj</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Date</span>))
+    <span class="ruby-node">&quot;\&quot;#{Time.new(obj.to_s).iso8601}\&quot;^^&lt;http://www.w3.org/2001/XMLSchema#dateTime&gt;&quot;</span>
+  <span class="ruby-keyword">elsif</span>(<span class="ruby-identifier">obj</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Array</span>)) <span class="ruby-comment"># top level array, not array property in a hash</span>
+    <span class="ruby-keyword">if</span>(<span class="ruby-identifier">obj</span>.<span class="ruby-identifier">detect</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">e</span><span class="ruby-operator">|</span> <span class="ruby-identifier">e</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Hash</span>) <span class="ruby-operator">||</span> <span class="ruby-identifier">e</span>.<span class="ruby-identifier">respond_to?</span>(<span class="ruby-value">:to_triples</span>) })
+      <span class="ruby-identifier">obj</span>.<span class="ruby-identifier">map</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">e</span><span class="ruby-operator">|</span> <span class="ruby-constant">QL</span>.<span class="ruby-identifier">to_triples</span>(<span class="ruby-identifier">e</span>) }.<span class="ruby-identifier">inject</span>([]){<span class="ruby-operator">|</span><span class="ruby-identifier">a</span>,<span class="ruby-identifier">i</span><span class="ruby-operator">|</span> <span class="ruby-identifier">a</span> <span class="ruby-operator">+=</span> <span class="ruby-identifier">i</span>}
+    <span class="ruby-keyword">else</span>
+      <span class="ruby-identifier">obj</span>.<span class="ruby-identifier">each_slice</span>(<span class="ruby-value">3</span>).<span class="ruby-identifier">map</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">s</span><span class="ruby-operator">|</span>
+        <span class="ruby-identifier">s</span>.<span class="ruby-identifier">map</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">e</span><span class="ruby-operator">|</span> <span class="ruby-constant">QL</span>.<span class="ruby-identifier">to_triples</span>(<span class="ruby-identifier">e</span>) }
+      <span class="ruby-keyword">end</span>
+    <span class="ruby-keyword">end</span>
+  <span class="ruby-keyword">elsif</span>(<span class="ruby-identifier">obj</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Hash</span>))
+    <span class="ruby-comment"># no blank nodes</span>
+    <span class="ruby-identifier">obj</span>[<span class="ruby-value">:@id</span>] = <span class="ruby-node">&quot;@id(#{SecureRandom.hex})&quot;</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">obj</span>[<span class="ruby-value">:@id</span>].<span class="ruby-identifier">nil?</span>
+    <span class="ruby-comment"># normalising id values</span>
+    <span class="ruby-identifier">obj</span>[<span class="ruby-value">:@id</span>] = <span class="ruby-node">&quot;@id(#{obj[:@id]})&quot;</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">obj</span>[<span class="ruby-value">:@id</span>].<span class="ruby-identifier">index</span>(<span class="ruby-string">&quot;@id(&quot;</span>).<span class="ruby-identifier">nil?</span>
+
+    <span class="ruby-identifier">acum</span> = []
+    <span class="ruby-identifier">triples_acum</span> = []
+    <span class="ruby-identifier">triples_nested</span> = []
+    <span class="ruby-identifier">id</span> = <span class="ruby-keyword">nil</span>
+    <span class="ruby-identifier">obj</span>.<span class="ruby-identifier">each_pair</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">k</span>,<span class="ruby-identifier">v</span><span class="ruby-operator">|</span>
+      <span class="ruby-identifier">p</span> = <span class="ruby-constant">QL</span>.<span class="ruby-identifier">to_triples</span>(<span class="ruby-identifier">k</span>)
+      <span class="ruby-keyword">if</span>(<span class="ruby-identifier">v</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Hash</span>))
+        <span class="ruby-identifier">next_triples</span> = <span class="ruby-constant">QL</span>.<span class="ruby-identifier">to_triples</span>(<span class="ruby-identifier">v</span>)
+        <span class="ruby-identifier">triples_acum</span> <span class="ruby-operator">+=</span> <span class="ruby-identifier">next_triples</span>
+        <span class="ruby-identifier">v</span> = <span class="ruby-identifier">next_triples</span>.<span class="ruby-identifier">triples_id</span>
+        <span class="ruby-identifier">acum</span> <span class="ruby-operator">&lt;&lt;</span> [<span class="ruby-identifier">p</span>,<span class="ruby-identifier">v</span>] <span class="ruby-keyword">if</span> <span class="ruby-identifier">v</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">k</span> <span class="ruby-operator">!=</span> <span class="ruby-value">:@id</span>
+      <span class="ruby-keyword">elsif</span>(<span class="ruby-identifier">v</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Array</span>)) <span class="ruby-comment"># array as a property in a hash</span>
+        <span class="ruby-identifier">v</span>.<span class="ruby-identifier">map</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">o</span><span class="ruby-operator">|</span> <span class="ruby-constant">QL</span>.<span class="ruby-identifier">to_triples</span>(<span class="ruby-identifier">o</span>) }.<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">o</span><span class="ruby-operator">|</span>
+          <span class="ruby-keyword">if</span>(<span class="ruby-identifier">o</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Array</span>) <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">o</span>.<span class="ruby-identifier">length</span> <span class="ruby-operator">&gt;</span> <span class="ruby-value">0</span>)
+            <span class="ruby-identifier">acum</span> <span class="ruby-operator">&lt;&lt;</span> [<span class="ruby-identifier">p</span>, <span class="ruby-identifier">o</span>[<span class="ruby-value">0</span>][<span class="ruby-value">0</span>]]
+            <span class="ruby-identifier">triples_nested</span> <span class="ruby-operator">+=</span> <span class="ruby-identifier">o</span>
+          <span class="ruby-keyword">else</span>
+            <span class="ruby-identifier">acum</span> <span class="ruby-operator">&lt;&lt;</span> [<span class="ruby-identifier">p</span>, <span class="ruby-identifier">o</span>]
+          <span class="ruby-keyword">end</span>
+        <span class="ruby-keyword">end</span>
+      <span class="ruby-keyword">else</span>
+        <span class="ruby-keyword">if</span>(<span class="ruby-identifier">k</span> <span class="ruby-operator">==</span> <span class="ruby-value">:@id</span>) 
+          <span class="ruby-identifier">id</span> = <span class="ruby-constant">QL</span>.<span class="ruby-identifier">to_triples</span>(<span class="ruby-identifier">v</span>)
+        <span class="ruby-keyword">else</span>
+          <span class="ruby-identifier">v</span> = <span class="ruby-constant">QL</span>.<span class="ruby-identifier">to_triples</span>(<span class="ruby-identifier">v</span>)
+        <span class="ruby-keyword">end</span>
+        <span class="ruby-identifier">acum</span> <span class="ruby-operator">&lt;&lt;</span> [<span class="ruby-identifier">p</span>,<span class="ruby-identifier">v</span>] <span class="ruby-keyword">if</span> <span class="ruby-identifier">v</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">k</span> <span class="ruby-operator">!=</span> <span class="ruby-value">:@id</span>
+      <span class="ruby-keyword">end</span>
+    <span class="ruby-keyword">end</span>
+
+    <span class="ruby-identifier">id</span> = <span class="ruby-identifier">id</span> <span class="ruby-operator">||</span> <span class="ruby-constant">BlankId</span>.<span class="ruby-identifier">new</span>
+
+    <span class="ruby-identifier">triples_acum</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">acum</span>.<span class="ruby-identifier">map</span>{<span class="ruby-operator">|</span>(<span class="ruby-identifier">p</span>,<span class="ruby-identifier">o</span>)<span class="ruby-operator">|</span> [<span class="ruby-identifier">id</span>, <span class="ruby-identifier">p</span>, <span class="ruby-identifier">o</span>] } <span class="ruby-operator">+</span> <span class="ruby-identifier">triples_nested</span>
+  <span class="ruby-keyword">else</span>
+    <span class="ruby-keyword">if</span>(<span class="ruby-identifier">obj</span>.<span class="ruby-identifier">respond_to?</span>(<span class="ruby-value">:to_triples</span>))
+      <span class="ruby-identifier">obj</span>.<span class="ruby-identifier">to_triples</span>
+    <span class="ruby-keyword">else</span>
+      <span class="ruby-node">&quot;\&quot;#{obj}\&quot;&quot;</span>
+    <span class="ruby-keyword">end</span>
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+            </div><!-- to_triples-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- to_triples-method -->
+
+      
+        <div id="to_turtle-method" class="method-detail ">
+          <a name="method-c-to_turtle"></a>
+
+          
+          <div class="method-heading">
+            <span class="method-name">to_turtle</span><span
+              class="method-args">(obj, schema=false)</span>
+            <span class="method-click-advice">click to toggle source</span>
+          </div>
+          
+
+          <div class="method-description">
+            
+            
+            
+
+            
+            <div class="method-source-code" id="to_turtle-source">
+<pre>
+<span class="ruby-comment"># File lib/grel/ql.rb, line 11</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">to_turtle</span>(<span class="ruby-identifier">obj</span>, <span class="ruby-identifier">schema</span>=<span class="ruby-keyword">false</span>)
+  <span class="ruby-identifier">data</span> = <span class="ruby-node">&quot;@prefix : &lt;http://grel.org/vocabulary#&gt; . @prefix rdf: &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt; . &quot;</span>
+  <span class="ruby-identifier">data</span> = <span class="ruby-identifier">data</span> <span class="ruby-operator">+</span> <span class="ruby-node">&quot;@prefix rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt; . &quot;</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">schema</span>
+
+  <span class="ruby-identifier">data</span> <span class="ruby-operator">+</span> <span class="ruby-constant">QL</span>.<span class="ruby-identifier">to_triples</span>(<span class="ruby-identifier">obj</span>).<span class="ruby-identifier">map</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">t</span><span class="ruby-operator">|</span> <span class="ruby-identifier">t</span>.<span class="ruby-identifier">map</span>(&amp;<span class="ruby-value">:to_s</span>).<span class="ruby-identifier">join</span>(<span class="ruby-string">&quot; &quot;</span>) }.<span class="ruby-identifier">join</span>(<span class="ruby-string">&quot; .\n &quot;</span>) <span class="ruby-operator">+</span> <span class="ruby-string">&quot; .&quot;</span>
+<span class="ruby-keyword">end</span></pre>
+            </div><!-- to_turtle-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- to_turtle-method -->
+
+      
+      </div><!-- public-class-method-details -->
+    
+    </div><!-- 5Buntitled-5D -->
+  
+
+  </div><!-- documentation -->
+
+  <div id="validator-badges">
+    <p><small><a href="http://validator.w3.org/check/referer">[Validate]</a></small></p>
+    <p><small>Generated with the <a href="http://deveiate.org/projects/Darkfish-Rdoc/">Darkfish
+      Rdoc Generator</a> 2</small>.</p>
+  </div>
+
+</body>
+</html>
+

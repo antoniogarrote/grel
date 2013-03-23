@@ -1,0 +1,1094 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+
+  <title>Class: GRel::QL::QueryContext</title>
+
+  <link rel="stylesheet" href="../../rdoc.css" type="text/css" media="screen" />
+
+  <script src="../../js/jquery.js" type="text/javascript" charset="utf-8"></script>
+  <script src="../../js/thickbox-compressed.js" type="text/javascript" charset="utf-8"></script>
+  <script src="../../js/quicksearch.js" type="text/javascript" charset="utf-8"></script>
+  <script src="../../js/darkfish.js" type="text/javascript" charset="utf-8"></script>
+
+</head>
+<body id="top" class="class">
+
+  <div id="metadata">
+    <div id="home-metadata">
+      <div id="home-section" class="section">
+        <h3 class="section-header">
+          <a href="../../index.html">Home</a>
+          <a href="../../index.html#classes">Classes</a>
+          <a href="../../index.html#methods">Methods</a>
+        </h3>
+      </div>
+    </div>
+
+    <div id="file-metadata">
+      <div id="file-list-section" class="section">
+        <h3 class="section-header">In Files</h3>
+        <div class="section-body">
+          <ul>
+          
+            <li><a href="../../lib/grel/ql_rb.html?TB_iframe=true&amp;height=550&amp;width=785"
+              class="thickbox" title="lib/grel/ql.rb">lib/grel/ql.rb</a></li>
+          
+          </ul>
+        </div>
+      </div>
+
+      
+    </div>
+
+    <div id="class-metadata">
+      
+      <!-- Parent Class -->
+      <div id="parent-class-section" class="section">
+        <h3 class="section-header">Parent</h3>
+        
+        <p class="link"><a href="../../Object.html">Object</a></p>
+        
+      </div>
+      
+
+      
+
+      
+
+      
+      <!-- Method Quickref -->
+      <div id="method-list-section" class="section">
+        <h3 class="section-header">Methods</h3>
+        <ul class="link-list">
+          
+          <li><a href="#method-c-new">::new</a></li>
+          
+          <li><a href="#method-i-append">#append</a></li>
+          
+          <li><a href="#method-i-fresh_filter_predicate">#fresh_filter_predicate</a></li>
+          
+          <li><a href="#method-i-limit-3D">#limit=</a></li>
+          
+          <li><a href="#method-i-next_node_id">#next_node_id</a></li>
+          
+          <li><a href="#method-i-node_to_optional">#node_to_optional</a></li>
+          
+          <li><a href="#method-i-offset-3D">#offset=</a></li>
+          
+          <li><a href="#method-i-optional-3D">#optional=</a></li>
+          
+          <li><a href="#method-i-query_keys">#query_keys</a></li>
+          
+          <li><a href="#method-i-register_node">#register_node</a></li>
+          
+          <li><a href="#method-i-register_query">#register_query</a></li>
+          
+          <li><a href="#method-i-required_properties">#required_properties</a></li>
+          
+          <li><a href="#method-i-run">#run</a></li>
+          
+          <li><a href="#method-i-to_sparql_describe">#to_sparql_describe</a></li>
+          
+          <li><a href="#method-i-to_sparql_select">#to_sparql_select</a></li>
+          
+          <li><a href="#method-i-union">#union</a></li>
+          
+        </ul>
+      </div>
+      
+
+      
+    </div>
+
+    <div id="project-metadata">
+      
+      
+      <div id="fileindex-section" class="section project-section">
+        <h3 class="section-header">Files</h3>
+        <ul>
+        
+          <li class="file"><a href="../../COPYING.html">COPYING</a></li>
+        
+          <li class="file"><a href="../../Gemfile.html">Gemfile</a></li>
+        
+          <li class="file"><a href="../../LICENSE.html">LICENSE</a></li>
+        
+        </ul>
+      </div>
+      
+
+      <div id="classindex-section" class="section project-section">
+        <h3 class="section-header">Class/Module Index
+          <span class="search-toggle"><img src="../../images/find.png"
+            height="16" width="16" alt="[+]"
+            title="show/hide quicksearch" /></span></h3>
+        <form action="#" method="get" accept-charset="utf-8" class="initially-hidden">
+        <fieldset>
+          <legend>Quicksearch</legend>
+          <input type="text" name="quicksearch" value=""
+            class="quicksearch-field" />
+        </fieldset>
+        </form>
+
+        <ul class="link-list">
+        
+          <li><a href="../../GRel.html">GRel</a></li>
+        
+          <li><a href="../../GRel/Base.html">GRel::Base</a></li>
+        
+          <li><a href="../../GRel/BlankId.html">GRel::BlankId</a></li>
+        
+          <li><a href="../../GRel/Debugger.html">GRel::Debugger</a></li>
+        
+          <li><a href="../../GRel/NonNegativeInteger.html">GRel::NonNegativeInteger</a></li>
+        
+          <li><a href="../../GRel/QL.html">GRel::QL</a></li>
+        
+          <li><a href="../../GRel/QL/BGP.html">GRel::QL::BGP</a></li>
+        
+          <li><a href="../../GRel/QL/Filter.html">GRel::QL::Filter</a></li>
+        
+          <li><a href="../../GRel/QL/QueryContext.html">GRel::QL::QueryContext</a></li>
+        
+          <li><a href="../../GRel/ValidationError.html">GRel::ValidationError</a></li>
+        
+          <li><a href="../../Array.html">Array</a></li>
+        
+          <li><a href="../../Object.html">Object</a></li>
+        
+        </ul>
+        <div id="no-class-search-results" style="display: none;">No matching classes.</div>
+      </div>
+
+      
+    </div>
+  </div>
+
+  <div id="documentation">
+    <h1 class="class">GRel::QL::QueryContext</h1>
+
+    <div id="description" class="description">
+      
+    </div><!-- description -->
+
+    
+    
+    
+    <div id="5Buntitled-5D" class="documentation-section">
+      
+
+      
+
+      
+      <!-- Constants -->
+      <div id="constants-list" class="section">
+        <h3 class="section-header">Constants</h3>
+        <dl>
+        
+          <dt><a name="NODE">NODE</a></dt>
+          
+          <dd class="description"></dd>
+          
+        
+          <dt><a name="TUPLE">TUPLE</a></dt>
+          
+          <dd class="description"></dd>
+          
+        
+        </dl>
+      </div>
+      
+
+      
+      <!-- Attributes -->
+      <div id="attribute-method-details" class="method-section section">
+        <h3 class="section-header">Attributes</h3>
+
+        
+        <div id="last_registered_subject-attribute-method" class="method-detail">
+          <a name="last_registered_subject"></a>
+          
+          <div class="method-heading attribute-method-heading">
+            <span class="method-name">last_registered_subject</span><span
+              class="attribute-access-type">[R]</span>
+          </div>
+
+          <div class="method-description">
+          
+          
+          
+          </div>
+        </div>
+        
+        <div id="limit-attribute-method" class="method-detail">
+          <a name="limit"></a>
+          
+          <div class="method-heading attribute-method-heading">
+            <span class="method-name">limit</span><span
+              class="attribute-access-type">[R]</span>
+          </div>
+
+          <div class="method-description">
+          
+          
+          
+          </div>
+        </div>
+        
+        <div id="nodes-attribute-method" class="method-detail">
+          <a name="nodes"></a>
+          
+          <div class="method-heading attribute-method-heading">
+            <span class="method-name">nodes</span><span
+              class="attribute-access-type">[R]</span>
+          </div>
+
+          <div class="method-description">
+          
+          
+          
+          </div>
+        </div>
+        
+        <div id="offset-attribute-method" class="method-detail">
+          <a name="offset"></a>
+          
+          <div class="method-heading attribute-method-heading">
+            <span class="method-name">offset</span><span
+              class="attribute-access-type">[R]</span>
+          </div>
+
+          <div class="method-description">
+          
+          
+          
+          </div>
+        </div>
+        
+        <div id="optional-attribute-method" class="method-detail">
+          <a name="optional"></a>
+          
+          <a name="optional="></a>
+          
+          <div class="method-heading attribute-method-heading">
+            <span class="method-name">optional</span><span
+              class="attribute-access-type">[RW]</span>
+          </div>
+
+          <div class="method-description">
+          
+          
+          
+          </div>
+        </div>
+        
+        <div id="optional_triples-attribute-method" class="method-detail">
+          <a name="optional_triples"></a>
+          
+          <a name="optional_triples="></a>
+          
+          <div class="method-heading attribute-method-heading">
+            <span class="method-name">optional_triples</span><span
+              class="attribute-access-type">[RW]</span>
+          </div>
+
+          <div class="method-description">
+          
+          
+          
+          </div>
+        </div>
+        
+        <div id="order-attribute-method" class="method-detail">
+          <a name="order"></a>
+          
+          <div class="method-heading attribute-method-heading">
+            <span class="method-name">order</span><span
+              class="attribute-access-type">[R]</span>
+          </div>
+
+          <div class="method-description">
+          
+          
+          
+          </div>
+        </div>
+        
+        <div id="orig_query-attribute-method" class="method-detail">
+          <a name="orig_query"></a>
+          
+          <div class="method-heading attribute-method-heading">
+            <span class="method-name">orig_query</span><span
+              class="attribute-access-type">[R]</span>
+          </div>
+
+          <div class="method-description">
+          
+          
+          
+          </div>
+        </div>
+        
+        <div id="projection-attribute-method" class="method-detail">
+          <a name="projection"></a>
+          
+          <div class="method-heading attribute-method-heading">
+            <span class="method-name">projection</span><span
+              class="attribute-access-type">[R]</span>
+          </div>
+
+          <div class="method-description">
+          
+          
+          
+          </div>
+        </div>
+        
+        <div id="triples-attribute-method" class="method-detail">
+          <a name="triples"></a>
+          
+          <a name="triples="></a>
+          
+          <div class="method-heading attribute-method-heading">
+            <span class="method-name">triples</span><span
+              class="attribute-access-type">[RW]</span>
+          </div>
+
+          <div class="method-description">
+          
+          
+          
+          </div>
+        </div>
+        
+        <div id="unions-attribute-method" class="method-detail">
+          <a name="unions"></a>
+          
+          <a name="unions="></a>
+          
+          <div class="method-heading attribute-method-heading">
+            <span class="method-name">unions</span><span
+              class="attribute-access-type">[RW]</span>
+          </div>
+
+          <div class="method-description">
+          
+          
+          
+          </div>
+        </div>
+        
+      </div><!-- attribute-method-details -->
+      
+
+      <!-- Methods -->
+      
+      <div id="public-class-method-details" class="method-section section">
+        <h3 class="section-header">Public Class Methods</h3>
+
+      
+        <div id="new-method" class="method-detail ">
+          <a name="method-c-new"></a>
+
+          
+          <div class="method-heading">
+            <span class="method-name">new</span><span
+              class="method-args">(graph=nil)</span>
+            <span class="method-click-advice">click to toggle source</span>
+          </div>
+          
+
+          <div class="method-description">
+            
+            
+            
+
+            
+            <div class="method-source-code" id="new-source">
+<pre>
+<span class="ruby-comment"># File lib/grel/ql.rb, line 153</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-identifier">graph</span>=<span class="ruby-keyword">nil</span>)
+  <span class="ruby-ivar">@id_counter</span> = <span class="ruby-value">-1</span>
+  <span class="ruby-ivar">@filters_counter</span> = <span class="ruby-value">-1</span>
+  <span class="ruby-ivar">@triples</span> = []
+  <span class="ruby-ivar">@optional_triples</span> = []
+  <span class="ruby-ivar">@optional_bgps</span> = []
+  <span class="ruby-ivar">@projection</span> = {}
+  <span class="ruby-ivar">@nodes</span> = {}
+  <span class="ruby-ivar">@graph</span> = <span class="ruby-identifier">graph</span>
+  <span class="ruby-ivar">@optional</span> = <span class="ruby-keyword">false</span>
+  <span class="ruby-ivar">@last_registered_subject</span> = []
+  <span class="ruby-ivar">@unions</span> = []
+  <span class="ruby-ivar">@limit</span> = <span class="ruby-keyword">nil</span>
+  <span class="ruby-ivar">@offset</span> = <span class="ruby-keyword">nil</span>
+  <span class="ruby-ivar">@orig_query</span> = <span class="ruby-keyword">nil</span>
+  <span class="ruby-ivar">@query_keys</span> = []
+<span class="ruby-keyword">end</span></pre>
+            </div><!-- new-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- new-method -->
+
+      
+      </div><!-- public-class-method-details -->
+    
+      <div id="public-instance-method-details" class="method-section section">
+        <h3 class="section-header">Public Instance Methods</h3>
+
+      
+        <div id="append-method" class="method-detail ">
+          <a name="method-i-append"></a>
+
+          
+          <div class="method-heading">
+            <span class="method-name">append</span><span
+              class="method-args">(triples)</span>
+            <span class="method-click-advice">click to toggle source</span>
+          </div>
+          
+
+          <div class="method-description">
+            
+            
+            
+
+            
+            <div class="method-source-code" id="append-source">
+<pre>
+<span class="ruby-comment"># File lib/grel/ql.rb, line 197</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">append</span>(<span class="ruby-identifier">triples</span>)
+  <span class="ruby-keyword">if</span>(<span class="ruby-ivar">@optional</span>)
+    <span class="ruby-ivar">@optional_triples</span> <span class="ruby-operator">+=</span> <span class="ruby-identifier">triples</span>
+  <span class="ruby-keyword">else</span>
+    <span class="ruby-ivar">@triples</span> <span class="ruby-operator">+=</span> <span class="ruby-identifier">triples</span>
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+            </div><!-- append-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- append-method -->
+
+      
+        <div id="fresh_filter_predicate-method" class="method-detail ">
+          <a name="method-i-fresh_filter_predicate"></a>
+
+          
+          <div class="method-heading">
+            <span class="method-name">fresh_filter_predicate</span><span
+              class="method-args">()</span>
+            <span class="method-click-advice">click to toggle source</span>
+          </div>
+          
+
+          <div class="method-description">
+            
+            
+            
+
+            
+            <div class="method-source-code" id="fresh_filter_predicate-source">
+<pre>
+<span class="ruby-comment"># File lib/grel/ql.rb, line 240</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">fresh_filter_predicate</span>
+  <span class="ruby-ivar">@filters_counter</span><span class="ruby-operator">+=</span><span class="ruby-value">1</span>
+  <span class="ruby-node">&quot;?P_#{@id_counter}_#{@filters_counter}&quot;</span>
+<span class="ruby-keyword">end</span></pre>
+            </div><!-- fresh_filter_predicate-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- fresh_filter_predicate-method -->
+
+      
+        <div id="limit-3D-method" class="method-detail ">
+          <a name="method-i-limit-3D"></a>
+
+          
+          <div class="method-heading">
+            <span class="method-name">limit=</span><span
+              class="method-args">(limit)</span>
+            <span class="method-click-advice">click to toggle source</span>
+          </div>
+          
+
+          <div class="method-description">
+            
+            
+            
+
+            
+            <div class="method-source-code" id="limit-3D-source">
+<pre>
+<span class="ruby-comment"># File lib/grel/ql.rb, line 348</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">limit=</span>(<span class="ruby-identifier">limit</span>)
+  <span class="ruby-ivar">@limit</span> = <span class="ruby-identifier">limit</span>
+  <span class="ruby-keyword">self</span>
+<span class="ruby-keyword">end</span></pre>
+            </div><!-- limit-3D-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- limit-3D-method -->
+
+      
+        <div id="next_node_id-method" class="method-detail ">
+          <a name="method-i-next_node_id"></a>
+
+          
+          <div class="method-heading">
+            <span class="method-name">next_node_id</span><span
+              class="method-args">()</span>
+            <span class="method-click-advice">click to toggle source</span>
+          </div>
+          
+
+          <div class="method-description">
+            
+            
+            
+
+            
+            <div class="method-source-code" id="next_node_id-source">
+<pre>
+<span class="ruby-comment"># File lib/grel/ql.rb, line 205</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">next_node_id</span>
+  <span class="ruby-ivar">@id_counter</span> <span class="ruby-operator">+=</span> <span class="ruby-value">1</span>
+  <span class="ruby-ivar">@id_counter</span>
+<span class="ruby-keyword">end</span></pre>
+            </div><!-- next_node_id-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- next_node_id-method -->
+
+      
+        <div id="node_to_optional-method" class="method-detail ">
+          <a name="method-i-node_to_optional"></a>
+
+          
+          <div class="method-heading">
+            <span class="method-name">node_to_optional</span><span
+              class="method-args">(node_id)</span>
+            <span class="method-click-advice">click to toggle source</span>
+          </div>
+          
+
+          <div class="method-description">
+            
+            
+            
+
+            
+            <div class="method-source-code" id="node_to_optional-source">
+<pre>
+<span class="ruby-comment"># File lib/grel/ql.rb, line 234</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">node_to_optional</span>(<span class="ruby-identifier">node_id</span>) <span class="ruby-comment">#, last_registered_subject)</span>
+  <span class="ruby-ivar">@projection</span>.<span class="ruby-identifier">delete</span>(<span class="ruby-identifier">node_id</span>)
+  <span class="ruby-ivar">@nodes</span>.<span class="ruby-identifier">delete</span>(<span class="ruby-identifier">node_id</span>)
+  <span class="ruby-comment"># @last_registered_subject &lt;&lt; last_registered_subject</span>
+<span class="ruby-keyword">end</span></pre>
+            </div><!-- node_to_optional-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- node_to_optional-method -->
+
+      
+        <div id="offset-3D-method" class="method-detail ">
+          <a name="method-i-offset-3D"></a>
+
+          
+          <div class="method-heading">
+            <span class="method-name">offset=</span><span
+              class="method-args">(offset)</span>
+            <span class="method-click-advice">click to toggle source</span>
+          </div>
+          
+
+          <div class="method-description">
+            
+            
+            
+
+            
+            <div class="method-source-code" id="offset-3D-source">
+<pre>
+<span class="ruby-comment"># File lib/grel/ql.rb, line 353</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">offset=</span>(<span class="ruby-identifier">offset</span>)
+  <span class="ruby-ivar">@offset</span> = <span class="ruby-identifier">offset</span>
+  <span class="ruby-keyword">self</span>
+<span class="ruby-keyword">end</span></pre>
+            </div><!-- offset-3D-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- offset-3D-method -->
+
+      
+        <div id="optional-3D-method" class="method-detail ">
+          <a name="method-i-optional-3D"></a>
+
+          
+          <div class="method-heading">
+            <span class="method-name">optional=</span><span
+              class="method-args">(value)</span>
+            <span class="method-click-advice">click to toggle source</span>
+          </div>
+          
+
+          <div class="method-description">
+            
+            
+            
+
+            
+            <div class="method-source-code" id="optional-3D-source">
+<pre>
+<span class="ruby-comment"># File lib/grel/ql.rb, line 187</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">optional=</span>(<span class="ruby-identifier">value</span>)
+  <span class="ruby-keyword">if</span>(<span class="ruby-identifier">value</span> <span class="ruby-operator">==</span> <span class="ruby-keyword">true</span>)
+    <span class="ruby-ivar">@optional</span> = <span class="ruby-keyword">true</span>
+  <span class="ruby-keyword">else</span>
+    <span class="ruby-ivar">@optional</span> = <span class="ruby-keyword">false</span>
+    <span class="ruby-ivar">@optional_bgps</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-ivar">@optional_triples</span>
+    <span class="ruby-ivar">@optional_triples</span> = []
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+            </div><!-- optional-3D-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- optional-3D-method -->
+
+      
+        <div id="query_keys-method" class="method-detail ">
+          <a name="method-i-query_keys"></a>
+
+          
+          <div class="method-heading">
+            <span class="method-name">query_keys</span><span
+              class="method-args">()</span>
+            <span class="method-click-advice">click to toggle source</span>
+          </div>
+          
+
+          <div class="method-description">
+            
+            
+            
+
+            
+            <div class="method-source-code" id="query_keys-source">
+<pre>
+<span class="ruby-comment"># File lib/grel/ql.rb, line 179</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">query_keys</span>
+  <span class="ruby-identifier">sets</span> = [[<span class="ruby-ivar">@query_keys</span>,<span class="ruby-ivar">@orig_query</span>]]
+  <span class="ruby-identifier">unions</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">c</span><span class="ruby-operator">|</span>
+    <span class="ruby-identifier">sets</span> <span class="ruby-operator">+=</span> <span class="ruby-identifier">c</span>.<span class="ruby-identifier">query_keys</span>
+  <span class="ruby-keyword">end</span>
+  <span class="ruby-identifier">sets</span>
+<span class="ruby-keyword">end</span></pre>
+            </div><!-- query_keys-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- query_keys-method -->
+
+      
+        <div id="register_node-method" class="method-detail ">
+          <a name="method-i-register_node"></a>
+
+          
+          <div class="method-heading">
+            <span class="method-name">register_node</span><span
+              class="method-args">(id,node_id,inverse=false)</span>
+            <span class="method-click-advice">click to toggle source</span>
+          </div>
+          
+
+          <div class="method-description">
+            
+            
+            
+
+            
+            <div class="method-source-code" id="register_node-source">
+<pre>
+<span class="ruby-comment"># File lib/grel/ql.rb, line 210</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">register_node</span>(<span class="ruby-identifier">id</span>,<span class="ruby-identifier">node_id</span>,<span class="ruby-identifier">inverse</span>=<span class="ruby-keyword">false</span>)
+  <span class="ruby-ivar">@filters_counter</span> = <span class="ruby-value">-1</span>
+  <span class="ruby-identifier">subject</span> = <span class="ruby-identifier">id</span>
+  <span class="ruby-identifier">predicate</span> = <span class="ruby-node">&quot;?P_mg_#{node_id}&quot;</span>
+  <span class="ruby-identifier">object</span> = <span class="ruby-node">&quot;?O_mg_#{node_id}&quot;</span> 
+  <span class="ruby-keyword">if</span>(<span class="ruby-identifier">id</span>.<span class="ruby-identifier">nil?</span>)
+    <span class="ruby-identifier">subject</span> = <span class="ruby-node">&quot;?S_mg_#{node_id}&quot;</span>
+    <span class="ruby-ivar">@projection</span>[<span class="ruby-identifier">subject</span>] = <span class="ruby-keyword">true</span> <span class="ruby-keyword">if</span>(<span class="ruby-operator">!</span><span class="ruby-identifier">inverse</span>)
+  <span class="ruby-keyword">else</span>
+    <span class="ruby-ivar">@projection</span>[<span class="ruby-identifier">id</span>] = <span class="ruby-keyword">true</span> <span class="ruby-keyword">if</span>(<span class="ruby-operator">!</span><span class="ruby-identifier">inverse</span>)
+  <span class="ruby-keyword">end</span>
+
+  <span class="ruby-ivar">@last_registered_subject</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">subject</span>
+  <span class="ruby-comment"># @projection[predicate] = true</span>
+  <span class="ruby-comment"># @projection[object] = true</span>
+  <span class="ruby-ivar">@nodes</span>[<span class="ruby-identifier">node_id</span>] = <span class="ruby-identifier">subject</span>
+
+  [<span class="ruby-identifier">subject</span>, <span class="ruby-identifier">predicate</span>, <span class="ruby-identifier">object</span>]
+<span class="ruby-keyword">end</span></pre>
+            </div><!-- register_node-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- register_node-method -->
+
+      
+        <div id="register_query-method" class="method-detail ">
+          <a name="method-i-register_query"></a>
+
+          
+          <div class="method-heading">
+            <span class="method-name">register_query</span><span
+              class="method-args">(query)</span>
+            <span class="method-click-advice">click to toggle source</span>
+          </div>
+          
+
+          <div class="method-description">
+            
+            
+            
+
+            
+            <div class="method-source-code" id="register_query-source">
+<pre>
+<span class="ruby-comment"># File lib/grel/ql.rb, line 171</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">register_query</span>(<span class="ruby-identifier">query</span>)
+  <span class="ruby-ivar">@orig_query</span> = <span class="ruby-identifier">query</span>
+  <span class="ruby-identifier">query</span>.<span class="ruby-identifier">each_pair</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">k</span>,<span class="ruby-identifier">v</span><span class="ruby-operator">|</span>
+    <span class="ruby-ivar">@query_keys</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">k</span> <span class="ruby-keyword">if</span>(<span class="ruby-identifier">k</span> <span class="ruby-operator">!=</span> <span class="ruby-value">:@id</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">k</span>.<span class="ruby-identifier">to_s</span>.<span class="ruby-identifier">index</span>(<span class="ruby-string">&quot;$inv_&quot;</span>).<span class="ruby-identifier">nil?</span>)
+  <span class="ruby-keyword">end</span>
+  <span class="ruby-keyword">self</span>
+<span class="ruby-keyword">end</span></pre>
+            </div><!-- register_query-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- register_query-method -->
+
+      
+        <div id="required_properties-method" class="method-detail ">
+          <a name="method-i-required_properties"></a>
+
+          
+          <div class="method-heading">
+            <span class="method-name">required_properties</span><span
+              class="method-args">()</span>
+            <span class="method-click-advice">click to toggle source</span>
+          </div>
+          
+
+          <div class="method-description">
+            
+            
+            
+
+            
+            <div class="method-source-code" id="required_properties-source">
+<pre>
+<span class="ruby-comment"># File lib/grel/ql.rb, line 367</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">required_properties</span>
+  <span class="ruby-identifier">props</span> = []
+  
+<span class="ruby-keyword">end</span></pre>
+            </div><!-- required_properties-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- required_properties-method -->
+
+      
+        <div id="run-method" class="method-detail ">
+          <a name="method-i-run"></a>
+
+          
+          <div class="method-heading">
+            <span class="method-name">run</span><span
+              class="method-args">()</span>
+            <span class="method-click-advice">click to toggle source</span>
+          </div>
+          
+
+          <div class="method-description">
+            
+            
+            
+
+            
+            <div class="method-source-code" id="run-source">
+<pre>
+<span class="ruby-comment"># File lib/grel/ql.rb, line 363</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">run</span>
+  <span class="ruby-ivar">@graph</span>.<span class="ruby-identifier">query</span>(<span class="ruby-identifier">to_sparql_describe</span>)
+<span class="ruby-keyword">end</span></pre>
+            </div><!-- run-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- run-method -->
+
+      
+        <div id="to_sparql_describe-method" class="method-detail ">
+          <a name="method-i-to_sparql_describe"></a>
+
+          
+          <div class="method-heading">
+            <span class="method-name">to_sparql_describe</span><span
+              class="method-args">(preamble=true)</span>
+            <span class="method-click-advice">click to toggle source</span>
+          </div>
+          
+
+          <div class="method-description">
+            
+            
+            
+
+            
+            <div class="method-source-code" id="to_sparql_describe-source">
+<pre>
+<span class="ruby-comment"># File lib/grel/ql.rb, line 245</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">to_sparql_describe</span>(<span class="ruby-identifier">preamble</span>=<span class="ruby-keyword">true</span>)
+
+  <span class="ruby-identifier">bgps</span> = <span class="ruby-ivar">@triples</span>.<span class="ruby-identifier">map</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">t</span><span class="ruby-operator">|</span> 
+    <span class="ruby-keyword">if</span>(<span class="ruby-identifier">t</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Filter</span>))
+      <span class="ruby-identifier">t</span>.<span class="ruby-identifier">acum</span>
+    <span class="ruby-keyword">else</span>
+      <span class="ruby-identifier">t</span>.<span class="ruby-identifier">join</span>(<span class="ruby-string">' '</span>) 
+    <span class="ruby-keyword">end</span>
+  }.<span class="ruby-identifier">join</span>(<span class="ruby-string">&quot; . &quot;</span>)
+
+  <span class="ruby-identifier">optional_bgps</span> = <span class="ruby-ivar">@optional_bgps</span>.<span class="ruby-identifier">map</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">optional_triples</span><span class="ruby-operator">|</span> 
+    <span class="ruby-string">&quot;OPTIONAL { &quot;</span><span class="ruby-operator">+</span> <span class="ruby-identifier">optional_triples</span>.<span class="ruby-identifier">map</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">t</span><span class="ruby-operator">|</span>
+      <span class="ruby-keyword">if</span>(<span class="ruby-identifier">t</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Filter</span>))
+        <span class="ruby-identifier">t</span>.<span class="ruby-identifier">acum</span>
+      <span class="ruby-keyword">else</span>
+        <span class="ruby-identifier">t</span>.<span class="ruby-identifier">join</span>(<span class="ruby-string">' '</span>) 
+      <span class="ruby-keyword">end</span>
+    }.<span class="ruby-identifier">join</span>(<span class="ruby-string">&quot; . &quot;</span>) <span class="ruby-operator">+</span> <span class="ruby-string">&quot; }&quot;</span>
+  }.<span class="ruby-identifier">join</span>(<span class="ruby-string">&quot; &quot;</span>)
+
+  <span class="ruby-identifier">main_bgp</span> = <span class="ruby-node">&quot;#{bgps}&quot;</span>
+  <span class="ruby-keyword">unless</span>(<span class="ruby-ivar">@optional_bgps</span>.<span class="ruby-identifier">empty?</span>)
+    <span class="ruby-identifier">main_bgp</span> <span class="ruby-operator">+=</span> <span class="ruby-node">&quot; #{optional_bgps}&quot;</span>
+  <span class="ruby-keyword">end</span>
+
+  <span class="ruby-identifier">query</span> = <span class="ruby-keyword">if</span>(<span class="ruby-identifier">preamble</span>)
+    <span class="ruby-identifier">query</span> = <span class="ruby-node">&quot;PREFIX : &lt;http://grel.org/vocabulary#&gt; PREFIX rdf: &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt; PREFIX rdfs: &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt;&quot;</span>
+    <span class="ruby-identifier">query</span> = <span class="ruby-identifier">query</span> <span class="ruby-operator">+</span> <span class="ruby-node">&quot; PREFIX xsd: &lt;http://www.w3.org/2001/XMLSchema#&gt; PREFIX fn: &lt;http://www.w3.org/2005/xpath-functions#&gt; &quot;</span> 
+
+    <span class="ruby-keyword">if</span>(<span class="ruby-ivar">@unions</span>.<span class="ruby-identifier">length</span><span class="ruby-operator">&gt;</span><span class="ruby-value">0</span>)
+      <span class="ruby-identifier">union_bgps</span> = <span class="ruby-ivar">@unions</span>.<span class="ruby-identifier">map</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">u</span><span class="ruby-operator">|</span> <span class="ruby-identifier">u</span>.<span class="ruby-identifier">to_sparql_describe</span>(<span class="ruby-keyword">false</span>) }.<span class="ruby-identifier">join</span>(<span class="ruby-string">&quot; UNION &quot;</span>)
+      <span class="ruby-identifier">union_projections</span> = <span class="ruby-ivar">@unions</span>.<span class="ruby-identifier">map</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">u</span><span class="ruby-operator">|</span> <span class="ruby-identifier">u</span>.<span class="ruby-identifier">projection</span>.<span class="ruby-identifier">keys</span> }.<span class="ruby-identifier">flatten</span>.<span class="ruby-identifier">uniq</span>
+      <span class="ruby-identifier">all_subjects</span> = (<span class="ruby-ivar">@projection</span>.<span class="ruby-identifier">keys</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">union_projections</span>).<span class="ruby-identifier">uniq</span>
+      <span class="ruby-identifier">query</span> <span class="ruby-operator">+=</span> <span class="ruby-node">&quot;DESCRIBE #{all_subjects.join(' ')} WHERE { { #{main_bgp} } UNION #{union_bgps} }&quot;</span>            
+    <span class="ruby-keyword">else</span>
+      <span class="ruby-identifier">query</span> <span class="ruby-operator">+=</span> <span class="ruby-node">&quot;DESCRIBE #{@projection.keys.join(' ')} WHERE { #{main_bgp} }&quot;</span>
+    <span class="ruby-keyword">end</span>
+  <span class="ruby-keyword">else</span>
+    <span class="ruby-node">&quot;{ #{main_bgp} }&quot;</span>
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+            </div><!-- to_sparql_describe-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- to_sparql_describe-method -->
+
+      
+        <div id="to_sparql_select-method" class="method-detail ">
+          <a name="method-i-to_sparql_select"></a>
+
+          
+          <div class="method-heading">
+            <span class="method-name">to_sparql_select</span><span
+              class="method-args">(preamble=true)</span>
+            <span class="method-click-advice">click to toggle source</span>
+          </div>
+          
+
+          <div class="method-description">
+            
+            
+            
+
+            
+            <div class="method-source-code" id="to_sparql_select-source">
+<pre>
+<span class="ruby-comment"># File lib/grel/ql.rb, line 287</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">to_sparql_select</span>(<span class="ruby-identifier">preamble</span>=<span class="ruby-keyword">true</span>)
+
+  <span class="ruby-identifier">projection</span> = {}
+
+  <span class="ruby-identifier">bgps</span> = <span class="ruby-ivar">@triples</span>.<span class="ruby-identifier">map</span>{ <span class="ruby-operator">|</span><span class="ruby-identifier">t</span><span class="ruby-operator">|</span> 
+    <span class="ruby-identifier">s</span>,<span class="ruby-identifier">p</span>,<span class="ruby-identifier">o</span> = <span class="ruby-identifier">t</span>
+    <span class="ruby-keyword">if</span>(<span class="ruby-identifier">s</span>.<span class="ruby-identifier">to_s</span>.<span class="ruby-identifier">index</span>(<span class="ruby-string">&quot;?X_&quot;</span>) <span class="ruby-operator">==</span> <span class="ruby-value">0</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">p</span>.<span class="ruby-identifier">to_s</span>.<span class="ruby-identifier">index</span>(<span class="ruby-string">&quot;?X_&quot;</span>) <span class="ruby-operator">==</span> <span class="ruby-value">0</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">o</span>.<span class="ruby-identifier">to_s</span>.<span class="ruby-identifier">index</span>(<span class="ruby-string">&quot;?X_&quot;</span>) <span class="ruby-operator">==</span> <span class="ruby-value">0</span>)
+    <span class="ruby-keyword">elsif</span>(<span class="ruby-identifier">s</span>.<span class="ruby-identifier">to_s</span>.<span class="ruby-identifier">index</span>(<span class="ruby-string">&quot;?S_mg&quot;</span>) <span class="ruby-operator">==</span> <span class="ruby-value">0</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">p</span>.<span class="ruby-identifier">to_s</span>.<span class="ruby-identifier">index</span>(<span class="ruby-string">&quot;?P_mg&quot;</span>) <span class="ruby-operator">==</span> <span class="ruby-value">0</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">o</span>.<span class="ruby-identifier">to_s</span>.<span class="ruby-identifier">index</span>(<span class="ruby-string">&quot;?O_mg&quot;</span>) <span class="ruby-operator">==</span> <span class="ruby-value">0</span>)
+      <span class="ruby-keyword">nil</span>
+    <span class="ruby-keyword">else</span>
+      <span class="ruby-identifier">projection</span>[<span class="ruby-identifier">s</span>] = <span class="ruby-keyword">true</span> <span class="ruby-keyword">if</span>((<span class="ruby-identifier">s</span>.<span class="ruby-identifier">to_s</span>.<span class="ruby-identifier">index</span>(<span class="ruby-string">&quot;?&quot;</span>) <span class="ruby-operator">==</span> <span class="ruby-value">0</span>) <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">s</span>.<span class="ruby-identifier">to_s</span>.<span class="ruby-identifier">index</span>(<span class="ruby-string">&quot;?X_&quot;</span>).<span class="ruby-identifier">nil?</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">s</span>.<span class="ruby-identifier">index</span>(<span class="ruby-string">&quot;_mg_&quot;</span>).<span class="ruby-identifier">nil?</span>)  
+      <span class="ruby-identifier">projection</span>[<span class="ruby-identifier">p</span>] = <span class="ruby-keyword">true</span> <span class="ruby-keyword">if</span>((<span class="ruby-identifier">p</span>.<span class="ruby-identifier">to_s</span>.<span class="ruby-identifier">index</span>(<span class="ruby-string">&quot;?&quot;</span>) <span class="ruby-operator">==</span> <span class="ruby-value">0</span>) <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">p</span>.<span class="ruby-identifier">to_s</span>.<span class="ruby-identifier">index</span>(<span class="ruby-string">&quot;?X_&quot;</span>).<span class="ruby-identifier">nil?</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">p</span>.<span class="ruby-identifier">index</span>(<span class="ruby-string">&quot;_mg_&quot;</span>).<span class="ruby-identifier">nil?</span>) 
+      <span class="ruby-identifier">projection</span>[<span class="ruby-identifier">o</span>] = <span class="ruby-keyword">true</span> <span class="ruby-keyword">if</span>((<span class="ruby-identifier">o</span>.<span class="ruby-identifier">to_s</span>.<span class="ruby-identifier">index</span>(<span class="ruby-string">&quot;?&quot;</span>) <span class="ruby-operator">==</span> <span class="ruby-value">0</span>) <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">o</span>.<span class="ruby-identifier">to_s</span>.<span class="ruby-identifier">index</span>(<span class="ruby-string">&quot;?X_&quot;</span>).<span class="ruby-identifier">nil?</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">o</span>.<span class="ruby-identifier">index</span>(<span class="ruby-string">&quot;_mg_&quot;</span>).<span class="ruby-identifier">nil?</span>) 
+      <span class="ruby-keyword">if</span>(<span class="ruby-identifier">t</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Filter</span>))
+        <span class="ruby-identifier">t</span>.<span class="ruby-identifier">acum</span>
+      <span class="ruby-keyword">else</span>
+        <span class="ruby-identifier">t</span>.<span class="ruby-identifier">join</span>(<span class="ruby-string">' '</span>) 
+      <span class="ruby-keyword">end</span>
+    <span class="ruby-keyword">end</span>
+  }.<span class="ruby-identifier">compact</span>.<span class="ruby-identifier">join</span>(<span class="ruby-string">&quot; . &quot;</span>)
+
+  <span class="ruby-identifier">optional_bgps</span> = <span class="ruby-ivar">@optional_bgps</span>.<span class="ruby-identifier">map</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">optional_triples</span><span class="ruby-operator">|</span> 
+    <span class="ruby-string">&quot;OPTIONAL { &quot;</span><span class="ruby-operator">+</span> <span class="ruby-identifier">optional_triples</span>.<span class="ruby-identifier">map</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">t</span><span class="ruby-operator">|</span>
+      <span class="ruby-identifier">s</span>,<span class="ruby-identifier">p</span>,<span class="ruby-identifier">o</span> = <span class="ruby-identifier">t</span>
+      <span class="ruby-keyword">if</span>(<span class="ruby-identifier">s</span>.<span class="ruby-identifier">to_s</span>.<span class="ruby-identifier">index</span>(<span class="ruby-string">&quot;?&quot;</span>) <span class="ruby-operator">==</span> <span class="ruby-value">0</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">p</span>.<span class="ruby-identifier">to_s</span>.<span class="ruby-identifier">index</span>(<span class="ruby-string">&quot;?&quot;</span>) <span class="ruby-operator">==</span> <span class="ruby-value">0</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">o</span>.<span class="ruby-identifier">to_s</span>.<span class="ruby-identifier">index</span>(<span class="ruby-string">&quot;?&quot;</span>) <span class="ruby-operator">==</span> <span class="ruby-value">0</span>)
+        <span class="ruby-keyword">nil</span>
+      <span class="ruby-keyword">else</span>
+        <span class="ruby-identifier">projection</span>[<span class="ruby-identifier">s</span>] = <span class="ruby-keyword">true</span> <span class="ruby-keyword">if</span>((<span class="ruby-identifier">s</span>.<span class="ruby-identifier">to_s</span>.<span class="ruby-identifier">index</span>(<span class="ruby-string">&quot;?&quot;</span>) <span class="ruby-operator">==</span> <span class="ruby-value">0</span>) <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">s</span>.<span class="ruby-identifier">to_s</span>.<span class="ruby-identifier">index</span>(<span class="ruby-string">&quot;?X_&quot;</span>).<span class="ruby-identifier">nil?</span>)  
+        <span class="ruby-identifier">projection</span>[<span class="ruby-identifier">p</span>] = <span class="ruby-keyword">true</span> <span class="ruby-keyword">if</span>((<span class="ruby-identifier">p</span>.<span class="ruby-identifier">to_s</span>.<span class="ruby-identifier">index</span>(<span class="ruby-string">&quot;?&quot;</span>) <span class="ruby-operator">==</span> <span class="ruby-value">0</span>) <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">p</span>.<span class="ruby-identifier">to_s</span>.<span class="ruby-identifier">index</span>(<span class="ruby-string">&quot;?X_&quot;</span>).<span class="ruby-identifier">nil?</span>) 
+        <span class="ruby-identifier">projection</span>[<span class="ruby-identifier">o</span>] = <span class="ruby-keyword">true</span> <span class="ruby-keyword">if</span>((<span class="ruby-identifier">o</span>.<span class="ruby-identifier">to_s</span>.<span class="ruby-identifier">index</span>(<span class="ruby-string">&quot;?&quot;</span>) <span class="ruby-operator">==</span> <span class="ruby-value">0</span>) <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">o</span>.<span class="ruby-identifier">to_s</span>.<span class="ruby-identifier">index</span>(<span class="ruby-string">&quot;?X_&quot;</span>).<span class="ruby-identifier">nil?</span>) 
+        <span class="ruby-keyword">if</span>(<span class="ruby-identifier">t</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Filter</span>))
+          <span class="ruby-identifier">t</span>.<span class="ruby-identifier">acum</span>
+        <span class="ruby-keyword">else</span>
+          <span class="ruby-identifier">t</span>.<span class="ruby-identifier">join</span>(<span class="ruby-string">' '</span>) 
+        <span class="ruby-keyword">end</span>
+      <span class="ruby-keyword">end</span>
+    }.<span class="ruby-identifier">compact</span>.<span class="ruby-identifier">join</span>(<span class="ruby-string">&quot; . &quot;</span>) <span class="ruby-operator">+</span> <span class="ruby-string">&quot; }&quot;</span>
+  }.<span class="ruby-identifier">join</span>(<span class="ruby-string">&quot; &quot;</span>)
+
+  <span class="ruby-identifier">main_bgp</span> = <span class="ruby-node">&quot;#{bgps}&quot;</span>
+  <span class="ruby-keyword">unless</span>(<span class="ruby-ivar">@optional_bgps</span>.<span class="ruby-identifier">empty?</span>)
+    <span class="ruby-identifier">main_bgp</span> <span class="ruby-operator">+=</span> <span class="ruby-node">&quot; #{optional_bgps}&quot;</span>
+  <span class="ruby-keyword">end</span>
+
+  <span class="ruby-identifier">query</span> = <span class="ruby-keyword">if</span>(<span class="ruby-identifier">preamble</span>)
+    <span class="ruby-identifier">query</span> = <span class="ruby-node">&quot;PREFIX : &lt;http://grel.org/vocabulary#&gt; PREFIX rdf: &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt; PREFIX rdfs: &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt;&quot;</span>
+    <span class="ruby-identifier">query</span> = <span class="ruby-identifier">query</span> <span class="ruby-operator">+</span> <span class="ruby-node">&quot; PREFIX xsd: &lt;http://www.w3.org/2001/XMLSchema#&gt; PREFIX fn: &lt;http://www.w3.org/2005/xpath-functions#&gt; &quot;</span> 
+
+    <span class="ruby-keyword">if</span>(<span class="ruby-ivar">@unions</span>.<span class="ruby-identifier">length</span><span class="ruby-operator">&gt;</span><span class="ruby-value">0</span>)
+      <span class="ruby-identifier">union_bgps</span> = <span class="ruby-ivar">@unions</span>.<span class="ruby-identifier">map</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">u</span><span class="ruby-operator">|</span> <span class="ruby-identifier">u</span>.<span class="ruby-identifier">to_sparql_describe</span>(<span class="ruby-keyword">false</span>) }.<span class="ruby-identifier">join</span>(<span class="ruby-string">&quot; UNION &quot;</span>)
+      <span class="ruby-identifier">all_subjects</span> = <span class="ruby-identifier">projection</span>.<span class="ruby-identifier">keys</span>
+      <span class="ruby-identifier">query</span> <span class="ruby-operator">+=</span> <span class="ruby-node">&quot;SELECT DISTINCT #{all_subjects.join(' ')} WHERE { { #{main_bgp} } UNION #{union_bgps} }&quot;</span>            
+    <span class="ruby-keyword">else</span>
+      <span class="ruby-identifier">all_subjects</span> = <span class="ruby-identifier">projection</span>.<span class="ruby-identifier">keys</span>
+      <span class="ruby-identifier">query</span> <span class="ruby-operator">+=</span> <span class="ruby-node">&quot;SELECT DISTINCT #{all_subjects.join(' ')} WHERE { #{main_bgp} }&quot;</span>
+    <span class="ruby-keyword">end</span>
+  <span class="ruby-keyword">else</span>
+    <span class="ruby-node">&quot;{ #{main_bgp} }&quot;</span>
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+            </div><!-- to_sparql_select-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- to_sparql_select-method -->
+
+      
+        <div id="union-method" class="method-detail ">
+          <a name="method-i-union"></a>
+
+          
+          <div class="method-heading">
+            <span class="method-name">union</span><span
+              class="method-args">(other_context)</span>
+            <span class="method-click-advice">click to toggle source</span>
+          </div>
+          
+
+          <div class="method-description">
+            
+            
+            
+
+            
+            <div class="method-source-code" id="union-source">
+<pre>
+<span class="ruby-comment"># File lib/grel/ql.rb, line 358</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">union</span>(<span class="ruby-identifier">other_context</span>)
+  <span class="ruby-ivar">@unions</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">other_context</span>
+  <span class="ruby-keyword">self</span>
+<span class="ruby-keyword">end</span></pre>
+            </div><!-- union-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- union-method -->
+
+      
+      </div><!-- public-instance-method-details -->
+    
+    </div><!-- 5Buntitled-5D -->
+  
+
+  </div><!-- documentation -->
+
+  <div id="validator-badges">
+    <p><small><a href="http://validator.w3.org/check/referer">[Validate]</a></small></p>
+    <p><small>Generated with the <a href="http://deveiate.org/projects/Darkfish-Rdoc/">Darkfish
+      Rdoc Generator</a> 2</small>.</p>
+  </div>
+
+</body>
+</html>
+
