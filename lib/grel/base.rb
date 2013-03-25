@@ -372,6 +372,27 @@ module GRel
       with_validations(false)
     end
 
+    # Removes connection to a node in the graph.
+    # It accepts a list of node IDs that will be unlinked.
+    def unlink(ids)
+      ids = [ids] if(ids.is_a?(String))
+      query = QL.unlink_sparql_query(ids)
+      results = @connection.query(@db_name, query,{}).body
+      triples = results["results"]["bindings"].map do |h|
+        "<#{h['S']['value']}> <#{h['P']['value']}> <#{h['O']['value']}>"
+      end
+
+      if(triples.length > 0)
+        triples = "#{triples.join('.')} ."
+        GRel::Debugger.debug "REMMOVING"
+        GRel::Debugger.debug triples
+        GRel::Debugger.debug "IN"
+        GRel::Debugger.debug @db_name
+        @connection.remove(@db_name, triples, nil, "text/turtle")
+      end
+      self
+    end
+
     private
 
     def ensure_db(db_name)

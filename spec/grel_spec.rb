@@ -361,4 +361,57 @@ describe "graph query" do
     expect(tuples.first[:name]).to be_eql("Antonio")
     expect(tuples.first[:capital]).to be_eql("Madrid")
   end
+
+  it "should be possible to run unlink graph nodes" do
+    g = graph.with_db(DB)
+
+    g.store(:name    => 'Abhinay',
+            :surname => 'Mehta',
+            :@type   => :Developer,
+            :@id     => 'abs').
+
+      store(:name    => 'Tom',
+            :surname => 'Hall',
+            :@type   => :Developer,
+            :@id     => 'thattommyhall').
+
+      store(:name       => 'India',
+            :@type      => :Country,
+            :population => 1200,
+            :capital    => 'New Delhi',
+            :@id        => 'in').
+
+      store(:name       => 'United Kingdom',
+            :@type      => :Country,
+            :population => 62,
+            :capital    => 'London',
+            :@id        => 'uk').
+
+      # Storing relationships
+      store(:@id     => 'abs',
+            :citizen => '@id(in)').
+
+      store(:@id     => 'abs',
+            :citizen => '@id(uk)').
+
+      store(:@id     => 'thattommyhall',
+            :citizen => '@id(uk)').
+
+      # Storing nested objects
+      store(:@id     => 'antoniogarrote',
+            :name    => 'Antonio',
+            :@type   => :Developer,
+            :citizen => {:name       => 'Spain',
+                         :@type      => :Country,
+                         :population => 43,
+                         :capital    => 'Madrid',
+                         :@id        => 'es'})             
+
+    g.unlink(["abs", "thattommyhall"])
+
+    results= g.where({:citizen => {}}).all(:unlinked => true)
+
+    expect(results.length).to be_eql(1)
+    expect(results.first[:name]).to be_eql("Antonio")
+  end
 end

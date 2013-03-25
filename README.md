@@ -192,6 +192,27 @@ This method is the opposite to an *store* operation.
     # {:@id => '@id(es), :name => 'Spain'}
 ```
 
+## Unlinking nodes
+
+Sometimes removing a node from the graph leaves pending incoming connection from other nodes that haven't been recovered in the query leading to the node removal. In order to get rid of any incoming or outgoing connection between one node and the rest of nodes in the graph, the function *unlink* can be used. 
+Unlink accepts a single node ID or an array of IDs and will remove connections to those nodes in the graph without removing the remaining properties of the nodes.
+
+```ruby
+    g.store(:@id        => 'it',
+            :name       => 'Italy',
+            :continent  => '@id(eu)')
+
+    g.where(:continent => {}).all(:unlinked => true)
+    # [{:@id => '@id(it)', :name => 'Italy', {:continent => {:@id => '@id(eu)'}}}]
+
+    g.unlink('it').where(:continent => {}).all(:unlinked => true)
+    # []
+    
+    g.where('@id' => 'it')
+    # [{:@id => '@id(it)', :name => 'Italy'}]
+```
+
+
 ## Tuple Queries
 
 Sometimes we just want to retrieve particular facts from the data graph instead of full nodes. Tuple queries makes it possible to retrieve elements of a graph pattern matching the data graph. 

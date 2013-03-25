@@ -1,5 +1,15 @@
 module GRel
   module QL
+
+    def self.unlink_sparql_query(ids)
+      conditions = ids.map do |id|
+        id = "@id(#{id})" if id && id.is_a?(String) && id.index("@id(").nil?        
+        id = QL.to_query(id)
+        "(?S = #{id} && isIRI(?O) && ?P != <http://www.w3.org/1999/02/22-rdf-syntax-ns#type>) || ?O = #{id}"
+      end
+      "SELECT ?S ?P ?O WHERE { ?S ?P ?O . FILTER (#{conditions.join(' || ')}) } "
+    end
+
     def self.to_id(obj)
       if(obj =~ ID_REGEX)
         "<http://grel.org/ids/id/#{URI.encode(ID_REGEX.match(obj)[1])}>"
