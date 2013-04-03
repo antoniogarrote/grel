@@ -4,10 +4,11 @@ require 'uri'
 require 'securerandom'
 
 class Array
+  attr_accessor :triples_id
   # When using an array of arrays to hold list of triples,
   # returns the first triple subject.
   def triples_id
-    self.first.first
+    @triples_id || self.first.first
   end
 end
 

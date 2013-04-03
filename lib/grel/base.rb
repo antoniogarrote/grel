@@ -148,6 +148,22 @@ module GRel
       @last_query_context.run
     end
 
+    # Add some rules to the database.
+    # The rules are expressed as a hash map where the body of the rule
+    # is the key and the head of the rule is the value.
+    # Variables in the rule are expressed as strings starting with the '?' character.
+    # Classes and properties are expressed as symbols as usual.
+    # If the rules cannot be parsed, an exception will be raised.
+    def rules(rules)
+      rules = QL.to_rules(rules)
+      GRel::Debugger.debug "STORING IN SCHEMA #{@schema_graph}"
+      GRel::Debugger.debug rules
+      GRel::Debugger.debug "IN"
+      GRel::Debugger.debug @db_name
+      @connection.add(@db_name, rules, @schema_graph, "application/rdf+xml")
+      self
+    end
+
     # Defines schema meta data that will be used in the processing of queries
     # if reasoning is activated.
     # It accepts a list of definitions as an argument.

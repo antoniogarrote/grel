@@ -132,7 +132,7 @@
    
    it "should support inverse properties" do
      context = QL.to_query({:a => 1, :$inv_c => {}})
-     expect(context.to_sparql_describe.index("DESCRIBE ?S_mg_0 WHERE { ?S_mg_1 ?P_mg_1 ?O_mg_1 . ?S_mg_0 :a \"1\"^^<http://www.w3.org/2001/XMLSchema#integer> . ?S_mg_1 :c ?S_mg_0 }")).not_to be_nil
+     expect(context.to_sparql_describe.index("DESCRIBE ?S_mg_0 WHERE { ?S_mg_0 :a \"1\"^^<http://www.w3.org/2001/XMLSchema#integer> . ?S_mg_1 :c ?S_mg_0 }")).not_to be_nil
    end
 
    it "should support $in filters" do

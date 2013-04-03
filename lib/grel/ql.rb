@@ -1,6 +1,81 @@
 module GRel
   module QL
 
+    def self.to_rules(obj,context={})
+      if(obj.is_a?(String) && obj[0..0] == "?")
+        var_name = obj[1..-1]
+        axiom = "<swrl:Variable rdf:about=\"http://www.w3.org/2003/11/swrl##{obj[1..-1]}\"></swrl:Variable>"
+        context[var_name] = axiom
+        "http://www.w3.org/2003/11/swrl##{obj[1..-1]}"
+      elsif(obj.is_a?(Symbol))
+        "##{obj}"
+      elsif(obj.is_a?(Array))
+        if(obj.first.is_a?(Symbol))
+          elem = obj.first
+          if(elem.is_a?(Symbol) && elem.to_s.capitalize == elem.to_s)  # is a class atom
+            pred = "<swrl:classAtom><swrl:classPredicate rdf:resource=\"#{GRel::QL.to_rules(elem,context)}\" />"
+            pred += "<swrl:argument1 rdf:resource=\"#{GRel::QL.to_rules(obj[1],context)}\" />"
+            pred + "</swrl:classAtom>"
+            #"<swrl:classAtom><swrl:classPredicate rdf:resource=\"#{elem.to_s}\" />#{obj[1..-1].map{|ax| GRel::QL.to_rules(ax,context) }}</swrlx:classAtom>"
+          elsif(elem.is_a?(Symbol) && elem.to_s.capitalize != elem.to_s) # is a property axiom
+            is_data = obj[1..-1].detect{|e| !e.is_a?(String) || ( e.is_a?(String) && e[0] != "?" && e.index("@id") != 0 ) }
+            if(is_data) # data property
+              pred = "<swrl:DatavaluedPropertyAtom>"
+              pred += "<swrl:propertyPredicate rdf:resource=\"#{GRel::QL.to_rules(elem,context)}\"/>"
+              if(obj[1].is_a?(String) && (obj[1][0] == "?" || obj[1].index("@id")==0))
+                pred += "<swrl:argument1 rdf:resource=\"#{GRel::QL.to_rules(obj[1], context)}\" />"
+              else
+                pred +=  GRel::QL.to_rules(obj[1], context).gsub("argumentn","argument1")
+              end
+              if(obj[2].is_a?(String) && (obj[2][0] == "?" || obj[2].index("@id")==0))
+                pred += "<swrl:argument1 rdf:resource=\"#{GRel::QL.to_rules(obj[2], context)}\" />"
+              else
+                pred +=  GRel::QL.to_rules(obj[2], context).gsub("argumentn","argument2")
+              end
+              pred + "</swrl:DatavaluedPropertyAtom>"
+              #"<swrlx:datavaluedPropertyAtom swrlx:property=\"#{elem}\">#{obj[1..-1].map{|ax| GRel::QL.to_rules(ax,context) }.join('')}</swrlx:datavaluedPropertyAtom>"              
+            else # individual property
+              pred = "<swrl:IndividualPropertyAtom>"
+              pred += "<swrl:propertyPredicate rdf:resource=\"#{GRel::QL.to_rules(elem,context)}\"/>"
+              pred += "<swrl:argument1 rdf:resource=\"#{GRel::QL.to_rules(obj[1],context)}\" />"
+              pred += "<swrl:argument2 rdf:resource=\"#{GRel::QL.to_rules(obj[2],context)}\" />"
+              pred + "</swrl:IndividualPropertyAtom>"
+              #"<swrlx:individualPropertyAtom swrlx:property=\"#{elem}\">#{obj[1..-1].map{|ax| GRel::QL.to_rules(ax,context) }.join('')}</swrlx:individualPropertyAtom>"
+            end
+          else
+            raise Exception.new("Unkown rule axiom #{obj.inspect}")
+          end
+        elsif(obj.first.is_a?(Array))
+          obj.map{|ax| GRel::QL.to_rules(ax,context)}.join("")
+        else
+          raise Exception.new("Unkown rule axiom #{obj.inspect}")
+        end
+      elsif(obj.is_a?(String) && obj.index("@id")==0) # is a IRI
+        GRel::QL::to_id(obj).gsub("<","").gsub(">","")
+      elsif(obj == true || obj == false)
+        "<swrl:argumentn rdf:datatype=\"http://www.w3.org/2001/XMLSchema#boolean\">#{obj}<swrl:argumentn>"
+      elsif(obj.is_a?(Float))
+        "<swrl:argumentn rdf:datatype=\"http://www.w3.org/2001/XMLSchema#float\">#{obj}<swrl:argumentn>"
+      elsif(obj.is_a?(Numeric))
+        "<swrl:argumentn rdf:datatype=\"http://www.w3.org/2001/XMLSchema#integer\">#{obj}<swrl:argumentn>"
+      elsif(obj.is_a?(Time))
+        "<swrl:argumentn rdf:datatype=\"http://www.w3.org/2001/XMLSchema#dateTime\">#{obj.iso8601}<swrl:argumentn>"
+      elsif(obj.is_a?(Date))
+        "<swrl:argumentn rdf:datatype=\"http://www.w3.org/2001/XMLSchema#dateTime\">#{Time.new(obj.to_s).iso8601}<swrl:argumentn>"
+      # Building the document here
+      elsif(obj.is_a?(Hash))
+        rules = obj.map do |(body,head)|
+          "<swrl:Imp><swrl:body rdf:parseType=\"Collection\">#{GRel::QL.to_rules(body,context)}</swrl:body ><swrl:head rdf:parseType=\"Collection\">#{GRel::QL.to_rules(head,context)}</swrl:head></swrl:Imp>"
+        end.join("")
+        doc = "<rdf:RDF xml:base=\"#{GRel::NAMESPACE}\" xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\" xmlns:owl=\"http://www.w3.org/2002/07/owl#\" xmlns:swrl=\"http://www.w3.org/2003/11/swrl#\" xmlns:ruleml=\"http://www.w3.org/2003/11/swrl\">"
+        doc += context.values.join("")
+        doc += rules
+        doc + "</rdf:RDF>"
+      else
+        raise Exception.new("Unkown rule axiom #{obj.inspect}")        
+      end
+    end
+
     def self.unlink_sparql_query(ids)
       conditions = ids.map do |id|
         id = "@id(#{id})" if id && id.is_a?(String) && id.index("@id(").nil?        
@@ -123,8 +198,8 @@ module GRel
             acum << [p,v] if v && k != :@id
           elsif(v.is_a?(Array)) # array as a property in a hash
             v.map{|o| QL.to_triples(o) }.each do |o|
-              if(o.is_a?(Array) && o.length > 0)
-                acum << [p, o[0][0]]
+              if(o.is_a?(Array) || o.respond_to?(:triples_id))
+                acum << [p, o.triples_id]
                 triples_nested += o
               else
                 acum << [p, o]
@@ -142,7 +217,9 @@ module GRel
 
         id = id || BlankId.new
 
-        triples_acum + acum.map{|(p,o)| [id, p, o] } + triples_nested
+        triples_acum = triples_acum + acum.map{|(p,o)| [id, p, o] } + triples_nested
+        triples_acum.triples_id = id
+        triples_acum
       else
         if(obj.respond_to?(:to_triples))
           obj.to_triples
@@ -158,7 +235,7 @@ module GRel
       NODE = "NODE"
 
       attr_reader :last_registered_subject, :nodes, :projection, :limit, :offset, :order, :orig_query
-      attr_accessor :triples, :optional_triples, :optional, :unions
+      attr_accessor :triples, :optional_triples, :optional, :unions, :top_level
 
       def initialize(graph=nil)
         @id_counter = -1
@@ -176,6 +253,7 @@ module GRel
         @offset = nil
         @orig_query = nil
         @query_keys = []
+        @top_level = true
       end
 
       def register_query(query)
@@ -253,7 +331,6 @@ module GRel
       end
 
       def to_sparql_describe(preamble=true)
-
         bgps = @triples.map{|t| 
           if(t.is_a?(Filter))
             t.acum
@@ -607,12 +684,19 @@ module GRel
       end
 
       def parse_property(k)
-        QL.to_query(k, context)
+        if(k.is_a?(String))
+          k.gsub(":@type","<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>").
+            gsub(":$inv_","^:")
+        else
+          QL.to_query(k, context)
+        end
       end
 
     end # end of BGP
 
-    def self.to_query(obj,context=QL::QueryContext.new, inverse=false)
+    def self.to_query(obj, context=QL::QueryContext.new, inverse=false)
+      top_level = context.top_level
+      context.top_level = false
       if(obj.is_a?(Symbol))
         if(obj == :@type)
           "rdf:type"
@@ -648,7 +732,13 @@ module GRel
           filter
         else
           bgp = BGP.new(obj,context,inverse)
-          context.append(bgp.to_query)
+          next_triples = bgp.to_query
+          # avoid patterns [?s1 ?p1 ?o1] where ?s1 is already linked in ?s0 ?p0 ?s1
+          # they fail for SWRL rules in DESCRIBE queries
+          unless(top_level == false && next_triples.length == 1 && 
+                 next_triples.first.reject{|c| c.index("?")==0 && c.index("_mg_") }.empty?)
+            context.append(next_triples)
+          end
           context
         end
       else

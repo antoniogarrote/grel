@@ -414,4 +414,37 @@ describe "graph query" do
     expect(results.length).to be_eql(1)
     expect(results.first[:name]).to be_eql("Antonio")
   end
+
+  it "should be possible to add rules to the database" do
+    g = graph.with_db(DB)
+    g.with_reasoning.rules([[:hasParent, "?x1", "?x2"], [:hasBrother, "?x2", "?x3"]]  => [:hasUncle, "?x1","?x3"])
+
+    g.store(:name => 'Antonio', :hasParent => { 
+              :name => 'Juliana', :hasParent => {
+                :name => 'Leonor', :hasBrother => {
+                  :name => 'Santiago'
+                } 
+              } 
+            })
+ 
+  
+    tuples = g.where(:name => :_nephew, :hasUncle => {:name => :_uncle}).tuples
+    expect(tuples.length).to be_eql(1)
+    expect(tuples.first[:uncle]).to be_eql("Santiago")
+    expect(tuples.first[:nephew]).to be_eql("Juliana")
+
+    g.with_reasoning.rules([[:hasUncle, "?x1", "?x2"], [:hasParent, "?x3", "?x1"]]  => [:hasUncle, "?x3","?x2"])
+
+    tuples = g.where(:name => :_nephew, :hasUncle => {:name => :_uncle}).tuples
+    expect(tuples.length).to be_eql(2)
+    nephews = []
+    tuples.each do |t|
+      expect(t[:uncle]).to be_eql("Santiago")
+      nephews << t[:nephew]
+    end
+    expect(nephews.sort).to be_eql(["Antonio","Juliana"])
+
+    tuples = g.without_reasoning.where(:name => :_niece, :hasUncle => {:name => :_uncle}).tuples
+    expect(tuples.length).to be_eql(0)
+  end
 end
