@@ -348,6 +348,23 @@
           </div>
         </div>
         
+        <div id="top_level-attribute-method" class="method-detail">
+          <a name="top_level"></a>
+          
+          <a name="top_level="></a>
+          
+          <div class="method-heading attribute-method-heading">
+            <span class="method-name">top_level</span><span
+              class="attribute-access-type">[RW]</span>
+          </div>
+
+          <div class="method-description">
+          
+          
+          
+          </div>
+        </div>
+        
         <div id="triples-attribute-method" class="method-detail">
           <a name="triples"></a>
           
@@ -410,7 +427,7 @@
             
             <div class="method-source-code" id="new-source">
 <pre>
-<span class="ruby-comment"># File lib/grel/ql.rb, line 153</span>
+<span class="ruby-comment"># File lib/grel/ql.rb, line 286</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-identifier">graph</span>=<span class="ruby-keyword">nil</span>)
   <span class="ruby-ivar">@id_counter</span> = <span class="ruby-value">-1</span>
   <span class="ruby-ivar">@filters_counter</span> = <span class="ruby-value">-1</span>
@@ -427,6 +444,7 @@
   <span class="ruby-ivar">@offset</span> = <span class="ruby-keyword">nil</span>
   <span class="ruby-ivar">@orig_query</span> = <span class="ruby-keyword">nil</span>
   <span class="ruby-ivar">@query_keys</span> = []
+  <span class="ruby-ivar">@top_level</span> = <span class="ruby-keyword">true</span>
 <span class="ruby-keyword">end</span></pre>
             </div><!-- new-source -->
             
@@ -463,7 +481,7 @@
             
             <div class="method-source-code" id="append-source">
 <pre>
-<span class="ruby-comment"># File lib/grel/ql.rb, line 197</span>
+<span class="ruby-comment"># File lib/grel/ql.rb, line 331</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">append</span>(<span class="ruby-identifier">triples</span>)
   <span class="ruby-keyword">if</span>(<span class="ruby-ivar">@optional</span>)
     <span class="ruby-ivar">@optional_triples</span> <span class="ruby-operator">+=</span> <span class="ruby-identifier">triples</span>
@@ -500,7 +518,7 @@
             
             <div class="method-source-code" id="fresh_filter_predicate-source">
 <pre>
-<span class="ruby-comment"># File lib/grel/ql.rb, line 240</span>
+<span class="ruby-comment"># File lib/grel/ql.rb, line 374</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">fresh_filter_predicate</span>
   <span class="ruby-ivar">@filters_counter</span><span class="ruby-operator">+=</span><span class="ruby-value">1</span>
   <span class="ruby-node">&quot;?P_#{@id_counter}_#{@filters_counter}&quot;</span>
@@ -534,7 +552,7 @@
             
             <div class="method-source-code" id="limit-3D-source">
 <pre>
-<span class="ruby-comment"># File lib/grel/ql.rb, line 348</span>
+<span class="ruby-comment"># File lib/grel/ql.rb, line 481</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">limit=</span>(<span class="ruby-identifier">limit</span>)
   <span class="ruby-ivar">@limit</span> = <span class="ruby-identifier">limit</span>
   <span class="ruby-keyword">self</span>
@@ -568,7 +586,7 @@
             
             <div class="method-source-code" id="next_node_id-source">
 <pre>
-<span class="ruby-comment"># File lib/grel/ql.rb, line 205</span>
+<span class="ruby-comment"># File lib/grel/ql.rb, line 339</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">next_node_id</span>
   <span class="ruby-ivar">@id_counter</span> <span class="ruby-operator">+=</span> <span class="ruby-value">1</span>
   <span class="ruby-ivar">@id_counter</span>
@@ -602,7 +620,7 @@
             
             <div class="method-source-code" id="node_to_optional-source">
 <pre>
-<span class="ruby-comment"># File lib/grel/ql.rb, line 234</span>
+<span class="ruby-comment"># File lib/grel/ql.rb, line 368</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">node_to_optional</span>(<span class="ruby-identifier">node_id</span>) <span class="ruby-comment">#, last_registered_subject)</span>
   <span class="ruby-ivar">@projection</span>.<span class="ruby-identifier">delete</span>(<span class="ruby-identifier">node_id</span>)
   <span class="ruby-ivar">@nodes</span>.<span class="ruby-identifier">delete</span>(<span class="ruby-identifier">node_id</span>)
@@ -637,7 +655,7 @@
             
             <div class="method-source-code" id="offset-3D-source">
 <pre>
-<span class="ruby-comment"># File lib/grel/ql.rb, line 353</span>
+<span class="ruby-comment"># File lib/grel/ql.rb, line 486</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">offset=</span>(<span class="ruby-identifier">offset</span>)
   <span class="ruby-ivar">@offset</span> = <span class="ruby-identifier">offset</span>
   <span class="ruby-keyword">self</span>
@@ -671,7 +689,7 @@
             
             <div class="method-source-code" id="optional-3D-source">
 <pre>
-<span class="ruby-comment"># File lib/grel/ql.rb, line 187</span>
+<span class="ruby-comment"># File lib/grel/ql.rb, line 321</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">optional=</span>(<span class="ruby-identifier">value</span>)
   <span class="ruby-keyword">if</span>(<span class="ruby-identifier">value</span> <span class="ruby-operator">==</span> <span class="ruby-keyword">true</span>)
     <span class="ruby-ivar">@optional</span> = <span class="ruby-keyword">true</span>
@@ -710,7 +728,7 @@
             
             <div class="method-source-code" id="query_keys-source">
 <pre>
-<span class="ruby-comment"># File lib/grel/ql.rb, line 179</span>
+<span class="ruby-comment"># File lib/grel/ql.rb, line 313</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">query_keys</span>
   <span class="ruby-identifier">sets</span> = [[<span class="ruby-ivar">@query_keys</span>,<span class="ruby-ivar">@orig_query</span>]]
   <span class="ruby-identifier">unions</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">c</span><span class="ruby-operator">|</span>
@@ -747,7 +765,7 @@
             
             <div class="method-source-code" id="register_node-source">
 <pre>
-<span class="ruby-comment"># File lib/grel/ql.rb, line 210</span>
+<span class="ruby-comment"># File lib/grel/ql.rb, line 344</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">register_node</span>(<span class="ruby-identifier">id</span>,<span class="ruby-identifier">node_id</span>,<span class="ruby-identifier">inverse</span>=<span class="ruby-keyword">false</span>)
   <span class="ruby-ivar">@filters_counter</span> = <span class="ruby-value">-1</span>
   <span class="ruby-identifier">subject</span> = <span class="ruby-identifier">id</span>
@@ -796,7 +814,7 @@
             
             <div class="method-source-code" id="register_query-source">
 <pre>
-<span class="ruby-comment"># File lib/grel/ql.rb, line 171</span>
+<span class="ruby-comment"># File lib/grel/ql.rb, line 305</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">register_query</span>(<span class="ruby-identifier">query</span>)
   <span class="ruby-ivar">@orig_query</span> = <span class="ruby-identifier">query</span>
   <span class="ruby-identifier">query</span>.<span class="ruby-identifier">each_pair</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">k</span>,<span class="ruby-identifier">v</span><span class="ruby-operator">|</span>
@@ -833,7 +851,7 @@
             
             <div class="method-source-code" id="required_properties-source">
 <pre>
-<span class="ruby-comment"># File lib/grel/ql.rb, line 367</span>
+<span class="ruby-comment"># File lib/grel/ql.rb, line 500</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">required_properties</span>
   <span class="ruby-identifier">props</span> = []
   
@@ -867,7 +885,7 @@
             
             <div class="method-source-code" id="run-source">
 <pre>
-<span class="ruby-comment"># File lib/grel/ql.rb, line 363</span>
+<span class="ruby-comment"># File lib/grel/ql.rb, line 496</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">run</span>
   <span class="ruby-ivar">@graph</span>.<span class="ruby-identifier">query</span>(<span class="ruby-identifier">to_sparql_describe</span>)
 <span class="ruby-keyword">end</span></pre>
@@ -900,9 +918,8 @@
             
             <div class="method-source-code" id="to_sparql_describe-source">
 <pre>
-<span class="ruby-comment"># File lib/grel/ql.rb, line 245</span>
+<span class="ruby-comment"># File lib/grel/ql.rb, line 379</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">to_sparql_describe</span>(<span class="ruby-identifier">preamble</span>=<span class="ruby-keyword">true</span>)
-
   <span class="ruby-identifier">bgps</span> = <span class="ruby-ivar">@triples</span>.<span class="ruby-identifier">map</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">t</span><span class="ruby-operator">|</span> 
     <span class="ruby-keyword">if</span>(<span class="ruby-identifier">t</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Filter</span>))
       <span class="ruby-identifier">t</span>.<span class="ruby-identifier">acum</span>
@@ -971,7 +988,7 @@
             
             <div class="method-source-code" id="to_sparql_select-source">
 <pre>
-<span class="ruby-comment"># File lib/grel/ql.rb, line 287</span>
+<span class="ruby-comment"># File lib/grel/ql.rb, line 420</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">to_sparql_select</span>(<span class="ruby-identifier">preamble</span>=<span class="ruby-keyword">true</span>)
 
   <span class="ruby-identifier">projection</span> = {}
@@ -1061,7 +1078,7 @@
             
             <div class="method-source-code" id="union-source">
 <pre>
-<span class="ruby-comment"># File lib/grel/ql.rb, line 358</span>
+<span class="ruby-comment"># File lib/grel/ql.rb, line 491</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">union</span>(<span class="ruby-identifier">other_context</span>)
   <span class="ruby-ivar">@unions</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">other_context</span>
   <span class="ruby-keyword">self</span>

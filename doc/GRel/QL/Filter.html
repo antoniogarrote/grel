@@ -260,7 +260,7 @@
             
             <div class="method-source-code" id="filter-3F-source">
 <pre>
-<span class="ruby-comment"># File lib/grel/ql.rb, line 381</span>
+<span class="ruby-comment"># File lib/grel/ql.rb, line 514</span>
 <span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">filter?</span>(<span class="ruby-identifier">h</span>)
   <span class="ruby-identifier">h</span>.<span class="ruby-identifier">keys</span>.<span class="ruby-identifier">length</span> <span class="ruby-operator">==</span> <span class="ruby-value">1</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-constant">DEFINED_FILTERS</span>[<span class="ruby-identifier">h</span>.<span class="ruby-identifier">keys</span>.<span class="ruby-identifier">first</span>]
 <span class="ruby-keyword">end</span></pre>
@@ -293,7 +293,7 @@
             
             <div class="method-source-code" id="new-source">
 <pre>
-<span class="ruby-comment"># File lib/grel/ql.rb, line 387</span>
+<span class="ruby-comment"># File lib/grel/ql.rb, line 520</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-identifier">context</span>)
   <span class="ruby-ivar">@context</span> = <span class="ruby-identifier">context</span>
   <span class="ruby-ivar">@acum</span> = <span class="ruby-string">&quot;&quot;</span>
@@ -334,7 +334,7 @@
             
             <div class="method-source-code" id="generate_and-source">
 <pre>
-<span class="ruby-comment"># File lib/grel/ql.rb, line 502</span>
+<span class="ruby-comment"># File lib/grel/ql.rb, line 635</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">generate_and</span>(<span class="ruby-identifier">v</span>)
   <span class="ruby-keyword">if</span>(<span class="ruby-identifier">v</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Array</span>))
     <span class="ruby-ivar">@acum</span> <span class="ruby-operator">+=</span> <span class="ruby-string">&quot;(&quot;</span>
@@ -376,7 +376,7 @@
             
             <div class="method-source-code" id="generate_eq-source">
 <pre>
-<span class="ruby-comment"># File lib/grel/ql.rb, line 418</span>
+<span class="ruby-comment"># File lib/grel/ql.rb, line 551</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">generate_eq</span>(<span class="ruby-identifier">v</span>)
   <span class="ruby-ivar">@acum</span> = <span class="ruby-ivar">@acum</span> <span class="ruby-operator">+</span> <span class="ruby-node">&quot;(#{variable} = &quot;</span>
   <span class="ruby-identifier">operator</span> = <span class="ruby-keyword">if</span>(<span class="ruby-identifier">v</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Hash</span>))
@@ -415,7 +415,7 @@
             
             <div class="method-source-code" id="generate_gt-source">
 <pre>
-<span class="ruby-comment"># File lib/grel/ql.rb, line 448</span>
+<span class="ruby-comment"># File lib/grel/ql.rb, line 581</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">generate_gt</span>(<span class="ruby-identifier">v</span>)
   <span class="ruby-ivar">@acum</span> = <span class="ruby-ivar">@acum</span> <span class="ruby-operator">+</span> <span class="ruby-node">&quot;(#{variable} &gt; &quot;</span>
   <span class="ruby-identifier">operator</span> = <span class="ruby-keyword">if</span>(<span class="ruby-identifier">v</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Hash</span>))
@@ -454,7 +454,7 @@
             
             <div class="method-source-code" id="generate_gteq-source">
 <pre>
-<span class="ruby-comment"># File lib/grel/ql.rb, line 458</span>
+<span class="ruby-comment"># File lib/grel/ql.rb, line 591</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">generate_gteq</span>(<span class="ruby-identifier">v</span>)
   <span class="ruby-ivar">@acum</span> = <span class="ruby-ivar">@acum</span> <span class="ruby-operator">+</span> <span class="ruby-node">&quot;(#{variable} &lt;= &quot;</span>
   <span class="ruby-identifier">operator</span> = <span class="ruby-keyword">if</span>(<span class="ruby-identifier">v</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Hash</span>))
@@ -493,7 +493,7 @@
             
             <div class="method-source-code" id="generate_in-source">
 <pre>
-<span class="ruby-comment"># File lib/grel/ql.rb, line 404</span>
+<span class="ruby-comment"># File lib/grel/ql.rb, line 537</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">generate_in</span>(<span class="ruby-identifier">v</span>)
   <span class="ruby-identifier">generate_or</span> <span class="ruby-identifier">v</span>.<span class="ruby-identifier">map</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">x</span><span class="ruby-operator">|</span> {<span class="ruby-value">:$eq</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">x</span>} }
 <span class="ruby-keyword">end</span></pre>
@@ -526,7 +526,7 @@
             
             <div class="method-source-code" id="generate_like-source">
 <pre>
-<span class="ruby-comment"># File lib/grel/ql.rb, line 478</span>
+<span class="ruby-comment"># File lib/grel/ql.rb, line 611</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">generate_like</span>(<span class="ruby-identifier">v</span>)
   <span class="ruby-identifier">operator</span> = <span class="ruby-keyword">if</span>(<span class="ruby-identifier">v</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Regexp</span>))
                <span class="ruby-identifier">v</span>.<span class="ruby-identifier">source</span>
@@ -566,7 +566,7 @@
             
             <div class="method-source-code" id="generate_lt-source">
 <pre>
-<span class="ruby-comment"># File lib/grel/ql.rb, line 428</span>
+<span class="ruby-comment"># File lib/grel/ql.rb, line 561</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">generate_lt</span>(<span class="ruby-identifier">v</span>)
   <span class="ruby-ivar">@acum</span> = <span class="ruby-ivar">@acum</span> <span class="ruby-operator">+</span> <span class="ruby-node">&quot;(#{variable} &lt; &quot;</span>
   <span class="ruby-identifier">operator</span> = <span class="ruby-keyword">if</span>(<span class="ruby-identifier">v</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Hash</span>))
@@ -605,7 +605,7 @@
             
             <div class="method-source-code" id="generate_lteq-source">
 <pre>
-<span class="ruby-comment"># File lib/grel/ql.rb, line 438</span>
+<span class="ruby-comment"># File lib/grel/ql.rb, line 571</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">generate_lteq</span>(<span class="ruby-identifier">v</span>)
   <span class="ruby-ivar">@acum</span> = <span class="ruby-ivar">@acum</span> <span class="ruby-operator">+</span> <span class="ruby-node">&quot;(#{variable} &lt;= &quot;</span>
   <span class="ruby-identifier">operator</span> = <span class="ruby-keyword">if</span>(<span class="ruby-identifier">v</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Hash</span>))
@@ -644,7 +644,7 @@
             
             <div class="method-source-code" id="generate_neq-source">
 <pre>
-<span class="ruby-comment"># File lib/grel/ql.rb, line 408</span>
+<span class="ruby-comment"># File lib/grel/ql.rb, line 541</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">generate_neq</span>(<span class="ruby-identifier">v</span>)
   <span class="ruby-ivar">@acum</span> = <span class="ruby-ivar">@acum</span> <span class="ruby-operator">+</span> <span class="ruby-node">&quot;(#{variable} != &quot;</span>
   <span class="ruby-identifier">operator</span> = <span class="ruby-keyword">if</span>(<span class="ruby-identifier">v</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Hash</span>))
@@ -683,7 +683,7 @@
             
             <div class="method-source-code" id="generate_not-source">
 <pre>
-<span class="ruby-comment"># File lib/grel/ql.rb, line 468</span>
+<span class="ruby-comment"># File lib/grel/ql.rb, line 601</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">generate_not</span>(<span class="ruby-identifier">v</span>)
   <span class="ruby-ivar">@acum</span> <span class="ruby-operator">+=</span> <span class="ruby-string">&quot;!(&quot;</span>
   <span class="ruby-keyword">if</span>(<span class="ruby-identifier">v</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Hash</span>))
@@ -722,7 +722,7 @@
             
             <div class="method-source-code" id="generate_or-source">
 <pre>
-<span class="ruby-comment"># File lib/grel/ql.rb, line 489</span>
+<span class="ruby-comment"># File lib/grel/ql.rb, line 622</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">generate_or</span>(<span class="ruby-identifier">v</span>)
   <span class="ruby-keyword">if</span>(<span class="ruby-identifier">v</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Array</span>))
     <span class="ruby-ivar">@acum</span> <span class="ruby-operator">+=</span> <span class="ruby-string">&quot;(&quot;</span>
@@ -764,7 +764,7 @@
             
             <div class="method-source-code" id="parse-source">
 <pre>
-<span class="ruby-comment"># File lib/grel/ql.rb, line 393</span>
+<span class="ruby-comment"># File lib/grel/ql.rb, line 526</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">parse</span>(<span class="ruby-identifier">h</span>)
   <span class="ruby-identifier">parse_filter</span>(<span class="ruby-identifier">h</span>)
   <span class="ruby-ivar">@acum</span> = <span class="ruby-string">&quot;FILTER(&quot;</span><span class="ruby-operator">+</span> <span class="ruby-ivar">@acum</span> <span class="ruby-operator">+</span> <span class="ruby-string">&quot;)&quot;</span>
@@ -798,7 +798,7 @@
             
             <div class="method-source-code" id="parse_filter-source">
 <pre>
-<span class="ruby-comment"># File lib/grel/ql.rb, line 398</span>
+<span class="ruby-comment"># File lib/grel/ql.rb, line 531</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">parse_filter</span>(<span class="ruby-identifier">h</span>)
   <span class="ruby-identifier">k</span> = <span class="ruby-identifier">h</span>.<span class="ruby-identifier">keys</span>.<span class="ruby-identifier">first</span>
   <span class="ruby-identifier">v</span> = <span class="ruby-identifier">h</span>.<span class="ruby-identifier">values</span>.<span class="ruby-identifier">first</span>

@@ -83,7 +83,11 @@
           
           <li><a href="#method-i-retract_definition">#retract_definition</a></li>
           
+          <li><a href="#method-i-retract_rules">#retract_rules</a></li>
+          
           <li><a href="#method-i-retract_validation">#retract_validation</a></li>
+          
+          <li><a href="#method-i-rules">#rules</a></li>
           
           <li><a href="#method-i-run">#run</a></li>
           
@@ -94,6 +98,8 @@
           <li><a href="#method-i-tuples">#tuples</a></li>
           
           <li><a href="#method-i-union">#union</a></li>
+          
+          <li><a href="#method-i-unlink">#unlink</a></li>
           
           <li><a href="#method-i-validate">#validate</a></li>
           
@@ -376,7 +382,7 @@ nodes that has not incoming links will be returned.</p>
             
             <div class="method-source-code" id="all-source">
 <pre>
-<span class="ruby-comment"># File lib/grel/base.rb, line 273</span>
+<span class="ruby-comment"># File lib/grel/base.rb, line 302</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">all</span>(<span class="ruby-identifier">options</span> = {})
   <span class="ruby-identifier">unlinked</span> = <span class="ruby-identifier">options</span>[<span class="ruby-value">:unlinked</span>] <span class="ruby-operator">||</span> <span class="ruby-keyword">false</span>
 
@@ -455,7 +461,7 @@ Valid definitions are:</p>
             
             <div class="method-source-code" id="define-source">
 <pre>
-<span class="ruby-comment"># File lib/grel/base.rb, line 161</span>
+<span class="ruby-comment"># File lib/grel/base.rb, line 190</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">define</span>(*<span class="ruby-identifier">args</span>)
   <span class="ruby-keyword">unless</span>(<span class="ruby-identifier">args</span>.<span class="ruby-identifier">length</span> <span class="ruby-operator">==</span> <span class="ruby-value">3</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-operator">!</span><span class="ruby-identifier">args</span>.<span class="ruby-identifier">first</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Array</span>))
     <span class="ruby-identifier">args</span> = <span class="ruby-identifier">args</span>.<span class="ruby-identifier">inject</span>([]) {<span class="ruby-operator">|</span><span class="ruby-identifier">a</span>,<span class="ruby-identifier">i</span><span class="ruby-operator">|</span> <span class="ruby-identifier">a</span> <span class="ruby-operator">+=</span> <span class="ruby-identifier">i</span>; <span class="ruby-identifier">a</span> }
@@ -501,7 +507,7 @@ query.</p>
             
             <div class="method-source-code" id="first-source">
 <pre>
-<span class="ruby-comment"># File lib/grel/base.rb, line 322</span>
+<span class="ruby-comment"># File lib/grel/base.rb, line 351</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">first</span>(<span class="ruby-identifier">options</span> = {})
   <span class="ruby-identifier">all</span>(<span class="ruby-identifier">options</span>).<span class="ruby-identifier">first</span>
 <span class="ruby-keyword">end</span></pre>
@@ -606,7 +612,7 @@ returns the results of the query without any other processing.</p>
             
             <div class="method-source-code" id="query-source">
 <pre>
-<span class="ruby-comment"># File lib/grel/base.rb, line 328</span>
+<span class="ruby-comment"># File lib/grel/base.rb, line 357</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">query</span>(<span class="ruby-identifier">query</span>, <span class="ruby-identifier">options</span> = {})
   <span class="ruby-constant">GRel</span><span class="ruby-operator">::</span><span class="ruby-constant">Debugger</span>.<span class="ruby-identifier">debug</span> <span class="ruby-string">&quot;QUERYING DESCRIBE...&quot;</span>
   <span class="ruby-constant">GRel</span><span class="ruby-operator">::</span><span class="ruby-constant">Debugger</span>.<span class="ruby-identifier">debug</span> <span class="ruby-identifier">query</span>
@@ -614,6 +620,7 @@ returns the results of the query without any other processing.</p>
   <span class="ruby-constant">GRel</span><span class="ruby-operator">::</span><span class="ruby-constant">Debugger</span>.<span class="ruby-identifier">debug</span> <span class="ruby-node">&quot;** OFFSET #{@last_query_context.offset}&quot;</span> <span class="ruby-keyword">if</span> <span class="ruby-ivar">@last_query_context</span>.<span class="ruby-identifier">offset</span>
   <span class="ruby-constant">GRel</span><span class="ruby-operator">::</span><span class="ruby-constant">Debugger</span>.<span class="ruby-identifier">debug</span> <span class="ruby-string">&quot;----------------------&quot;</span>
   <span class="ruby-identifier">args</span> = {<span class="ruby-value">:describe</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-keyword">true</span>}
+  <span class="ruby-comment">#args = {}</span>
   <span class="ruby-identifier">args</span>[<span class="ruby-value">:accept</span>] = <span class="ruby-identifier">options</span>[<span class="ruby-value">:accept</span>] <span class="ruby-keyword">if</span> <span class="ruby-identifier">options</span>[<span class="ruby-value">:accept</span>]
   <span class="ruby-identifier">args</span>[<span class="ruby-value">:offset</span>] = <span class="ruby-ivar">@last_query_context</span>.<span class="ruby-identifier">offset</span> <span class="ruby-keyword">if</span> <span class="ruby-ivar">@last_query_context</span>.<span class="ruby-identifier">offset</span>
   <span class="ruby-identifier">args</span>[<span class="ruby-value">:limit</span>] = <span class="ruby-ivar">@last_query_context</span>.<span class="ruby-identifier">limit</span> <span class="ruby-keyword">if</span> <span class="ruby-ivar">@last_query_context</span>.<span class="ruby-identifier">limit</span>
@@ -651,7 +658,7 @@ removed instead. It returns the current graph object.</p>
             
             <div class="method-source-code" id="remove-source">
 <pre>
-<span class="ruby-comment"># File lib/grel/base.rb, line 250</span>
+<span class="ruby-comment"># File lib/grel/base.rb, line 279</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">remove</span>(<span class="ruby-identifier">data</span> = <span class="ruby-keyword">nil</span>, <span class="ruby-identifier">options</span> = {})
   <span class="ruby-keyword">if</span> <span class="ruby-identifier">data</span>
     <span class="ruby-constant">GRel</span><span class="ruby-operator">::</span><span class="ruby-constant">Debugger</span>.<span class="ruby-identifier">debug</span> <span class="ruby-string">&quot;REMMOVING&quot;</span>
@@ -701,7 +708,7 @@ the current graph object.</p>
             
             <div class="method-source-code" id="retract_definition-source">
 <pre>
-<span class="ruby-comment"># File lib/grel/base.rb, line 180</span>
+<span class="ruby-comment"># File lib/grel/base.rb, line 209</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">retract_definition</span>(*<span class="ruby-identifier">args</span>)
   <span class="ruby-keyword">unless</span>(<span class="ruby-identifier">args</span>.<span class="ruby-identifier">length</span> <span class="ruby-operator">==</span> <span class="ruby-value">3</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-operator">!</span><span class="ruby-identifier">args</span>.<span class="ruby-identifier">first</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Array</span>))
     <span class="ruby-identifier">args</span> = <span class="ruby-identifier">args</span>.<span class="ruby-identifier">inject</span>([]) {<span class="ruby-operator">|</span><span class="ruby-identifier">a</span>,<span class="ruby-identifier">i</span><span class="ruby-operator">|</span> <span class="ruby-identifier">a</span> <span class="ruby-operator">+=</span> <span class="ruby-identifier">i</span> }
@@ -727,6 +734,46 @@ the current graph object.</p>
         </div><!-- retract_definition-method -->
 
       
+        <div id="retract_rules-method" class="method-detail ">
+          <a name="method-i-retract_rules"></a>
+
+          
+          <div class="method-heading">
+            <span class="method-name">retract_rules</span><span
+              class="method-args">(rules)</span>
+            <span class="method-click-advice">click to toggle source</span>
+          </div>
+          
+
+          <div class="method-description">
+            
+            <p>Removes rules from the graph. It accepts a hash of rules definitions that
+will be removed. It returns the current graph object.</p>
+            
+
+            
+            <div class="method-source-code" id="retract_rules-source">
+<pre>
+<span class="ruby-comment"># File lib/grel/base.rb, line 170</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">retract_rules</span>(<span class="ruby-identifier">rules</span>)
+  <span class="ruby-identifier">rules</span> = <span class="ruby-constant">QL</span>.<span class="ruby-identifier">to_rules</span>(<span class="ruby-identifier">rules</span>)
+  <span class="ruby-constant">GRel</span><span class="ruby-operator">::</span><span class="ruby-constant">Debugger</span>.<span class="ruby-identifier">debug</span> <span class="ruby-node">&quot;REMOVING FROM SCHEMA #{@schema_graph}&quot;</span>
+  <span class="ruby-constant">GRel</span><span class="ruby-operator">::</span><span class="ruby-constant">Debugger</span>.<span class="ruby-identifier">debug</span> <span class="ruby-identifier">rules</span>
+  <span class="ruby-constant">GRel</span><span class="ruby-operator">::</span><span class="ruby-constant">Debugger</span>.<span class="ruby-identifier">debug</span> <span class="ruby-string">&quot;IN&quot;</span>
+  <span class="ruby-constant">GRel</span><span class="ruby-operator">::</span><span class="ruby-constant">Debugger</span>.<span class="ruby-identifier">debug</span> <span class="ruby-ivar">@db_name</span>
+  <span class="ruby-ivar">@connection</span>.<span class="ruby-identifier">remove</span>(<span class="ruby-ivar">@db_name</span>, <span class="ruby-identifier">rules</span>, <span class="ruby-ivar">@schema_graph</span>, <span class="ruby-string">&quot;text/turtle&quot;</span>)
+  <span class="ruby-keyword">self</span>
+<span class="ruby-keyword">end</span></pre>
+            </div><!-- retract_rules-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- retract_rules-method -->
+
+      
         <div id="retract_validation-method" class="method-detail ">
           <a name="method-i-retract_validation"></a>
 
@@ -748,7 +795,7 @@ It returns the current graph object.</p>
             
             <div class="method-source-code" id="retract_validation-source">
 <pre>
-<span class="ruby-comment"># File lib/grel/base.rb, line 232</span>
+<span class="ruby-comment"># File lib/grel/base.rb, line 261</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">retract_validation</span>(*<span class="ruby-identifier">args</span>)
   <span class="ruby-keyword">unless</span>(<span class="ruby-identifier">args</span>.<span class="ruby-identifier">length</span> <span class="ruby-operator">==</span> <span class="ruby-value">3</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-operator">!</span><span class="ruby-identifier">args</span>.<span class="ruby-identifier">first</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Array</span>))
     <span class="ruby-identifier">args</span> = <span class="ruby-identifier">args</span>.<span class="ruby-identifier">inject</span>([]) {<span class="ruby-operator">|</span><span class="ruby-identifier">a</span>,<span class="ruby-identifier">i</span><span class="ruby-operator">|</span> <span class="ruby-identifier">a</span> <span class="ruby-operator">+=</span> <span class="ruby-identifier">i</span> }
@@ -769,6 +816,49 @@ It returns the current graph object.</p>
 
           
         </div><!-- retract_validation-method -->
+
+      
+        <div id="rules-method" class="method-detail ">
+          <a name="method-i-rules"></a>
+
+          
+          <div class="method-heading">
+            <span class="method-name">rules</span><span
+              class="method-args">(rules)</span>
+            <span class="method-click-advice">click to toggle source</span>
+          </div>
+          
+
+          <div class="method-description">
+            
+            <p>Add some rules to the database. The rules are expressed as a hash map where
+the body of the rule is the key and the head of the rule is the value.
+Variables in the rule are expressed as strings starting with the ‘?’
+character. Classes and properties are expressed as symbols as usual. If the
+rules cannot be parsed, an exception will be raised.</p>
+            
+
+            
+            <div class="method-source-code" id="rules-source">
+<pre>
+<span class="ruby-comment"># File lib/grel/base.rb, line 157</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">rules</span>(<span class="ruby-identifier">rules</span>)
+  <span class="ruby-identifier">rules</span> = <span class="ruby-constant">QL</span>.<span class="ruby-identifier">to_rules</span>(<span class="ruby-identifier">rules</span>)
+  <span class="ruby-constant">GRel</span><span class="ruby-operator">::</span><span class="ruby-constant">Debugger</span>.<span class="ruby-identifier">debug</span> <span class="ruby-node">&quot;STORING IN SCHEMA #{@schema_graph}&quot;</span>
+  <span class="ruby-constant">GRel</span><span class="ruby-operator">::</span><span class="ruby-constant">Debugger</span>.<span class="ruby-identifier">debug</span> <span class="ruby-identifier">rules</span>
+  <span class="ruby-constant">GRel</span><span class="ruby-operator">::</span><span class="ruby-constant">Debugger</span>.<span class="ruby-identifier">debug</span> <span class="ruby-string">&quot;IN&quot;</span>
+  <span class="ruby-constant">GRel</span><span class="ruby-operator">::</span><span class="ruby-constant">Debugger</span>.<span class="ruby-identifier">debug</span> <span class="ruby-ivar">@db_name</span>
+  <span class="ruby-ivar">@connection</span>.<span class="ruby-identifier">add</span>(<span class="ruby-ivar">@db_name</span>, <span class="ruby-identifier">rules</span>, <span class="ruby-ivar">@schema_graph</span>, <span class="ruby-string">&quot;application/rdf+xml&quot;</span>)
+  <span class="ruby-keyword">self</span>
+<span class="ruby-keyword">end</span></pre>
+            </div><!-- rules-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- rules-method -->
 
       
         <div id="run-method" class="method-detail ">
@@ -825,7 +915,7 @@ returns the results of the query without any other processing.</p>
             
             <div class="method-source-code" id="run_tuples-source">
 <pre>
-<span class="ruby-comment"># File lib/grel/base.rb, line 343</span>
+<span class="ruby-comment"># File lib/grel/base.rb, line 373</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">run_tuples</span>(<span class="ruby-identifier">query</span>, <span class="ruby-identifier">options</span> = {})
   <span class="ruby-constant">GRel</span><span class="ruby-operator">::</span><span class="ruby-constant">Debugger</span>.<span class="ruby-identifier">debug</span> <span class="ruby-string">&quot;QUERYING SELECT...&quot;</span>
   <span class="ruby-constant">GRel</span><span class="ruby-operator">::</span><span class="ruby-constant">Debugger</span>.<span class="ruby-identifier">debug</span> <span class="ruby-identifier">query</span>
@@ -925,7 +1015,7 @@ values for those variables.</p>
             
             <div class="method-source-code" id="tuples-source">
 <pre>
-<span class="ruby-comment"># File lib/grel/base.rb, line 310</span>
+<span class="ruby-comment"># File lib/grel/base.rb, line 339</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">tuples</span>
   <span class="ruby-identifier">results</span> = <span class="ruby-identifier">run_tuples</span>(<span class="ruby-ivar">@last_query_context</span>.<span class="ruby-identifier">to_sparql_select</span>)
   <span class="ruby-identifier">results</span>[<span class="ruby-string">&quot;results&quot;</span>][<span class="ruby-string">&quot;bindings&quot;</span>].<span class="ruby-identifier">map</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">h</span><span class="ruby-operator">|</span>
@@ -986,6 +1076,55 @@ returns the current graph object.</p>
         </div><!-- union-method -->
 
       
+        <div id="unlink-method" class="method-detail ">
+          <a name="method-i-unlink"></a>
+
+          
+          <div class="method-heading">
+            <span class="method-name">unlink</span><span
+              class="method-args">(ids)</span>
+            <span class="method-click-advice">click to toggle source</span>
+          </div>
+          
+
+          <div class="method-description">
+            
+            <p>Removes connection to a node in the graph. It accepts a list of node IDs
+that will be unlinked.</p>
+            
+
+            
+            <div class="method-source-code" id="unlink-source">
+<pre>
+<span class="ruby-comment"># File lib/grel/base.rb, line 407</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">unlink</span>(<span class="ruby-identifier">ids</span>)
+  <span class="ruby-identifier">ids</span> = [<span class="ruby-identifier">ids</span>] <span class="ruby-keyword">if</span>(<span class="ruby-identifier">ids</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">String</span>))
+  <span class="ruby-identifier">query</span> = <span class="ruby-constant">QL</span>.<span class="ruby-identifier">unlink_sparql_query</span>(<span class="ruby-identifier">ids</span>)
+  <span class="ruby-identifier">results</span> = <span class="ruby-ivar">@connection</span>.<span class="ruby-identifier">query</span>(<span class="ruby-ivar">@db_name</span>, <span class="ruby-identifier">query</span>,{}).<span class="ruby-identifier">body</span>
+  <span class="ruby-identifier">triples</span> = <span class="ruby-identifier">results</span>[<span class="ruby-string">&quot;results&quot;</span>][<span class="ruby-string">&quot;bindings&quot;</span>].<span class="ruby-identifier">map</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">h</span><span class="ruby-operator">|</span>
+    <span class="ruby-node">&quot;&lt;#{h['S']['value']}&gt; &lt;#{h['P']['value']}&gt; &lt;#{h['O']['value']}&gt;&quot;</span>
+  <span class="ruby-keyword">end</span>
+
+  <span class="ruby-keyword">if</span>(<span class="ruby-identifier">triples</span>.<span class="ruby-identifier">length</span> <span class="ruby-operator">&gt;</span> <span class="ruby-value">0</span>)
+    <span class="ruby-identifier">triples</span> = <span class="ruby-node">&quot;#{triples.join('.')} .&quot;</span>
+    <span class="ruby-constant">GRel</span><span class="ruby-operator">::</span><span class="ruby-constant">Debugger</span>.<span class="ruby-identifier">debug</span> <span class="ruby-string">&quot;REMMOVING&quot;</span>
+    <span class="ruby-constant">GRel</span><span class="ruby-operator">::</span><span class="ruby-constant">Debugger</span>.<span class="ruby-identifier">debug</span> <span class="ruby-identifier">triples</span>
+    <span class="ruby-constant">GRel</span><span class="ruby-operator">::</span><span class="ruby-constant">Debugger</span>.<span class="ruby-identifier">debug</span> <span class="ruby-string">&quot;IN&quot;</span>
+    <span class="ruby-constant">GRel</span><span class="ruby-operator">::</span><span class="ruby-constant">Debugger</span>.<span class="ruby-identifier">debug</span> <span class="ruby-ivar">@db_name</span>
+    <span class="ruby-ivar">@connection</span>.<span class="ruby-identifier">remove</span>(<span class="ruby-ivar">@db_name</span>, <span class="ruby-identifier">triples</span>, <span class="ruby-keyword">nil</span>, <span class="ruby-string">&quot;text/turtle&quot;</span>)
+  <span class="ruby-keyword">end</span>
+  <span class="ruby-keyword">self</span>
+<span class="ruby-keyword">end</span></pre>
+            </div><!-- unlink-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- unlink-method -->
+
+      
         <div id="validate-method" class="method-detail ">
           <a name="method-i-validate"></a>
 
@@ -1022,7 +1161,7 @@ definitions are:</p>
             
             <div class="method-source-code" id="validate-source">
 <pre>
-<span class="ruby-comment"># File lib/grel/base.rb, line 207</span>
+<span class="ruby-comment"># File lib/grel/base.rb, line 236</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">validate</span>(*<span class="ruby-identifier">args</span>)
   <span class="ruby-keyword">unless</span>(<span class="ruby-identifier">args</span>.<span class="ruby-identifier">detect</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">e</span><span class="ruby-operator">|</span> <span class="ruby-operator">!</span><span class="ruby-identifier">e</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Array</span>)})
     <span class="ruby-identifier">args</span> = <span class="ruby-identifier">args</span>.<span class="ruby-identifier">inject</span>([]) {<span class="ruby-operator">|</span><span class="ruby-identifier">a</span>,<span class="ruby-identifier">i</span><span class="ruby-operator">|</span> <span class="ruby-identifier">a</span> <span class="ruby-operator">+=</span> <span class="ruby-identifier">i</span>; <span class="ruby-identifier">a</span> }
@@ -1201,7 +1340,7 @@ remain turned on until they are disabled using the
             
             <div class="method-source-code" id="with_validations-source">
 <pre>
-<span class="ruby-comment"># File lib/grel/base.rb, line 359</span>
+<span class="ruby-comment"># File lib/grel/base.rb, line 389</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">with_validations</span>(<span class="ruby-identifier">state</span> = <span class="ruby-keyword">true</span>)
   <span class="ruby-ivar">@validations</span> = <span class="ruby-identifier">state</span>
   <span class="ruby-ivar">@connection</span>.<span class="ruby-identifier">offline_db</span>(<span class="ruby-ivar">@db_name</span>)
@@ -1278,7 +1417,7 @@ remain turned off until they are enabled again using the
             
             <div class="method-source-code" id="without_validations-source">
 <pre>
-<span class="ruby-comment"># File lib/grel/base.rb, line 371</span>
+<span class="ruby-comment"># File lib/grel/base.rb, line 401</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">without_validations</span>
   <span class="ruby-identifier">with_validations</span>(<span class="ruby-keyword">false</span>)
 <span class="ruby-keyword">end</span></pre>

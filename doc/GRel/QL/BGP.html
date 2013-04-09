@@ -238,7 +238,7 @@
             
             <div class="method-source-code" id="new-source">
 <pre>
-<span class="ruby-comment"># File lib/grel/ql.rb, line 521</span>
+<span class="ruby-comment"># File lib/grel/ql.rb, line 654</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-identifier">data</span>, <span class="ruby-identifier">context</span>, <span class="ruby-identifier">inverse</span>=<span class="ruby-keyword">false</span>)
   <span class="ruby-ivar">@data</span> = <span class="ruby-identifier">data</span>
   <span class="ruby-ivar">@context</span> = <span class="ruby-identifier">context</span>
@@ -280,9 +280,14 @@
             
             <div class="method-source-code" id="parse_property-source">
 <pre>
-<span class="ruby-comment"># File lib/grel/ql.rb, line 599</span>
+<span class="ruby-comment"># File lib/grel/ql.rb, line 732</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">parse_property</span>(<span class="ruby-identifier">k</span>)
-  <span class="ruby-constant">QL</span>.<span class="ruby-identifier">to_query</span>(<span class="ruby-identifier">k</span>, <span class="ruby-identifier">context</span>)
+  <span class="ruby-keyword">if</span>(<span class="ruby-identifier">k</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">String</span>))
+    <span class="ruby-identifier">k</span>.<span class="ruby-identifier">gsub</span>(<span class="ruby-string">&quot;:@type&quot;</span>,<span class="ruby-node">&quot;&lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#type&gt;&quot;</span>).
+      <span class="ruby-identifier">gsub</span>(<span class="ruby-string">&quot;:$inv_&quot;</span>,<span class="ruby-string">&quot;^:&quot;</span>)
+  <span class="ruby-keyword">else</span>
+    <span class="ruby-constant">QL</span>.<span class="ruby-identifier">to_query</span>(<span class="ruby-identifier">k</span>, <span class="ruby-identifier">context</span>)
+  <span class="ruby-keyword">end</span>
 <span class="ruby-keyword">end</span></pre>
             </div><!-- parse_property-source -->
             
@@ -313,7 +318,7 @@
             
             <div class="method-source-code" id="to_query-source">
 <pre>
-<span class="ruby-comment"># File lib/grel/ql.rb, line 528</span>
+<span class="ruby-comment"># File lib/grel/ql.rb, line 661</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">to_query</span>
   <span class="ruby-identifier">acum</span> = []
 

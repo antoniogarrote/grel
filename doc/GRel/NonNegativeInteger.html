@@ -188,7 +188,7 @@
             
             <div class="method-source-code" id="new-source">
 <pre>
-<span class="ruby-comment"># File lib/grel.rb, line 47</span>
+<span class="ruby-comment"># File lib/grel.rb, line 48</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-identifier">number</span>)
   <span class="ruby-ivar">@number</span> = <span class="ruby-identifier">number</span>
 <span class="ruby-keyword">end</span></pre>
@@ -227,7 +227,7 @@
             
             <div class="method-source-code" id="method_missing-source">
 <pre>
-<span class="ruby-comment"># File lib/grel.rb, line 51</span>
+<span class="ruby-comment"># File lib/grel.rb, line 52</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">method_missing</span>(<span class="ruby-identifier">name</span>, *<span class="ruby-identifier">args</span>, &amp;<span class="ruby-identifier">blk</span>)
   <span class="ruby-identifier">ret</span> = <span class="ruby-ivar">@number</span>.<span class="ruby-identifier">send</span>(<span class="ruby-identifier">name</span>, *<span class="ruby-identifier">args</span>, &amp;<span class="ruby-identifier">blk</span>)
   <span class="ruby-identifier">ret</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Numeric</span>) <span class="ruby-operator">?</span> <span class="ruby-constant">MyNum</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">ret</span>) <span class="ruby-operator">:</span> <span class="ruby-identifier">ret</span>
@@ -261,7 +261,7 @@
             
             <div class="method-source-code" id="to_s-source">
 <pre>
-<span class="ruby-comment"># File lib/grel.rb, line 56</span>
+<span class="ruby-comment"># File lib/grel.rb, line 57</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">to_s</span>
   <span class="ruby-node">&quot;\&quot;#{@number}\&quot;^^&lt;http://www.w3.org/2001/XMLSchema#nonNegativeInteger&gt;&quot;</span>
 <span class="ruby-keyword">end</span></pre>
