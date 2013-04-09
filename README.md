@@ -516,18 +516,18 @@ The following query will return results if reasoning support is turned on:
 ```
 More expressive rules can be defined using functions like greater than, less than etc. These functions can be used in rules using the following symbols:
 
-  * :$gt  greater than
-  * :$gte greater than or equal
-  * :$lt  less than
-  * :$lte less than or equal
-  * :$eq  equal
-  * :$neq not equal
+  * *:$gt*  greater than
+  * *:$gte* greater than or equal
+  * *:$lt*  less than
+  * *:$lte* less than or equal
+  * *:$eq*  equal
+  * *:$neq* not equal
 
 For example, the following rule defines all UK citizens older than 17 years to be major of age.
 
 ```ruby
 
-    g.rules([[:citizen, "?x1", "@id(uk)"], [:age, "?x1", "?age"], [:$gte, "?age", 18]]  => [:majorAge, "?x1", true]
+    g.rules([[:citizen, "?x1", "@id(uk)"], [:age, "?x1", "?age"], [:$gte, "?age", 18]]  => [:majorAge, "?x1", true],
             [[:citizen, "?x1", "@id(uk)"], [:age, "?x1", "?age"], [:$lt, "?age", 18]]   => [:majorAge, "?x1", false])
 
 ```
