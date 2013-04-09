@@ -6,7 +6,7 @@ RDoc documentation for the project can be found [here](http://antoniogarrote.git
 
 ## Installation
 
-The library is available as [Ruby Gem](http://rubygems.org/gems/grel):
+The library is available as a [Ruby Gem](http://rubygems.org/gems/grel):
 
     gem install grel
 
