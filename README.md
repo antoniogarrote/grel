@@ -4,6 +4,13 @@ A small ruby library that makes it easy to store and query ruby objects stored i
 
 RDoc documentation for the project can be found [here](http://antoniogarrote.github.com/grel/doc/index.html).
 
+## Installation
+
+The library is available as Ruby Gem:
+
+   gem install grel
+
+
 ## Initialization
 ```ruby
     require 'grel'
@@ -463,8 +470,71 @@ Some examples of validations are:
 
     # No validation error is raised
 ```
-
 The details about how to use validations can be found in the Stardog documentation related to ICV (Integrity Constraints Validations) for the data base (http://stardog.com/docs/sdp/#validation).
+
+## Rules
+
+Reasoning with Datalog style rules is also possible using GRel thanks to Stardog support for the [SWRL](http://www.w3.org/Submission/SWRL/) standard. 
+Rules are declared using the *rules* method. This method accepts a hash where each key-value pair defines a different rule. 
+The key is the body (antecedent) of the rule, the value is the (consequent) of the rule implication.
+Heads and bodies consist of a single triple or an array of triples of the form (property, var_or_value, var_or_value). 
+
+For example, the following rule:
+
+    (hasParent ?x1 ?x2) AND (hasBrother ?x2 ?x3) -> (hasUncle ?x1 ?x3)
+
+Can be defined using the following code:
+
+```ruby
+
+    g.rules([[:hasParent, "?x1", "?x2"], [:hasBrother, "?x2", "?x3"]]  => [:hasUncle, "?x1","?x3"])
+
+
+```
+
+Now if we store the following graph:
+
+```ruby
+
+    g.store(:name => 'Antonio', :hasParent => { 
+              :name => 'Juliana', :hasParent => {
+                :name => 'Leonor', :hasBrother => {
+                  :name => 'Santiago'
+                } 
+              } 
+            })
+
+```
+
+The following query will return results if reasoning support is turned on:
+
+```ruby
+
+    g.with_reasoning.where(:name => :_nephew, :hasUncle => {:name => :_uncle}).tuples
+    # [{:nephew => "Juliana", :uncle => "Santiago"}]
+
+```
+More expressive rules can be defined using functions like greater than, less than etc. These functions can be used in rules using the following symbols:
+
+  * :$gt  greater than
+  * :$gte greater than or equal
+  * :$lt  less than
+  * :$lte less than or equal
+  * :$eq  equal
+  * :$neq not equal
+
+For example, the following rule defines all UK citizens older than 17 years to be major of age.
+
+```ruby
+
+    g.rules([[:citizen, "?x1", "@id(uk)"], [:age, "?x1", "?age"], [:$gte, "?age", 18]]  => [:majorAge, "?x1", true]
+            [[:citizen, "?x1", "@id(uk)"], [:age, "?x1", "?age"], [:$lt, "?age", 18]]   => [:majorAge, "?x1", false])
+
+```
+
+Unfortunately as of Stardog version 1.1.3 seems to be some problems using functions resulting in a 500 internal server error. This problems should be fixed in the next release of Stardog.
+
+As with any other reasoning mechanism, rule definitions can be removed using the *retract_rules* method.
 
 ## License
 

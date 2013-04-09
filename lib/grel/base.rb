@@ -164,6 +164,19 @@ module GRel
       self
     end
 
+    # Removes rules from the graph.
+    # It accepts a hash of rules definitions that will be removed.
+    # It returns the current graph object.
+    def retract_rules(rules)
+      rules = QL.to_rules(rules)
+      GRel::Debugger.debug "REMOVING FROM SCHEMA #{@schema_graph}"
+      GRel::Debugger.debug rules
+      GRel::Debugger.debug "IN"
+      GRel::Debugger.debug @db_name
+      @connection.remove(@db_name, rules, @schema_graph, "text/turtle")
+      self
+    end
+
     # Defines schema meta data that will be used in the processing of queries
     # if reasoning is activated.
     # It accepts a list of definitions as an argument.
@@ -348,6 +361,7 @@ module GRel
       GRel::Debugger.debug "** OFFSET #{@last_query_context.offset}" if @last_query_context.offset
       GRel::Debugger.debug "----------------------"
       args = {:describe => true}
+      #args = {}
       args[:accept] = options[:accept] if options[:accept]
       args[:offset] = @last_query_context.offset if @last_query_context.offset
       args[:limit] = @last_query_context.limit if @last_query_context.limit
@@ -431,10 +445,12 @@ module GRel
 
         if(p == :@some)
           restriction = BlankId.new
-          unfolded += [s, :@subclass, restriction]
           unfolded += [restriction, :@type, :"<http://www.w3.org/2002/07/owl#Restriction>"]
           unfolded += [restriction, :"<http://www.w3.org/2002/07/owl#onProperty>", o.first]
           unfolded += [restriction, :@some,o.last]
+        elsif(p == :@same_as)
+          p = GRel::QL.to_query(p).to_sym
+          unfolded += [s,p,o]
         elsif(p == :@all)
           restriction = BlankId.new
           unfolded += [s, :@subclass, restriction]

@@ -12,16 +12,46 @@ module GRel
       elsif(obj.is_a?(Array))
         if(obj.first.is_a?(Symbol))
           elem = obj.first
-          if(elem.is_a?(Symbol) && elem.to_s.capitalize == elem.to_s)  # is a class atom
+          if(elem.to_s[0] == "$")
+            pred = case elem
+                   when :$lt
+                     "<swrl:BuiltinAtom><swrl:builtin rdf:resource=\"http://www.w3.org/2003/11/swrlb#lessThan\"/><swrl:arguments ><rdf:List>ARGS</rdf:List></swrl:arguments></swrl:BuiltinAtom>"
+                   when :$gt
+                     "<swrl:BuiltinAtom><swrl:builtin rdf:resource=\"http://www.w3.org/2003/11/swrlb#greaterThan\"/><swrl:arguments ><rdf:List>ARGS</rdf:List></swrl:arguments></swrl:BuiltinAtom>"
+                   when :$lte
+                     "<swrl:BuiltinAtom><swrl:builtin rdf:resource=\"http://www.w3.org/2003/11/swrlb#lessThanOrEqual\"/><swrl:arguments ><rdf:List>ARGS</rdf:List></swrl:arguments></swrl:BuiltinAtom>"              
+                   when :$gte
+                     "<swrl:BuiltinAtom><swrl:builtin rdf:resource=\"http://www.w3.org/2003/11/swrlb#greaterThanOrEqual\"/><swrl:arguments ><rdf:List>ARGS</rdf:List></swrl:arguments></swrl:BuiltinAtom>"              
+                   when :$eq
+                     "<swrl:BuiltinAtom><swrl:builtin rdf:resource=\"http://www.w3.org/2003/11/swrlb#equal\"/><swrl:arguments ><rdf:List>ARGS</rdf:List></swrl:arguments></swrl:BuiltinAtom>"              
+                   when :$neq
+                     "<swrl:BuiltinAtom><swrl:builtin rdf:resource=\"http://www.w3.org/2003/11/swrlb#notEqual\"/><swrl:arguments ><rdf:List>ARGS</rdf:List></swrl:arguments></swrl:BuiltinAtom>"              
+                   end
+
+            args = []
+            
+            if(obj[1].is_a?(String) && obj[1][0] == "?")
+              args << "<rdf:first rdf:resource=\"#{GRel::QL.to_rules(obj[1], context)}\" />"
+            else
+              args << GRel::QL.to_rules(obj[1],context).gsub("swrl:argumentn","rdf:first")
+            end
+
+            if(obj[2].is_a?(String) && obj[2][0] == "?")
+              args << "<rdf:rest><rdf:List><rdf:first rdf:resource=\"#{GRel::QL.to_rules(obj[2],context)}\"/><rdf:rest rdf:resource=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#nil\"/></rdf:List></rdf:rest>"
+            else
+              args << "<rdf:rest><rdf:List>#{GRel::QL.to_rules(obj[2],context).gsub("swrl:argumentn","rdf:first")}<rdf:rest rdf:resource=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#nil\"/></rdf:List></rdf:rest>"
+            end
+
+            pred.gsub(">ARGS<",">#{args.join}<")
+          elsif(elem.to_s.capitalize == elem.to_s)  # is a class atom
             pred = "<swrl:classAtom><swrl:classPredicate rdf:resource=\"#{GRel::QL.to_rules(elem,context)}\" />"
             pred += "<swrl:argument1 rdf:resource=\"#{GRel::QL.to_rules(obj[1],context)}\" />"
             pred + "</swrl:classAtom>"
-            #"<swrl:classAtom><swrl:classPredicate rdf:resource=\"#{elem.to_s}\" />#{obj[1..-1].map{|ax| GRel::QL.to_rules(ax,context) }}</swrlx:classAtom>"
-          elsif(elem.is_a?(Symbol) && elem.to_s.capitalize != elem.to_s) # is a property axiom
+          elsif(elem.to_s.capitalize != elem.to_s) # is a property axiom
             is_data = obj[1..-1].detect{|e| !e.is_a?(String) || ( e.is_a?(String) && e[0] != "?" && e.index("@id") != 0 ) }
             if(is_data) # data property
               pred = "<swrl:DatavaluedPropertyAtom>"
-              pred += "<swrl:propertyPredicate rdf:resource=\"#{GRel::QL.to_rules(elem,context)}\"/>"
+              pred += "<swrl:propertyPredicate rdf:resource=\"http://grel.org/vocabulary#{GRel::QL.to_rules(elem,context)}\"/>"
               if(obj[1].is_a?(String) && (obj[1][0] == "?" || obj[1].index("@id")==0))
                 pred += "<swrl:argument1 rdf:resource=\"#{GRel::QL.to_rules(obj[1], context)}\" />"
               else
@@ -30,17 +60,23 @@ module GRel
               if(obj[2].is_a?(String) && (obj[2][0] == "?" || obj[2].index("@id")==0))
                 pred += "<swrl:argument1 rdf:resource=\"#{GRel::QL.to_rules(obj[2], context)}\" />"
               else
-                pred +=  GRel::QL.to_rules(obj[2], context).gsub("argumentn","argument2")
+                pred +=  GRel::QL.to_rules(obj[2], context).gsub("argumentn","argument2")               
               end
               pred + "</swrl:DatavaluedPropertyAtom>"
-              #"<swrlx:datavaluedPropertyAtom swrlx:property=\"#{elem}\">#{obj[1..-1].map{|ax| GRel::QL.to_rules(ax,context) }.join('')}</swrlx:datavaluedPropertyAtom>"              
             else # individual property
               pred = "<swrl:IndividualPropertyAtom>"
-              pred += "<swrl:propertyPredicate rdf:resource=\"#{GRel::QL.to_rules(elem,context)}\"/>"
+              pred += "<swrl:propertyPredicate rdf:resource=\"http://grel.org/vocabulary#{GRel::QL.to_rules(elem,context)}\"/>"
               pred += "<swrl:argument1 rdf:resource=\"#{GRel::QL.to_rules(obj[1],context)}\" />"
               pred += "<swrl:argument2 rdf:resource=\"#{GRel::QL.to_rules(obj[2],context)}\" />"
               pred + "</swrl:IndividualPropertyAtom>"
-              #"<swrlx:individualPropertyAtom swrlx:property=\"#{elem}\">#{obj[1..-1].map{|ax| GRel::QL.to_rules(ax,context) }.join('')}</swrlx:individualPropertyAtom>"
+              is_object = obj[1..-1].detect{|e| !e.is_a?(String) && ( e.is_a?(String) && e.index("@id") != 0 ) }
+              unless(is_object)               
+                pred = "<swrl:DatavaluedPropertyAtom>"
+                pred += "<swrl:propertyPredicate rdf:resource=\"http://grel.org/vocabulary#{GRel::QL.to_rules(elem,context)}\"/>"
+                pred += "<swrl:argument1 rdf:resource=\"#{GRel::QL.to_rules(obj[1],context)}\" />"
+                pred += "<swrl:argument2 rdf:resource=\"#{GRel::QL.to_rules(obj[2],context)}\" />"
+                pred + "</swrl:DatavaluedPropertyAtom>"
+              end
             end
           else
             raise Exception.new("Unkown rule axiom #{obj.inspect}")
@@ -52,16 +88,18 @@ module GRel
         end
       elsif(obj.is_a?(String) && obj.index("@id")==0) # is a IRI
         GRel::QL::to_id(obj).gsub("<","").gsub(">","")
+      elsif(obj.is_a?(String)) # is a IRI
+        "<swrl:argumentn rdf:datatype=\"http://www.w3.org/2001/XMLSchema#string\">#{obj}</swrl:argumentn>"
       elsif(obj == true || obj == false)
-        "<swrl:argumentn rdf:datatype=\"http://www.w3.org/2001/XMLSchema#boolean\">#{obj}<swrl:argumentn>"
+        "<swrl:argumentn rdf:datatype=\"http://www.w3.org/2001/XMLSchema#boolean\">#{obj}</swrl:argumentn>"
       elsif(obj.is_a?(Float))
-        "<swrl:argumentn rdf:datatype=\"http://www.w3.org/2001/XMLSchema#float\">#{obj}<swrl:argumentn>"
+        "<swrl:argumentn rdf:datatype=\"http://www.w3.org/2001/XMLSchema#float\">#{obj}</swrl:argumentn>"
       elsif(obj.is_a?(Numeric))
-        "<swrl:argumentn rdf:datatype=\"http://www.w3.org/2001/XMLSchema#integer\">#{obj}<swrl:argumentn>"
+        "<swrl:argumentn rdf:datatype=\"http://www.w3.org/2001/XMLSchema#integer\">#{obj}</swrl:argumentn>"
       elsif(obj.is_a?(Time))
-        "<swrl:argumentn rdf:datatype=\"http://www.w3.org/2001/XMLSchema#dateTime\">#{obj.iso8601}<swrl:argumentn>"
+        "<swrl:argumentn rdf:datatype=\"http://www.w3.org/2001/XMLSchema#dateTime\">#{obj.iso8601}</swrl:argumentn>"
       elsif(obj.is_a?(Date))
-        "<swrl:argumentn rdf:datatype=\"http://www.w3.org/2001/XMLSchema#dateTime\">#{Time.new(obj.to_s).iso8601}<swrl:argumentn>"
+        "<swrl:argumentn rdf:datatype=\"http://www.w3.org/2001/XMLSchema#dateTime\">#{Time.new(obj.to_s).iso8601}</swrl:argumentn>"
       # Building the document here
       elsif(obj.is_a?(Hash))
         rules = obj.map do |(body,head)|
@@ -114,6 +152,14 @@ module GRel
           "rdfs:domain"
         elsif(obj == :@range)
           "rdfs:range"
+        elsif(obj == :@same_as)
+          "<http://www.w3.org/2002/07/owl#sameAs>"
+        elsif(obj == :@functional)
+          "<http://www.w3.org/2002/07/owl#FunctionalProperty>"
+        elsif(obj == :"<http://www.w3.org/2002/07/owl#FunctionalProperty>")
+          "<http://www.w3.org/2002/07/owl#FunctionalProperty>"
+        elsif(obj == :"<http://www.w3.org/2002/07/owl#sameAs>")
+          "<http://www.w3.org/2002/07/owl#sameAs>"
         elsif(obj == :"<http://www.w3.org/2002/07/owl#onClass>")
           "<http://www.w3.org/2002/07/owl#onClass>"
         elsif(obj == :"<http://www.w3.org/2002/07/owl#qualifiedCardinality>")
@@ -700,6 +746,8 @@ module GRel
       if(obj.is_a?(Symbol))
         if(obj == :@type)
           "rdf:type"
+        elsif(obj == :@same_as)
+          "<http://www.w3.org/2002/07/owl#sameAs>"
         elsif(obj.to_s.index("$inv_"))
           ":#{obj.to_s.split("$inv_").last}"
         elsif(obj.to_s == "_")
