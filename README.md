@@ -6,9 +6,9 @@ RDoc documentation for the project can be found [here](http://antoniogarrote.git
 
 ## Installation
 
-The library is available as Ruby Gem:
+The library is available as [Ruby Gem](http://rubygems.org/gems/grel):
 
-   gem install grel
+    gem install grel
 
 
 ## Initialization
@@ -488,8 +488,6 @@ Can be defined using the following code:
 ```ruby
 
     g.rules([[:hasParent, "?x1", "?x2"], [:hasBrother, "?x2", "?x3"]]  => [:hasUncle, "?x1","?x3"])
-
-
 ```
 
 Now if we store the following graph:
@@ -503,7 +501,6 @@ Now if we store the following graph:
                 } 
               } 
             })
-
 ```
 
 The following query will return results if reasoning support is turned on:
@@ -512,7 +509,6 @@ The following query will return results if reasoning support is turned on:
 
     g.with_reasoning.where(:name => :_nephew, :hasUncle => {:name => :_uncle}).tuples
     # [{:nephew => "Juliana", :uncle => "Santiago"}]
-
 ```
 More expressive rules can be defined using functions like greater than, less than etc. These functions can be used in rules using the following symbols:
 
@@ -529,7 +525,6 @@ For example, the following rule defines all UK citizens older than 17 years to b
 
     g.rules([[:citizen, "?x1", "@id(uk)"], [:age, "?x1", "?age"], [:$gte, "?age", 18]]  => [:majorAge, "?x1", true],
             [[:citizen, "?x1", "@id(uk)"], [:age, "?x1", "?age"], [:$lt, "?age", 18]]   => [:majorAge, "?x1", false])
-
 ```
 
 Unfortunately as of Stardog version 1.1.3 seems to be some problems using functions resulting in a 500 internal server error. This problems should be fixed in the next release of Stardog.
