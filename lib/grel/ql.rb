@@ -801,10 +801,11 @@ module GRel
     def self.from_tuple_binding(tuple_value)
       if(tuple_value["type"] == "uri")
         from_binding_to_id(tuple_value["value"])
-      elsif(tuple_value["type"] == "literal")
-        tuple_value["value"]
-      else
+      elsif(tuple_value["datatype"])
         tuple_value["@type"] = tuple_value["datatype"]
+        tuple_value["@value"] = tuple_value["value"]
+        from_binding_value(tuple_value)
+      else
         tuple_value["@value"] = tuple_value["value"]
         from_binding_value(tuple_value)
       end
@@ -842,6 +843,21 @@ module GRel
         else
           obj["@value"]
         end
+      elsif(obj.is_a?(Hash) && obj["@value"])
+        val = obj["@value"]
+        if(val == "true")
+          true
+        elsif(val == "false")
+          false
+        elsif(val =~ /^\d+\.\d*$/)
+          val.to_f
+        elsif(val =~ /^d+$/)
+          val.to_i
+        elsif(val == "http://www.w3.org/1999/02/22-rdf-syntax-ns#nil")
+          nil
+        else
+          val
+        end
       elsif(obj.is_a?(Array))
         obj.map{|o| from_binding_value(o)}
       else
@@ -854,6 +870,7 @@ module GRel
       node.delete("@context")
       node = node.to_a.inject({}) do |ac, (p,v)|
         p = p[1..-1].to_sym if(p.index(":") == 0)
+        p = p.split("#").last.to_sym if(p.index("#"))
         p = p.to_sym if(p == "@id" || p == "@type")
         v = from_binding_value(v)
         ac[p] = v; ac
@@ -868,6 +885,15 @@ module GRel
       json = bindings
       json = [json] unless json.is_a?(Array)
       json.each do|node|
+        node.each_pair do |k,v|
+          # weird things happening with describe queries and arrays
+          if(v.is_a?(Array))
+            v = v.uniq
+            v = v.first if v.length ==1
+            node[k] = v
+          end
+        end
+
         node = from_binding_hash(node)
         nodes[node[:@id]] = node
         node.delete(:@id) unless node[:@id].index("@id(")

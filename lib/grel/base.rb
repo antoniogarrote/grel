@@ -87,7 +87,11 @@ module GRel
         GRel::Debugger.debug QL.to_turtle(data)
         GRel::Debugger.debug "IN"
         GRel::Debugger.debug @db_name
-        @connection.add(@db_name, QL.to_turtle(data), nil, "text/turtle")
+        res = @connection.add(@db_name, QL.to_turtle(data), nil, "text/turtle")
+        if(res == false)
+          raise Exception.new("Error storing data, an ICV validation might have been violated")
+        end
+        res
       end
       self
     rescue Stardog::ICVException => ex
@@ -448,6 +452,8 @@ module GRel
           unfolded += [restriction, :@type, :"<http://www.w3.org/2002/07/owl#Restriction>"]
           unfolded += [restriction, :"<http://www.w3.org/2002/07/owl#onProperty>", o.first]
           unfolded += [restriction, :@some,o.last]
+          unfolded  += [s, :@type, :"<http://www.w3.org/2002/07/owl#Class>"] 
+          unfolded  += [s, :@subclass, restriction] 
         elsif(p == :@same_as)
           p = GRel::QL.to_query(p).to_sym
           unfolded += [s,p,o]
