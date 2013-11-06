@@ -299,6 +299,23 @@ module GRel
       self
     end
 
+    # Replaces the selected triples with a new set of triples provided as an
+    # argument in a single atomic operation
+    def update(new_data, options = {})
+      args = {:describe => true}
+      args = {:accept => "application/rdf+xml"}
+
+      sparql = @last_query_context.to_sparql_describe
+      triples = @connection.query(@db_name,sparql, args).body
+
+      success = @connection.with_transaction(@db_name) do |txId|
+        @connection.remove_in_transaction(@db_name, txId, triples, nil, "application/rdf+xml")
+        @connection.add_in_transaction(@db_name, txId, QL.to_turtle(new_data), nil, "text/turtle")
+      end
+      raise Exception.new("Error updating data") unless success
+      self
+    end
+
     # Executes the current defined query and returns a list of matching noes from the graph.
     # Nodes will be correctly linked in the returned list.
     # if the option +:unlinked+ is provided with true value, only the top level nodes that has not incoming links
